@@ -13,12 +13,6 @@ export class FacultiesService {
   async getFaculties() {
     const faculties = await this.facultyModel.find({});
         
-    return faculties.map(faculty => ({
-        id: faculty._id,
-        facultyName: faculty.facultyName, 
-        facultyIntroduction: faculty.facultyIntroduction,  
-        facultyImageCompare: faculty.facultyImageCompare,
-        facultyImageHighlight: faculty.facultyImageHighlight,
-    }));
+    return faculties as Faculty[];
   }
 }
