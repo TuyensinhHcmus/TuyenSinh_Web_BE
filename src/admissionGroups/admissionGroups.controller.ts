@@ -12,11 +12,24 @@ import { AdmissionGroupsService } from './admissionGroups.service';
 
 @Controller('admission-groups')
 export class AdmissionGroupsController {
-  constructor(private readonly admissionGroupsService: AdmissionGroupsService) {}
+  constructor(
+    private readonly admissionGroupsService: AdmissionGroupsService,
+  ) {}
 
   @Get()
   async getAllAdmissionGroups() {
-    const admissionGroups = await this.admissionGroupsService.getAdmissionGroups();
+    const admissionGroups =
+      await this.admissionGroupsService.getAdmissionGroups();
     return admissionGroups;
+  }
+
+  // [GET] /admission-groups/:id
+  @Get(':id')
+  async getAddmissionGroup(@Param('id') admissionGroupId: string) {
+    const addmissionGroup =
+      await this.admissionGroupsService.getSingleAdmissionGroup(
+        admissionGroupId,
+      );
+    return addmissionGroup;
   }
 }

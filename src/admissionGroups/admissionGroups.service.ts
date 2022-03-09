@@ -15,4 +15,13 @@ export class AdmissionGroupsService {
       
     return admissionGroups as AdmissionGroup[];
   }
+
+  async getSingleAdmissionGroup(admissionGroupId: string ) {
+    try {
+      const addmissionGroup = this.admissionGroupModel.findById(admissionGroupId).exec();
+      return addmissionGroup;
+    } catch(err) {
+      throw new NotFoundException('Could not find addmission group');
+    }
+  }
 }

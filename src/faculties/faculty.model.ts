@@ -5,6 +5,8 @@ export const FacultySchema = new mongoose.Schema({
   facultyIntroduction: { type: String, required: true },  
   facultyImageCompare: { type: String, required: true },
   facultyImageHighlight: { type: String, required: true },
+}, {
+  versionKey: false,
 });
 
 export interface Faculty extends mongoose.Document {
