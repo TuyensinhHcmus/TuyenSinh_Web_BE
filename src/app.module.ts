@@ -11,7 +11,6 @@ import {AuthModule} from './auth/auth.module';
 
 
 @Module({  imports: [
-    AdmissionGroupsModule,
     MongooseModule.forRoot(
       'mongodb+srv://tuyensinhhcmus:Y64oNI6ptREGRyN6@tuyensinhhcmus.2t0eq.mongodb.net/TuyenSinhHCMUS'
     ),
