@@ -10,7 +10,7 @@ export const FacultySchema = new mongoose.Schema({
 });
 
 export interface Faculty extends mongoose.Document {
-  id: string;
+  _id: string;
   facultyName: string; 
   facultyIntroduction: string;  
   facultyImageCompare: string;

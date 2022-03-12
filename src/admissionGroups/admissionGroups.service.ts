@@ -10,13 +10,13 @@ export class AdmissionGroupsService {
     @InjectModel('AdmissionGroup') private readonly admissionGroupModel: Model<AdmissionGroup>,
   ) {}
 
-  async getAdmissionGroups() {
+  async getAdmissionGroups(): Promise<AdmissionGroup[]> {
     const admissionGroups = await this.admissionGroupModel.find().exec();
       
-    return admissionGroups as AdmissionGroup[];
+    return admissionGroups;
   }
 
-  async getSingleAdmissionGroup(admissionGroupId: string ) {
+  async getSingleAdmissionGroup(admissionGroupId: string ): Promise<AdmissionGroup> {
     try {
       const addmissionGroup = this.admissionGroupModel.findById(admissionGroupId).exec();
       return addmissionGroup;

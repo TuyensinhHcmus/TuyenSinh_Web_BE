@@ -7,8 +7,11 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
+import { AddFacultyDto } from './dto/add-faculty.dto';
+import { UpdateFacultyDto } from './dto/update-faculty.dto';
 
 import { FacultiesService } from './faculties.service';
+import { Faculty } from './faculty.model';
 
 @Controller('faculties')
 export class FacultiesController {
@@ -16,40 +19,26 @@ export class FacultiesController {
 
   // [GET] /faculties
   @Get()
-  async getAllFaculties() {
+  async getAllFaculties(): Promise<Faculty[]> {
     const faculties = await this.facultiesService.getFaculties();
     return faculties;
   }
 
   // [POST] /faculties
   @Post()
-  async addFaculty(
-    @Body('name') facultyName: string,
-    @Body('introduction') facultyIntroduction: string,
-    @Body('imageCompare') facultyImageCompare: string,
-    @Body('imageHighlight') facultyImageHighlight: string
-  ) {
-    const faculty = await this.facultiesService.insertFaculty(
-      facultyName,
-      facultyIntroduction,
-      facultyImageCompare,
-      facultyImageHighlight
-    )
-
-    return faculty;
+  async addFaculty(@Body() addFacultyDto: AddFacultyDto): Promise<Faculty> {
+    return await this.facultiesService.insertFaculty(addFacultyDto);
   }
 
   // [DELETE] /faculties/:id
   @Delete(':id')
-  async removeFaculty(@Param('id') facultyId: string) {
-    await this.facultiesService.deleteFaculty(facultyId);
-
-    return null;
+  async removeFaculty(@Param('id') facultyId: string): Promise<void> {
+    return await this.facultiesService.deleteFaculty(facultyId);
   }
 
   // [GET] /faculties/:id
   @Get(':id')
-  async getFaculty(@Param('id') facultyId: string) {
+  async getFaculty(@Param('id') facultyId: string): Promise<Faculty> {
     const faculty = await this.facultiesService.getSingleFaculty(facultyId);
     return faculty;
   }
@@ -57,18 +46,9 @@ export class FacultiesController {
   // [PATCH] /faculties/:id
   @Patch(':id')
   async updateFaculty(
-    @Param('id') facultyId: string,
-    @Body('name') facultyName: string,
-    @Body('introduction') facultyIntroduction: string,
-    @Body('imageCompare') facultyImageCompare: string,
-    @Body('imageHighlight') facultyImageHighlight: string
-  ) {
-    await this.facultiesService.updateFaculty(
-      facultyId,
-      facultyName,
-      facultyIntroduction,
-      facultyImageCompare,
-      facultyImageHighlight
-    )
+    @Param('id') id: string,
+    @Body() updateFacultyDto: UpdateFacultyDto,
+  ): Promise<Faculty> {
+    return await this.facultiesService.updateFaculty(id, updateFacultyDto);
   }
 }

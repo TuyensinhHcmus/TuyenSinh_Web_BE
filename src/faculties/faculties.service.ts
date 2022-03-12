@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { AddFacultyDto } from './dto/add-faculty.dto';
+import { UpdateFacultyDto } from './dto/update-faculty.dto';
 
 import { Faculty } from './faculty.model';
 
@@ -10,30 +12,27 @@ export class FacultiesService {
     @InjectModel('Faculty') private readonly facultyModel: Model<Faculty>,
   ) {}
 
-  async insertFaculty(
-    facultyName: string,
-    facultyIntroduction: string,
-    facultyImageCompare: string,
-    facultyImageHighlight: string,
-  ) {
-    const newFaculty = new this.facultyModel({
-      facultyName,
-      facultyIntroduction,
-      facultyImageCompare,
-      facultyImageHighlight,
+  async insertFaculty(addFacultyDto: AddFacultyDto): Promise<Faculty> {
+    const { name, introduction, imageCompare, imageHighlight } = addFacultyDto;
+
+    const faculty = new this.facultyModel({
+      facultyName: name,
+      facultyIntroduction: introduction,
+      facultyImageCompare: imageCompare,
+      facultyImageHighlight: imageHighlight,
     });
 
-    const result = await newFaculty.save();
-    return result as Faculty;
+    const result = await faculty.save();
+    return result;
   }
 
-  async getFaculties() {
+  async getFaculties(): Promise<Faculty[]> {
     const faculties = await this.facultyModel.find({});
 
-    return faculties as Faculty[];
+    return faculties;
   }
 
-  async deleteFaculty(facultyId: string) {
+  async deleteFaculty(facultyId: string): Promise<void> {
     try {
       await this.facultyModel.deleteOne({ _id: facultyId }).exec();
     } catch (err) {
@@ -41,30 +40,29 @@ export class FacultiesService {
     }
   }
 
-  async getSingleFaculty(facultyId: string) {
+  async getSingleFaculty(facultyId: string): Promise<Faculty> {
     try {
       const faculty = await this.findFaculty(facultyId);
-      return faculty as Faculty;
+      return faculty;
     } catch (err) {
       throw new NotFoundException('Could not find faculty.', err);
     }
   }
 
-  async updateFaculty(
-    facultyId: string,
-    facultyName: string,
-    facultyIntroduction: string,
-    facultyImageCompare: string,
-    facultyImageHighlight: string,
-  ) {
-    const facultyUpdate = {
-      facultyName,
-      facultyIntroduction,
-      facultyImageCompare,
-      facultyImageHighlight,
-    };
+  async updateFaculty(id: string, updateFacultyDto: UpdateFacultyDto): Promise<Faculty> {
 
-    await this.facultyModel.updateOne({ _id: facultyId }, facultyUpdate);
+    const { name, introduction, imageCompare, imageHighlight } = updateFacultyDto;
+
+    const faculty = await this.findFaculty(id);
+
+    faculty.facultyName = name;
+    faculty.facultyIntroduction = introduction;
+    faculty.facultyImageCompare = imageCompare;
+    faculty.facultyImageHighlight = imageHighlight;
+    
+    faculty.save();
+    
+    return faculty;
   }
 
   private async findFaculty(id: string): Promise<Faculty> {
