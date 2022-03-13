@@ -8,6 +8,7 @@ import { FacultiesModule } from './faculties/faculties.module';
 import { UsersModule } from './users/users.module';
 import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module';
 import {AuthModule} from './auth/auth.module';
+import { NewsAdmissionModule } from './news-admission/news-admission.module';
 
 
 @Module({  imports: [
@@ -15,6 +16,7 @@ import {AuthModule} from './auth/auth.module';
       'mongodb+srv://tuyensinhhcmus:Y64oNI6ptREGRyN6@tuyensinhhcmus.2t0eq.mongodb.net/TuyenSinhHCMUS'
     ),
     FacultiesModule,
+    NewsAdmissionModule,
     UsersModule,
     AdmissionGroupsModule,
     AuthModule

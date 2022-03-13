@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "bcrypt": "^5.0.1",
     "mongoose": "^6.2.4",
+    "mongoose-slug-generator": "^1.0.4",
     "passport": "^0.5.2",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
