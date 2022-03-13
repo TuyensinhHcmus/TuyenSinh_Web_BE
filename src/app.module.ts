@@ -7,9 +7,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FacultiesModule } from './faculties/faculties.module';
 import { UsersModule } from './users/users.module';
 import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({  imports: [
     AdmissionGroupsModule,
+    AuthModule,
     MongooseModule.forRoot(
       'mongodb+srv://tuyensinhhcmus:Y64oNI6ptREGRyN6@tuyensinhhcmus.2t0eq.mongodb.net/TuyenSinhHCMUS'
     ),
