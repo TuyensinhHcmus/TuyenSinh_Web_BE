@@ -1,5 +1,5 @@
 export class AddNewsAdmissionDto {
-    newsTitle: string;
-    newsContent: string;
-    newsDateCreate: string;
+    title: string;
+    content: string;
+    news_date: string;
 }

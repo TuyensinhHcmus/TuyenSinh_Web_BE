@@ -7,6 +7,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FacultiesModule } from './faculties/faculties.module';
 import { UsersModule } from './users/users.module';
 import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module';
+import { ResQuestionsModule } from './res-questions/res-questions.module';
 import {AuthModule} from './auth/auth.module';
 import { NewsAdmissionModule } from './news-admission/news-admission.module';
 
@@ -17,6 +18,7 @@ import { NewsAdmissionModule } from './news-admission/news-admission.module';
     ),
     FacultiesModule,
     NewsAdmissionModule,
+    ResQuestionsModule,
     UsersModule,
     AdmissionGroupsModule,
     AuthModule

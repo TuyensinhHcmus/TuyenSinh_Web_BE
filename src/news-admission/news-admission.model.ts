@@ -4,16 +4,16 @@ var slug = require('mongoose-slug-generator');
 mongoose.plugin(slug);
 
 export const NewsSchema = new mongoose.Schema({
-    newsTitle: { type: String, required: true },
-    newsContent: { type: String, required: true },
-    newsDateCreate: { type: String, required: true },
-    slug: { type: String, slug: "newsTitle", unique: true },
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    news_date: { type: String, required: true },
+    slug: { type: String, slug: "title", unique: true },
 });
 
 export interface NewsAdmission extends mongoose.Document {
     _id: string;
-    newsTitle: string;
-    newsContent: string;
-    newsDateCreate: string;
+    title: string;
+    news_date: string;
+    content: string;
     slug: string;
 }
