@@ -22,4 +22,11 @@ export class NewsAdmissionService {
         const result = await news.save();
         return result;
       }
+
+      async getListNews(): Promise<NewsAdmission[]> {
+        // const listNews = await this.newsModel.find({});
+        const listNews = await this.newsModel.find({}).sort({newsDateCreate: -1}).limit(10);
+    
+        return listNews;
+      }
 }
