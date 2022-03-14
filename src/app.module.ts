@@ -8,8 +8,9 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FacultiesModule } from './faculties/faculties.module';
 import { UsersModule } from './users/users.module';
 import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module';
-import {AuthModule} from './auth/auth.module';
-
+import { AuthModule } from './auth/auth.module';
+import { MethodsModule } from './methods/methods.module';
+import { MajorsModule } from './majors/majors.module';
 
 @Module({  imports: [
     ConfigModule.forRoot({
@@ -21,8 +22,9 @@ import {AuthModule} from './auth/auth.module';
     FacultiesModule,
     UsersModule,
     AdmissionGroupsModule,
-    AuthModule
-    
+    AuthModule,
+    MethodsModule,
+    MajorsModule,
   ],
 
   controllers: [AppController],

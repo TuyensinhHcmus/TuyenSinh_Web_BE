@@ -6,7 +6,7 @@ export const AdmissionGroupSchema = new mongoose.Schema({
 });
 
 export interface AdmissionGroup extends mongoose.Document {
-  id: string;
+  _id: string;
   idGroup: string;
   nameGroup: string;
 }

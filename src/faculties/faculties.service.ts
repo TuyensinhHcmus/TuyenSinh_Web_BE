@@ -41,12 +41,8 @@ export class FacultiesService {
   }
 
   async getSingleFaculty(facultyId: string): Promise<Faculty> {
-    try {
-      const faculty = await this.findFaculty(facultyId);
-      return faculty;
-    } catch (err) {
-      throw new NotFoundException('Could not find faculty.', err);
-    }
+    const faculty = await this.findFaculty(facultyId);
+    return faculty;
   }
 
   async updateFaculty(id: string, updateFacultyDto: UpdateFacultyDto): Promise<Faculty> {
@@ -77,6 +73,7 @@ export class FacultiesService {
     if (!faculty) {
       throw new NotFoundException('Could not find faculty.');
     }
+
     return faculty;
   }
 }

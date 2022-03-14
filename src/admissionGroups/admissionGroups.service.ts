@@ -17,11 +17,18 @@ export class AdmissionGroupsService {
   }
 
   async getSingleAdmissionGroup(admissionGroupId: string ): Promise<AdmissionGroup> {
+    let addmissionGroup;
+    
     try {
-      const addmissionGroup = this.admissionGroupModel.findById(admissionGroupId).exec();
-      return addmissionGroup;
+      addmissionGroup = this.admissionGroupModel.findById(admissionGroupId).exec();
     } catch(err) {
       throw new NotFoundException('Could not find addmission group');
     }
+
+    if (!addmissionGroup) {
+      throw new NotFoundException('Could not find addmission group');
+    }
+
+    return addmissionGroup;
   }
 }
