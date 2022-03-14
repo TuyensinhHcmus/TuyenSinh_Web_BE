@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 
 /* eslint-disable */
 import { MongooseModule } from '@nestjs/mongoose';
@@ -11,13 +12,17 @@ import {AuthModule} from './auth/auth.module';
 
 
 @Module({  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     MongooseModule.forRoot(
-      'mongodb+srv://tuyensinhhcmus:Y64oNI6ptREGRyN6@tuyensinhhcmus.2t0eq.mongodb.net/TuyenSinhHCMUS'
+      process.env.DATABASE_HOST
     ),
     FacultiesModule,
     UsersModule,
     AdmissionGroupsModule,
     AuthModule
+    
   ],
 
   controllers: [AppController],

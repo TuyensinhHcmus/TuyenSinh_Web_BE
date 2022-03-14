@@ -19,13 +19,13 @@ export class AuthController {
     private readonly authService: AuthService
   ) {}
  
-  @Post('/register')
+  @Post('register')
   async register(@Body() registrationData: RegisterDto) {
     return this.authService.registerUser(registrationData);
   }
  
   @UseGuards(LocalAuthenticationGuard)
-  @Post('/login')
+  @Post('login')
   async logIn(@Req() req: RequestWithUser) {
     const user = req.user;
     user.userPassword = undefined;
