@@ -11,6 +11,9 @@ import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module'
 import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
+import { ResQuestionsModule } from './res-questions/res-questions.module';
+import { NewsAdmissionModule } from './news-admission/news-admission.module';
+
 
 @Module({  imports: [
     ConfigModule.forRoot({
@@ -20,6 +23,8 @@ import { MajorsModule } from './majors/majors.module';
       process.env.DATABASE_HOST
     ),
     FacultiesModule,
+    NewsAdmissionModule,
+    ResQuestionsModule,
     UsersModule,
     AdmissionGroupsModule,
     AuthModule,
