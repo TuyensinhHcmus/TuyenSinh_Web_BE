@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsNotEmpty, MinLength } from 'class-validator';
+import { IsEmail, IsString, IsNotEmpty, MinLength, MaxLength, Matches } from 'class-validator';
  
 export class RegisterDto {
   @IsEmail()
@@ -11,6 +11,8 @@ export class RegisterDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
+  @MaxLength(32)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'Password is too week'})
   userPassword: string;
 }
  
