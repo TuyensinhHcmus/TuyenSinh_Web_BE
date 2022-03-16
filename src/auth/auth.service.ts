@@ -1,10 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import RegisterDto from './dto/register.dto';
+import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService) { }
+    constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
 
     async registerUser(registrationData: RegisterDto) {
         const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
@@ -27,11 +29,14 @@ export class AuthService {
         }
     }
 
-    async validateUser(userEmail: string, pass: string): Promise<any> {
+    async validateUser(userEmail: string, pass: string): Promise<{ accessToken: string }> {
         const user = await this.usersService.getSingleUser(userEmail);
         const comparePassword = user !== null ? await this.usersService.comparePassword(pass, user.userPassword) : false;
         if (user && comparePassword) {
-            return user;
+            const { userEmail, userPassword } = user;
+            const payload: JwtPayload = { userEmail };
+            const accessToken: string = await this.jwtService.sign(payload)
+            return { accessToken };
         }
         return null;
     }
