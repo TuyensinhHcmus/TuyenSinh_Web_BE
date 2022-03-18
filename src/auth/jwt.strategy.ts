@@ -17,11 +17,11 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload): Promise<User> {
-        // console.log('paload', payload);
+        console.log("chay jwt strategy");
         
         const { userEmail } = payload;
         const user = await this.userService.getSingleUser(userEmail);
-        if (!user) {
+        if (!user || user.refreshToken === "") {
             throw new UnauthorizedException();
         }
         return user;

@@ -6,6 +6,8 @@ import {
     Param,
     Patch,
     Delete,
+    HttpCode,
+    HttpStatus,
   } from '@nestjs/common';
 import { Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -21,20 +23,33 @@ export class AuthController {
   ) {}
  
   @Post('register')
+  @HttpCode(HttpStatus.CREATED)
   async register(@Body() registrationData: RegisterDto) {
     return this.authService.registerUser(registrationData);
   }
  
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
+  @HttpCode(HttpStatus.OK)
   async logIn(@Req() req: RequestWithUser) {
     const user = req.user;
     user.userPassword = undefined;
     return user;
   }
 
+
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  @HttpCode(HttpStatus.OK)
+  async logOut(@Req() req: RequestWithUser) {
+    console.log('req.user0', req.user);
+
+    
+    await this.authService.logOut(req.user._id)
+  }
+
   @Post('test')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('jwt'))
   test(@Req() req)
   {
     

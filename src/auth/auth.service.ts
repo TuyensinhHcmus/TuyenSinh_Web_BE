@@ -1,12 +1,55 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import * as bcrypt from 'bcrypt'
 import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
     constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
+
+    hashData(data: string) {
+        return bcrypt.hash(data, 10);
+    }
+
+    async getTokens(userId: string, userEmail: string) {
+        const [at, rt] = await Promise.all([
+            this.jwtService.signAsync(
+                {
+                    userId,
+                    userEmail,
+                },
+                {
+                    secret: "topSecret51",
+                    expiresIn: 60 * 15
+                }
+            ),
+            this.jwtService.signAsync(
+                {
+                    userId,
+                    userEmail,
+                },
+                {
+                    secret: "rtsecret",
+                    expiresIn: 60 * 60 * 24 * 7
+                }
+            ),
+
+        ])
+
+        return {
+            accessToken: at,
+            refreshToken: rt,
+        }
+
+        // const accessToken = await this.jwtService.
+    }
+
+    async updateRefreshToken(userId: string, rt: string) {
+        const hash = await this.hashData(rt);
+        await this.usersService.updateUserRt(userId, hash);
+    }
 
     async registerUser(registrationData: RegisterDto) {
         const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
@@ -20,7 +63,11 @@ export class AuthService {
             if (createdUser !== undefined)
                 createdUser.userPassword = undefined;
 
-            return createdUser;
+            
+            const tokens = await this.getTokens(createdUser.id, createdUser.userEmail);
+            await this.updateRefreshToken(createdUser.id, tokens.refreshToken)
+            console.log(tokens, createdUser);
+            return tokens;
         } catch (error) {
             if (error.code === 11000) {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
@@ -29,14 +76,17 @@ export class AuthService {
         }
     }
 
-    async validateUser(userEmail: string, pass: string): Promise<{ accessToken: string }> {
+    async logOut(userId:string) {
+        await this.usersService.updateUserRt(userId, '')
+    }
+
+    async validateUser(userEmail: string, pass: string): Promise<any> {
         const user = await this.usersService.getSingleUser(userEmail);
         const comparePassword = user !== null ? await this.usersService.comparePassword(pass, user.userPassword) : false;
         if (user && comparePassword) {
-            const { userEmail, userPassword } = user;
-            const payload: JwtPayload = { userEmail };
-            const accessToken: string = await this.jwtService.sign(payload)
-            return { accessToken };
+            const tokens = await this.getTokens(user.id, user.userEmail);
+            await this.updateRefreshToken(user.id, tokens.refreshToken)
+            return tokens;
         }
         return null;
     }

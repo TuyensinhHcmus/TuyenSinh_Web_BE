@@ -13,15 +13,10 @@ import { RtStrategy } from './rt.strategy';
   imports: [
     UsersModule, 
     PassportModule.register({defaultStrategy: 'jwt'}), 
-    JwtModule.register({
-      secret: "topSecret51",
-      signOptions:{
-        expiresIn: 3600,
-      }
-    })
+    JwtModule.register({})
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy, RtStrategy],
   controllers: [AuthController],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, RtStrategy, PassportModule],
 })
 export class AuthModule {}
