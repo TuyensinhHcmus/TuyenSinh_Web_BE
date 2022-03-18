@@ -4,26 +4,28 @@ import { Strategy, ExtractJwt } from "passport-jwt";
 import { User } from "src/users/users.model";
 import { UsersService } from "src/users/users.service";
 import { JwtPayload } from "./jwt-payload.interface";
+import { Request } from "express";
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     constructor(
         private userService: UsersService
     ) {
         super({
-            secretOrKey: "topSecret51",
+            secretOrKey: "rt-topSecret51",
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            passReqToCallback: true,
         })
     }
 
-    async validate(payload: JwtPayload): Promise<User> {
-        // console.log('paload', payload);
-        
-        const { userEmail } = payload;
-        const user = await this.userService.getSingleUser(userEmail);
-        if (!user) {
-            throw new UnauthorizedException();
+    async validate(req: Request ,payload: any) {
+        const refreshToken = req.get('authorization').replace('Bearer', '').trim();
+
+        return {
+            ...payload,
+            refreshToken,
         }
-        return user;
+        
+        // return user;
     }
 }
