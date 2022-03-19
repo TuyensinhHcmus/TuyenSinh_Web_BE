@@ -9,8 +9,9 @@ import { JwtPayload } from './token-payload.interface';
 export class AuthService {
     constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
 
-    hashData(data: string) {
-        return bcrypt.hash(data, 10);
+    async hashData(data: string) {
+        const salt = await bcrypt.genSalt(10);
+        return bcrypt.hash(data, salt);
     }
 
     async getTokens(userId: string, userEmail: string) {

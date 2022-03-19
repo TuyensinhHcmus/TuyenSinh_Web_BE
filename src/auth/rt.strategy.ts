@@ -31,10 +31,14 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
         }
         
         // console.log('res', user);
-        // let hash =  await bcrypt.hash(refreshToken, 10);
+        // const salt = await bcrypt.genSalt(10);
+        // let hash =  await bcrypt.hash(refreshToken, salt);
         // console.log('refreshtoken', refreshToken);
         // console.log("hash", hash);
         
+        // const temp = await bcrypt.compare(refreshToken, user.refreshToken)
+
+        // const temp = await bcrypt.compare("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjM0YjQwOTU1ZDZlZjIxMDNhZmYwZDIiLCJ1c2VyRW1haWwiOiJxdW9jbHVvbmcyNTAzc3BhbUBnbWFpbC5jb20iLCJpYXQiOjE2NDc2NzA3NjEsImV4cCI6MTY0ODI3NTU2MX0.9_MY4fknvBGGTMD5hcyqVGPiiZ_CFPIDf5gntRIZM7", hash)
         // const temp = await bcrypt.compare('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjM0YjQwOTU1ZDZlZjIxMDNhZmYwZDIiLCJ1c2VyRW1haWwiOiJxdW9jbHVvbmcyNTAzc3BhbUBnbWFpbC5jb20iLCJpYXQiOjE2NDc2NjQwNjEsImV4cCI6MTY0ODI2ODg2MX0.ehqWuzMAbQtBKpfWGLhtToOnwnMjSP7yBfYeZ8Tz7q0', '$2b$10$2FpMMLCy5bQSsoxqfK2jp.88efV5hvu0ILXCnlwkuezPJQPbcGFb6')
         // console.log("temp 1", temp);
         // const temp2 = await bcrypt.compare('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjM0YjQwOTU1ZDZlZjIxMDNhZmYwZDIiLCJ1c2VyRW1haWwiOiJxdW9jbHVvbmcyNTAzc3BhbUBnbWFpbC5jb20iLCJpYXQiOjE2NDc2NjQwNjEsImV4cCI6MTY0ODI2ODg2MX0.ehqWuzMAbQtBKpfWGLhtToOnwnMjSP7yBfYeZ8Tz7q0', '$2b$10$v0a2/vIm4z8oYAkMIszlieDRPK0nnDKS4LR05ajKMW/gdH4GPIo.u')
