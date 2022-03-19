@@ -12,7 +12,7 @@ import { RtStrategy } from './rt.strategy';
 @Module({
   imports: [
     UsersModule, 
-    PassportModule.register({defaultStrategy: 'jwt'}), 
+    PassportModule.register({}), 
     JwtModule.register({})
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy, RtStrategy],

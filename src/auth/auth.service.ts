@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt'
 import RegisterDto from './dto/register.dto';
-import { JwtPayload } from './jwt-payload.interface';
+import { JwtPayload } from './token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
                     userEmail,
                 },
                 {
-                    secret: "rtsecret",
+                    secret: "rt-topSecret51",
                     expiresIn: 60 * 60 * 24 * 7
                 }
             ),
@@ -63,10 +63,10 @@ export class AuthService {
             if (createdUser !== undefined)
                 createdUser.userPassword = undefined;
 
-            
+
             const tokens = await this.getTokens(createdUser.id, createdUser.userEmail);
             await this.updateRefreshToken(createdUser.id, tokens.refreshToken)
-            console.log(tokens, createdUser);
+            // console.log(tokens, createdUser);
             return tokens;
         } catch (error) {
             if (error.code === 11000) {
@@ -76,8 +76,14 @@ export class AuthService {
         }
     }
 
-    async logOut(userId:string) {
+    async logOut(userId: string) {
         await this.usersService.updateUserRt(userId, '')
+    }
+
+    async refreshToken(userId: string, userEmail: string): Promise<any> {
+        const tokens = await this.getTokens(userId, userEmail);
+        await this.updateRefreshToken(userId, tokens.refreshToken)
+        return tokens
     }
 
     async validateUser(userEmail: string, pass: string): Promise<any> {

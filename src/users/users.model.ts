@@ -13,7 +13,7 @@ export const UserSchema = new mongoose.Schema({
 })
 
 export interface User {
-    _id: string,
+    userId: string,
     refreshToken: string,
     userName: string,
     userPhone: string,
