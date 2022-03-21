@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './local.auth.guard';
 import RegisterDto from './dto/register.dto';
+import ForgetPasswordDto from './dto/forgetPassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -30,5 +31,11 @@ export class AuthController {
     const user = req.user;
     user.userPassword = undefined;
     return user;
+  }
+
+  @Post('forget-password')
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto)
+  {
+    return this.authService.forgetPassword(forgetPasswordDto);
   }
 }

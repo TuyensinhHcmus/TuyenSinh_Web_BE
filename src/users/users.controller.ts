@@ -37,14 +37,24 @@ export class UsersController {
     return users;
   }
 
-  @Patch(':id')
-  async updateUser(
-    @Param('id') userId: string,
-    @Body('userPassword') userPassword: string,
-  ) {
-    const userPasswordHash = await this.usersService.hashPassword(userPassword);
-    await this.usersService.updateUser(userId, userPasswordHash);
+  // @Get(':id')
+  // async updatePasswordUser(
+  //   @Param('id') userId: string,
+  //   @Body('userPassword') userPassword: string,
+  // ) {
+  //   const userPasswordHash = await this.usersService.hashPassword(userPassword);
+  //   await this.usersService.updatePasswordUser(userId, userPasswordHash);
 
-    return userPasswordHash;
+  //   return userPasswordHash;
+  //}
+
+  @Get('getUserByQuantity/:amount')
+  async getNumberUser(
+    @Param('amount') amount: number,
+    @Body('sortCondition') sortCondition: number,
+  )
+  {
+    const users = await this.usersService.getUsersByAmount(amount, sortCondition);
+    return users;
   }
 }  
