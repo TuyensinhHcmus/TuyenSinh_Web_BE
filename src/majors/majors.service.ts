@@ -42,9 +42,10 @@ export class MajorsService {
   async getListMajorsOfFaculty() : Promise<any> {
     let listFaculties = await this.facultiesService.getFaculties();
     const majors = await this.majorModel.find({});
-
+    // console.log("list", majors, 'aaaaaaaaaaaaaaaaaaa', listFaculties);
+    
     let res = listFaculties.map( f=> {
-      let admission_list = majors.filter(i=> i.majorFacultyId === f._id)
+      let admission_list = majors.filter(i=> i.majorFacultyId === f._id.toString()).map(i=> ({name: i.majorName, image: i.majorImageName, slug: ""}))
       return {
         faculty_name: f.facultyName,
         admission_list: admission_list
