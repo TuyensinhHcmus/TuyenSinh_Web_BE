@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 
 export const MajorSchema = new mongoose.Schema({
+  majorId: { type: String, required: true },
   majorFacultyId: { type: String, required: true },
   majorName: { type: String, required: true },
   majorIntroduction: { type: String, required: true },
@@ -14,6 +15,7 @@ export const MajorSchema = new mongoose.Schema({
 
 export interface Major extends mongoose.Document {
   _id: string;
+  majorId: string,
   majorFacultyId: string,
   majorName: string,
   majorIntroduction: string,
