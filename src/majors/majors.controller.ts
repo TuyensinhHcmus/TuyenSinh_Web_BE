@@ -31,6 +31,11 @@ export class MajorsController {
     return await this.majorsService.insertMajor(addMajorDto);
   }
 
+  @Get('getListMajorsOfFaculty')
+  async getListMajorsOfFaculty() : Promise<any> {
+    return await this.majorsService.getListMajorsOfFaculty();
+  }
+
   // [DELETE] /majors/:id
   @Delete(':id')
   async removeMajor(@Param('id') majorId: string): Promise<void> {

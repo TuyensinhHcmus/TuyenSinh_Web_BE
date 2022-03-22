@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { FacultiesService } from 'src/faculties/faculties.service';
 import { AddMajorDto } from './dto/add-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
 
@@ -10,6 +11,7 @@ import { Major } from './major.model';
 export class MajorsService {
   constructor(
     @InjectModel('Major') private readonly majorModel: Model<Major>,
+    private readonly facultiesService: FacultiesService
   ) {}
 
   async insertMajor(addMajorDto: AddMajorDto): Promise<Major> {
@@ -35,6 +37,21 @@ export class MajorsService {
 
     const result = await major.save();
     return result;
+  }
+
+  async getListMajorsOfFaculty() : Promise<any> {
+    let listFaculties = await this.facultiesService.getFaculties();
+    const majors = await this.majorModel.find({});
+
+    let res = listFaculties.map( f=> {
+      let admission_list = majors.filter(i=> i.majorFacultyId === f._id)
+      return {
+        faculty_name: f.facultyName,
+        admission_list: admission_list
+      }
+    })
+
+    return res;
   }
 
   async getMajors(): Promise<Major[]> {

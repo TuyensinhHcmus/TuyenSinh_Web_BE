@@ -11,6 +11,7 @@ import { FacultiesController } from './faculties.controller'
   ],
   controllers: [FacultiesController],
   providers: [FacultiesService],
+  exports: [FacultiesService]
 })
 
 export class FacultiesModule {}
