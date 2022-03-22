@@ -12,6 +12,6 @@ async function bootstrap() {
   // app.useGlobalGuards(new AtGuard())
   app.use(cors());
 
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT || '3001');
 }
 bootstrap();
