@@ -3,7 +3,7 @@ import { PassportStrategy } from "@nestjs/passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import * as bcrypt from 'bcrypt'
 import { UsersService } from "src/users/users.service";
-import { RtPayload } from "./token-payload.interface";
+import { RtPayload } from "../token-payload.interface";
 import { Request } from "express";
 
 @Injectable()

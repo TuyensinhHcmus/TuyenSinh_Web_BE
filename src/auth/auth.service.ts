@@ -86,6 +86,17 @@ export class AuthService {
         await this.updateRefreshToken(userId, tokens.refreshToken)
         return tokens
     }
+    
+    googleLogin(req) {
+        if (!req.user) {
+          return 'No user from google'
+        }
+    
+        return {
+          message: 'User information from google',
+          user: req.user
+        }
+      }
 
     async validateUser(userEmail: string, pass: string): Promise<any> {
         const user = await this.usersService.getSingleUser(userEmail);

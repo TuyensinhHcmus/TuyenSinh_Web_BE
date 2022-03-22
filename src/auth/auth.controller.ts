@@ -14,7 +14,7 @@ import { AuthService } from './auth.service';
 import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './local.auth.guard';
 import RegisterDto from './dto/register.dto';
-import { AtGuard, RtGuard } from 'src/common/guards';
+import { AtGuard, RtGuard, GgGuard } from 'src/common/guards';
 
 @Controller('auth')
 export class AuthController {
@@ -53,6 +53,26 @@ export class AuthController {
   async refreshToken(@Req() req: RequestWithUser) {
     // console.log("req", req.user);
     return await this.authService.refreshToken(req.user.userId, req.user.userEmail)
+  }
+
+  @Get('google')
+  @UseGuards(GgGuard)
+  async googleAuth(@Req() req) {
+    console.log('req gg', req);
+  }
+  
+  @Get('redirect')
+  @UseGuards(GgGuard)
+  googleAuthRedirect(@Req() req) {
+    console.log('req gg', req);
+    return this.authService.googleLogin(req)
+  }
+
+  @Get('a')
+  @UseGuards(GgGuard)
+  testgg(@Req() req) {
+    console.log('req gg', req);
+    // return this.authService.googleLogin(req)
   }
 
   @Post('test')
