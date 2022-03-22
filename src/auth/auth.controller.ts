@@ -38,6 +38,8 @@ export class AuthController {
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto)
   {
     return this.authService.forgetPassword(forgetPasswordDto);
+  }
+  
   @Post('test')
   @UseGuards(AuthGuard())
   test(@Req() req)

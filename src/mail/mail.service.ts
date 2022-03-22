@@ -46,6 +46,7 @@ export class MailService {
             from: process.env.MAIL_USER,
             to: user.userEmail,
             subject: "MÃ XÁC NHẬN EMAIL",
+
             //template: 'confirmation',
             // context: {
             //     name: user.userName,

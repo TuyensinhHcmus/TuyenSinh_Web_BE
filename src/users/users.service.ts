@@ -9,7 +9,6 @@ import { User } from './users.model';
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
   private salt = 10;
   constructor(@InjectModel('User') private readonly usesrModel: Model<User>) { }
 
