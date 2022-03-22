@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-var slug = require('mongoose-slug-generator');
+const slug = require('mongoose-slug-generator');
 
 mongoose.plugin(slug);
 
