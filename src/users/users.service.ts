@@ -68,4 +68,10 @@ export class UsersService {
     return users;
   }
 
+  async updateUserRt(userId: string, rtHash: string) {
+    await this.usesrModel.findOneAndUpdate(
+      { _id: userId },
+      { refreshToken: rtHash }
+    );
+  }
 }
