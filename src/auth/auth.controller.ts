@@ -13,6 +13,7 @@ import RequestWithUser from './requestWithUser.interface';
 import { LocalAuthenticationGuard } from './local.auth.guard';
 import RegisterDto from './dto/register.dto';
 import ForgetPasswordDto from './dto/forgetPassword.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +38,10 @@ export class AuthController {
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto)
   {
     return this.authService.forgetPassword(forgetPasswordDto);
+  @Post('test')
+  @UseGuards(AuthGuard())
+  test(@Req() req)
+  {
+    
   }
 }
