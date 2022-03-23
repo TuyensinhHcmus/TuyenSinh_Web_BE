@@ -22,12 +22,13 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.getNewsBySlug(_slug);
   }
 
-  @Get('getNewsByQuantity/:amount')
+  @Get('getNewsByQuantity')
   async getNumberNews(
-    @Param('amount') amount: number,
-    @Body('sortCondition') sortCondition: number,
+    @Body('sortBy') sortBy: string,
+    @Body('Page') page: number,
+    @Body('perPage') perpage: number,
   ) {
-    const news = await this.newsAdmissionService.getNewsByAmount(amount, sortCondition);
+    const news = await this.newsAdmissionService.getNewsByAmount(perpage, sortBy, page);
     return news;
   }
 
