@@ -41,12 +41,12 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async getNewsByAmount(amount: number, sortCondition: number)
-  {
-    const condition = sortCondition === -1 ? sortCondition : 1;
-    const news = await this.newsModel.find().limit(amount).sort({
+  async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
+    const condition = sortCondition === "desc" ? sortCondition : "asc";
+    const news = await this.newsModel.find().limit(perPage).sort({
       news_date: condition
-    }).exec();
+    }).skip((Page - 1) * perPage).exec();
+
     return news;
   }
 }

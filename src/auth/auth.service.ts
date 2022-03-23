@@ -113,7 +113,7 @@ export class AuthService {
         if (user && comparePassword) {
             const tokens = await this.getTokens(user.id, user.userEmail);
             await this.updateRefreshToken(user.id, tokens.refreshToken)
-            return tokens;
+            return {'user':user,'token': tokens};
         }
         return null;
     }
