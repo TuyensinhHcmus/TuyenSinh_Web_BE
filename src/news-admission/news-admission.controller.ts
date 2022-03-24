@@ -24,11 +24,11 @@ export class NewsAdmissionController {
 
   @Get('getNewsByQuantity')
   async getNumberNews(
-    @Body('sortBy') sortBy: string,
-    @Body('Page') page: number,
-    @Body('perPage') perpage: number,
+    @Param('sortBy') sortBy: string,
+    @Param('Page') page: number,
+    @Param('perPage') perPage: number,
   ) {
-    const news = await this.newsAdmissionService.getNewsByAmount(perpage, sortBy, page);
+    const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
     return news;
   }
 
