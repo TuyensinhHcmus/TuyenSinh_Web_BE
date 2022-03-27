@@ -33,23 +33,23 @@ export class ProgramsController {
 
   // [DELETE] /programs/:id
   @Delete(':id')
-  async removeProgram(@Param('id') programId: string): Promise<void> {
-    return await this.programsService.deleteProgram(programId);
+  async removeProgram(@Param('id') id: string): Promise<void> {
+    return await this.programsService.deleteProgram(id);
   }
 
   // [GET] /programs/:id
   @Get(':id')
-  async getProgram(@Param('id') programId: string): Promise<Program> {
-    const program = await this.programsService.getSingleProgram(programId);
+  async getProgram(@Param('id') id: string): Promise<Program> {
+    const program = await this.programsService.getSingleProgram(id);
     return program;
   }
 
   // [PATCH] /programs/:id
   @Patch(':id')
   async updateProgram(
-    @Param('id') idProgram: string,
+    @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
   ): Promise<Program> {
-    return await this.programsService.updateProgram(idProgram, updateProgramDto);
+    return await this.programsService.updateProgram(id, updateProgramDto);
   }
 }

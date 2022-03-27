@@ -27,9 +27,28 @@ export class TuitionsService {
   }
 
   async getTuitions(): Promise<Tuition[]> {
-    const tuitions = await this.tuitionModel.find({});
+    const res = await this.tuitionModel.aggregate([
+      {
+        $lookup: {
+          from: 'majors',
+          localField: 'tuitionMajorId',
+          foreignField: 'majorId',
+          as: 'major',
+        },
+      },
+    ]);
 
-    return tuitions;
+    if (res.length > 0) {
+      res.forEach(item => {
+        item.major = item.major[0].majorName;
+      })
+    }
+    
+    return res;
+
+    // const tuitions = await this.tuitionModel.find({});
+
+    // return tuitions;
   }
 
   async deleteTuition(tuitionId: string): Promise<void> {
@@ -54,11 +73,10 @@ export class TuitionsService {
     const tuition = await this.findTuition(id);
 
     tuition.tuitionMajorId = majorId;
-    tuition.tuitionFee = fee,
-    tuition.tuitionFeeIncRate = feeIncRate,
-    tuition.tuitionDocumentary = documentary,
-
-    tuition.save();
+    (tuition.tuitionFee = fee),
+      (tuition.tuitionFeeIncRate = feeIncRate),
+      (tuition.tuitionDocumentary = documentary),
+      tuition.save();
 
     return tuition;
   }

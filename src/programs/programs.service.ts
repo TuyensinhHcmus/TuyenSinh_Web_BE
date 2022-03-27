@@ -13,10 +13,12 @@ export class ProgramsService {
   ) {}
 
   async insertProgram(addProgramDto: AddProgramDto): Promise<Program> {
-    const { name } = addProgramDto;
+    const { name, programId, url } = addProgramDto;
 
     const program = new this.programModel({
       programName: name,
+      programId: programId,
+      programUrl: url
     });
 
     const result = await program.save();
@@ -29,26 +31,28 @@ export class ProgramsService {
     return programs;
   }
 
-  async deleteProgram(programId: string): Promise<void> {
+  async deleteProgram(id: string): Promise<void> {
     try {
-      await this.programModel.deleteOne({ _id: programId }).exec();
+      await this.programModel.deleteOne({ _id: id }).exec();
     } catch (err) {
       throw new NotFoundException('Could not delete program.', err);
     }
   }
 
-  async getSingleProgram(programId: string): Promise<Program> {
-    const program = await this.findProgram(programId);
+  async getSingleProgram(id: string): Promise<Program> {
+    const program = await this.findProgram(id);
     return program;
   }
 
   async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<Program> {
 
-    const { name } = updateProgramDto;
+    const { name, programId, url } = updateProgramDto;
 
     const program = await this.findProgram(id);
 
     program.programName = name;
+    program.programId = programId;
+    program.programUrl = url;
 
     program.save();
     
