@@ -11,10 +11,11 @@ import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module'
 import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
-import { ResQuestionsModule } from './res-questions/res-questions.module';
-import { NewsAdmissionModule } from './news-admission/news-admission.module';
 import { ProgramsModule } from './programs/programs.module';
 import { TuitionsModule } from './tuitions/tuitions.module';
+import { ResQuestionsModule } from './resQuestions/resQuestions.module';
+import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
+
 
 @Module({  imports: [
     ConfigModule.forRoot({

@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { NewsAdmission } from './news-admission.model';
-import { AddNewsAdmissionDto } from './dto/add-news-admission.dto';
+import { NewsAdmission } from './newsAdmission.model';
+import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 
 @Injectable()
 export class NewsAdmissionService {

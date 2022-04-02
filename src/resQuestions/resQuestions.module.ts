@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ResQuestionsService } from './res-questions.service';
-import { ResQuestionsController } from './res-questions.controller';
+import { ResQuestionsService } from './resQuestions.service';
+import { ResQuestionsController } from './resQuestions.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { ResQuestionsSchema } from './res-questions.model';
+import { ResQuestionsSchema } from './resQuestions.model';
 
 @Module({
   imports: [

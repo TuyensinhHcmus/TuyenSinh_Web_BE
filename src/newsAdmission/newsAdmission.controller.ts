@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
-import { AddNewsAdmissionDto } from './dto/add-news-admission.dto';
-import { NewsAdmission } from './news-admission.model';
-import { NewsAdmissionService } from './news-admission.service';
+import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
+import { NewsAdmission } from './newsAdmission.model';
+import { NewsAdmissionService } from './newsAdmission.service';
 
 @Controller('news-admission')
 export class NewsAdmissionController {
