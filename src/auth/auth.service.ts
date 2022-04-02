@@ -1,13 +1,17 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { MailService } from 'src/mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import ForgetPasswordDto from './dto/forgetPassword.dto';
 import * as bcrypt from 'bcrypt'
 import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './token-payload.interface';
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService, private readonly jwtService: JwtService) { }
+    constructor(private readonly usersService: UsersService, 
+        private readonly jwtService: JwtService,
+        private mailService: MailService) { }
 
     async hashData(data: string) {
         const salt = await bcrypt.genSalt(10);
@@ -61,6 +65,8 @@ export class AuthService {
                 registrationData.userEmail,
                 hashedPassword
             );
+            await this.mailService.sendUserConfirmation(registrationData, "hello");
+
             if (createdUser !== undefined)
                 createdUser.userPassword = undefined;
 
@@ -100,7 +106,10 @@ export class AuthService {
 
     async validateUser(userEmail: string, pass: string): Promise<any> {
         const user = await this.usersService.getSingleUser(userEmail);
+        console.log(user);
+
         const comparePassword = user !== null ? await this.usersService.comparePassword(pass, user.userPassword) : false;
+        console.log(comparePassword);
         if (user && comparePassword) {
             const tokens = await this.getTokens(user.id, user.userEmail);
             await this.updateRefreshToken(user.id, tokens.refreshToken)
@@ -108,4 +117,21 @@ export class AuthService {
         }
         return null;
     }
+
+    async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
+        // get user
+        const user = await this.usersService.getSingleUser(forgetPasswordDto.userEmail);
+
+        try {
+            // hash password of user
+            const hashPassword = await this.usersService.hashPassword(forgetPasswordDto.userPassword);
+
+            // update password of user
+            await this.usersService.updatePasswordUser(user._id.toString(), hashPassword);
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
 }

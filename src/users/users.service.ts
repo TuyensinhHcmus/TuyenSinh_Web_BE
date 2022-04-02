@@ -4,12 +4,11 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
 
 import { User } from './users.model';
-import { STATUS_CODES } from 'http';
+
 
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [];
   private salt = 10;
   constructor(@InjectModel('User') private readonly usesrModel: Model<User>) { }
 
@@ -43,7 +42,7 @@ export class UsersService {
   // Get user
   async getUsers() {
     const users = await this.usesrModel.find().exec();
-    return users as User[];
+    return users;
   }
 
   async getSingleUser(userEmail: string) {
@@ -52,11 +51,21 @@ export class UsersService {
   }
 
   // Edit user
-  async updateUser(userId: string, userPasswordHash: string) {
+  async updatePasswordUser(userId: String, userPasswordHash: string) {
     await this.usesrModel.findOneAndUpdate(
-      { _id: userId },
+      { _id: userId},
       { userPassword: userPasswordHash }
     );
+  }
+
+  // Get user by amount
+  async getUsersByAmount(amount: number, sortCondition: number)
+  {
+    const condition = sortCondition === -1 ? sortCondition : 1;
+    const users = await this.usesrModel.find().limit(amount).sort({
+      userName: condition
+    }).exec();
+    return users;
   }
 
   async updateUserRt(userId: string, rtHash: string) {
