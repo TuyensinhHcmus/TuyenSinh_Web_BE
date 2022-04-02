@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { ResQuestion } from './res-questions.model';
-import { AddResQuestionDto } from './dto/add-res-questions.dto';
+import { ResQuestion } from './resQuestions.model';
+import { AddResQuestionDto } from './dto/addResQuestions.dto';
 
 @Injectable()
 export class ResQuestionsService {

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { NewsAdmissionService } from './news-admission.service';
-import { NewsAdmissionController } from './news-admission.controller';
+import { NewsAdmissionService } from './newsAdmission.service';
+import { NewsAdmissionController } from './newsAdmission.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NewsSchema } from './news-admission.model';
+import { NewsSchema } from './newsAdmission.model';
 
 @Module({
   imports: [
