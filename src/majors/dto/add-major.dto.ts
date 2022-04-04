@@ -1,6 +1,10 @@
 import { IsNotEmpty } from 'class-validator'
 
 export class AddMajorDto {
+
+    @IsNotEmpty()
+    majorId: string;
+
     @IsNotEmpty()
     facultyId: string;
 

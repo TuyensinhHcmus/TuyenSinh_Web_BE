@@ -20,13 +20,14 @@ export class AdmissionGroupsController {
     return admissionGroups;
   }
 
-  // [GET] /admission-groups/:id
-  @Get(':id')
-  async getAddmissionGroup(@Param('id') admissionGroupId: string): Promise<AdmissionGroup> {
-    const addmissionGroup =
+  // [GET] /admission-groups/:idGroup
+  @Get(':idGroup')
+  async getAdmissionGroup(@Param('idGroup') admissionGroupId: string): Promise<AdmissionGroup> {
+    const admissionGroup =
       await this.admissionGroupsService.getSingleAdmissionGroup(
-        admissionGroupId,
+        admissionGroupId
       );
-    return addmissionGroup;
+    return admissionGroup;
   }
+
 }

@@ -18,9 +18,9 @@ export class AdmissionGroupsService {
 
   async getSingleAdmissionGroup(admissionGroupId: string ): Promise<AdmissionGroup> {
     let addmissionGroup;
-    
+  
     try {
-      addmissionGroup = this.admissionGroupModel.findById(admissionGroupId).exec();
+      addmissionGroup = await this.admissionGroupModel.findOne({ idGroup: admissionGroupId }).exec();     
     } catch(err) {
       throw new NotFoundException('Could not find addmission group');
     }

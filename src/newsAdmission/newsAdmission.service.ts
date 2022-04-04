@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { NewsAdmission } from './news-admission.model';
-import { AddNewsAdmissionDto } from './dto/add-news-admission.dto';
+import { NewsAdmission } from './newsAdmission.model';
+import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 
 @Injectable()
 export class NewsAdmissionService {
@@ -41,12 +41,12 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async getNewsByAmount(amount: number, sortCondition: number)
-  {
-    const condition = sortCondition === -1 ? sortCondition : 1;
-    const news = await this.newsModel.find().limit(amount).sort({
+  async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
+    const condition = sortCondition === "desc" ? sortCondition : "asc";
+    const news = await this.newsModel.find().limit(perPage).sort({
       news_date: condition
-    }).exec();
+    }).skip((Page - 1) * perPage).exec();
+
     return news;
   }
 }

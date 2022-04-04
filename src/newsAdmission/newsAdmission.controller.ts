@@ -1,7 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { AddNewsAdmissionDto } from './dto/add-news-admission.dto';
-import { NewsAdmission } from './news-admission.model';
-import { NewsAdmissionService } from './news-admission.service';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
+import { NewsAdmission } from './newsAdmission.model';
+import { NewsAdmissionService } from './newsAdmission.service';
 
 @Controller('news-admission')
 export class NewsAdmissionController {
@@ -22,12 +22,13 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.getNewsBySlug(_slug);
   }
 
-  @Get('getNewsByQuantity/:amount')
+  @Get('getNewsByQuantity')
   async getNumberNews(
-    @Param('amount') amount: number,
-    @Body('sortCondition') sortCondition: number,
+    @Query('sortBy') sortBy: string,
+    @Query('Page') page: number,
+    @Query('perPage') perPage: number,
   ) {
-    const news = await this.newsAdmissionService.getNewsByAmount(amount, sortCondition);
+    const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
     return news;
   }
 

@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AddResQuestionDto } from './dto/add-res-questions.dto';
-import { ResQuestion } from './res-questions.model';
-import { ResQuestionsService } from './res-questions.service';
+import { AddResQuestionDto } from './dto/addResQuestions.dto';
+import { ResQuestion } from './resQuestions.model';
+import { ResQuestionsService } from './resQuestions.service';
 
 @Controller('res-question')
 export class ResQuestionsController {

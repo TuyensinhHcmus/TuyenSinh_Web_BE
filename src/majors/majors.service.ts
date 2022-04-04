@@ -16,6 +16,7 @@ export class MajorsService {
 
   async insertMajor(addMajorDto: AddMajorDto): Promise<Major> {
     const { 
+      majorId,
       facultyId, 
       name, 
       introduction, 
@@ -26,6 +27,7 @@ export class MajorsService {
     } = addMajorDto;
 
     const major = new this.majorModel({
+      majorId: majorId,
       majorFacultyId: facultyId,
       majorName: name,
       majorIntroduction: introduction,
@@ -77,6 +79,7 @@ export class MajorsService {
   async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<Major> {
 
     const { 
+      majorId,
       facultyId, 
       name, 
       introduction, 
@@ -89,6 +92,7 @@ export class MajorsService {
     const major = await this.findMajor(id);
 
     Object.assign(major, {
+      majorId: majorId,
       majorFacultyId: facultyId,
       majorName: name,
       majorIntroduction: introduction,
