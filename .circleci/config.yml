@@ -1,0 +1,84 @@
+version: 2.1
+
+executors:
+  node:
+    docker:
+      - image: circleci/node:14
+
+orbs:
+  node: circleci/node@3.0.0
+  docker: circleci/docker@1.4.0
+
+aliases:
+  install_node_modules: &install_node_modules
+    run:
+      name: Install dependencies
+      command: yarn
+
+  save_cache: &save_cache
+    save_cache:
+      name: Save NPM package cache
+      key: yarn-cache-netlify-{{ checksum "yarn.lock" }}
+      paths:
+        - ./node_modules
+
+jobs:
+  build:
+    executor: node
+    steps:
+      - checkout
+      - <<: *install_node_modules
+      - <<: *save_cache
+      - run:
+          name: Build
+          command: npm run build
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - dist
+
+  build-and-push:
+    environment:
+      DOCKER_IMAGE: datnguyen25082000/tuyensinhwebbe
+      DOCKER_TAG: latest
+    executor: docker/docker
+    steps:
+      - setup_remote_docker
+      - checkout
+      - docker/check:
+          docker-username: DOCKER_USER
+          docker-password: DOCKER_PASSWORD
+      - docker/build:
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - docker/push:
+          digest-path: /tmp/digest.txt
+          image: $DOCKER_IMAGE
+          tag: $DOCKER_TAG
+      - run:
+          command: |
+            echo "Digest is: $(</tmp/digest.txt)"
+
+  delivery:
+    executor: docker/docker
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - '71:a4:41:6b:e8:be:ab:a4:21:1d:8d:29:38:be:a8:ee'
+      - run: ssh -oStrictHostKeyChecking=no datnguyen25082000@34.125.14.233 'cd backend && ./backend.sh'
+
+workflows:
+  ci-cd-pipeline:
+    jobs:
+      # - build
+
+      - build-and-push:
+          requires:
+            - build
+          # filters:
+          #   branches:
+          #     only: master
+      
+      - delivery:
+          requires:
+            - build-and-push
