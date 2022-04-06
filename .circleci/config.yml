@@ -70,14 +70,10 @@ jobs:
 workflows:
   ci-cd-pipeline:
     jobs:
-      # - build
-
-      - build-and-push
-          # requires:
-          #   - build
-          # filters:
-          #   branches:
-          #     only: master
+      - build-and-push:
+          filters:
+            branches:
+              only: master
       
       - delivery:
           requires:
