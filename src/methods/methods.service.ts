@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Model } from 'mongoose';
 import { Repository } from 'typeorm';
+
 import { AddMethodDto } from './dto/add-method.dto';
 import { UpdateMethodDto } from './dto/update-method.dto';
 

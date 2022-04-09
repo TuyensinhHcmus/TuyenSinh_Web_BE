@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { ResQuestionsService } from './resQuestions.service';
 import { ResQuestionsController } from './resQuestions.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { ResQuestionsSchema } from './resQuestions.model';
+import {  qna } from './resQuestions.entity';
+
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'ResQuestion', schema: ResQuestionsSchema }]),
+    TypeOrmModule.forFeature([qna]),
   ],
   providers: [ResQuestionsService],
   controllers: [ResQuestionsController]

@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { NewsAdmissionService } from './newsAdmission.service';
 import { NewsAdmissionController } from './newsAdmission.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-import { NewsSchema } from './newsAdmission.model';
+import { news } from './newsAdmission.entity';
+
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'NewsAdmission', schema: NewsSchema }]),
+    TypeOrmModule.forFeature([news]),
   ],
   providers: [NewsAdmissionService],
   controllers: [NewsAdmissionController]

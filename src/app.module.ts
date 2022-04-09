@@ -11,14 +11,13 @@ import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module'
 // import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
-// import { ProgramsModule } from './programs/programs.module';
+import { ProgramsModule } from './programs/programs.module';
 // import { TuitionsModule } from './tuitions/tuitions.module';
-// import { ResQuestionsModule } from './resQuestions/resQuestions.module';
-// import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
-// import Joi from '@hapi/joi';
-// import { DatabaseModule } from './database/database.module';
+import { ResQuestionsModule } from './resQuestions/resQuestions.module';
+import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
+
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { faculty } from './faculties/faculty.entity';
+
 
 
 
@@ -39,14 +38,14 @@ import { faculty } from './faculties/faculty.entity';
       synchronize: true,
     }),
     FacultiesModule,
-    // NewsAdmissionModule,
-    // ResQuestionsModule,
+    NewsAdmissionModule,
+    ResQuestionsModule,
     // UsersModule,
     AdmissionGroupsModule,
     // AuthModule,
     MethodsModule,
     MajorsModule,
-    // ProgramsModule,
+    ProgramsModule,
     // TuitionsModule
   ],
 

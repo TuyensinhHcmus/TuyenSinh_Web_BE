@@ -1,69 +1,71 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
+
 import { AddProgramDto } from './dto/add-program.dto';
 import { UpdateProgramDto } from './dto/update-program.dto';
-
-import { Program } from './program.model';
+import { program } from './program.entity';
 
 @Injectable()
 export class ProgramsService {
   constructor(
-    @InjectModel('Program') private readonly programModel: Model<Program>,
+    @InjectRepository(program) 
+    private readonly programRepo: Repository<program>,
   ) {}
 
-  async insertProgram(addProgramDto: AddProgramDto): Promise<Program> {
-    const { name, programId, url } = addProgramDto;
+  // async insertProgram(addProgramDto: AddProgramDto): Promise<Program> {
+  //   const { name, programId, url } = addProgramDto;
 
-    const program = new this.programModel({
-      programName: name,
-      programId: programId,
-      programUrl: url
-    });
+  //   const program = new this.programModel({
+  //     programName: name,
+  //     programId: programId,
+  //     programUrl: url
+  //   });
 
-    const result = await program.save();
-    return result;
-  }
+  //   const result = await program.save();
+  //   return result;
+  // }
 
-  async getPrograms(): Promise<Program[]> {
-    const programs = await this.programModel.find({});
+  async getPrograms(): Promise<program[]> {
+    const programs = await this.programRepo.find({});
 
     return programs;
   }
 
-  async deleteProgram(id: string): Promise<void> {
-    try {
-      await this.programModel.deleteOne({ _id: id }).exec();
-    } catch (err) {
-      throw new NotFoundException('Could not delete program.', err);
-    }
-  }
+  // async deleteProgram(id: string): Promise<void> {
+  //   try {
+  //     await this.programModel.deleteOne({ _id: id }).exec();
+  //   } catch (err) {
+  //     throw new NotFoundException('Could not delete program.', err);
+  //   }
+  // }
 
-  async getSingleProgram(id: string): Promise<Program> {
+  async getSingleProgram(id: string): Promise<program> {
     const program = await this.findProgram(id);
     return program;
   }
 
-  async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<Program> {
+  // async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<Program> {
 
-    const { name, programId, url } = updateProgramDto;
+  //   const { name, programId, url } = updateProgramDto;
 
-    const program = await this.findProgram(id);
+  //   const program = await this.findProgram(id);
 
-    program.programName = name;
-    program.programId = programId;
-    program.programUrl = url;
+  //   program.programName = name;
+  //   program.programId = programId;
+  //   program.programUrl = url;
 
-    program.save();
+  //   program.save();
     
-    return program;
-  }
+  //   return program;
+  // }
 
-  private async findProgram(id: string): Promise<Program> {
+  private async findProgram(id: string): Promise<program> {
     let program;
 
     try {
-      program = await this.programModel.findById(id).exec();
+      program = await this.programRepo.findOne({programId: parseInt(id)});
     } catch (error) {
       throw new NotFoundException('Could not find program.');
     }
