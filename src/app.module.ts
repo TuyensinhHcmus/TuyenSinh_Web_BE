@@ -4,15 +4,12 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 
 /* eslint-disable */
-// import { MongooseModule } from '@nestjs/mongoose';
 import { FacultiesModule } from './faculties/faculties.module';
 // import { UsersModule } from './users/users.module';
-import { AdmissionGroupsModule } from './admissionGroups/admissionGroups.module';
 // import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
 import { ProgramsModule } from './programs/programs.module';
-// import { TuitionsModule } from './tuitions/tuitions.module';
 import { ResQuestionsModule } from './resQuestions/resQuestions.module';
 import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 
@@ -41,12 +38,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     NewsAdmissionModule,
     ResQuestionsModule,
     // UsersModule,
-    AdmissionGroupsModule,
     // AuthModule,
     MethodsModule,
     MajorsModule,
     ProgramsModule,
-    // TuitionsModule
   ],
 
   controllers: [AppController],
