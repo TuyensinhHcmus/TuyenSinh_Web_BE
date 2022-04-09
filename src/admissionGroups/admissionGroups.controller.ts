@@ -3,9 +3,9 @@ import {
   Get,
   Param,
 } from '@nestjs/common';
-
+import { AdmissionsGroup } from './admissionGroup.entity';
 import { AdmissionGroupsService } from './admissionGroups.service';
-import { AdmissionGroup } from './admissionGroup.model';
+
 
 @Controller('admission-groups')
 export class AdmissionGroupsController {
@@ -14,15 +14,14 @@ export class AdmissionGroupsController {
   ) {}
 
   @Get()
-  async getAllAdmissionGroups(): Promise<AdmissionGroup[]> {
-    const admissionGroups =
-      await this.admissionGroupsService.getAdmissionGroups();
+  async getAllAdmissionGroups(): Promise<AdmissionsGroup[]> {
+    const admissionGroups = await this.admissionGroupsService.getAdmissionGroups();
     return admissionGroups;
   }
 
   // [GET] /admission-groups/:idGroup
   @Get(':idGroup')
-  async getAdmissionGroup(@Param('idGroup') admissionGroupId: string): Promise<AdmissionGroup> {
+  async getAdmissionGroup(@Param('idGroup') admissionGroupId: string): Promise<AdmissionsGroup> {
     const admissionGroup =
       await this.admissionGroupsService.getSingleAdmissionGroup(
         admissionGroupId

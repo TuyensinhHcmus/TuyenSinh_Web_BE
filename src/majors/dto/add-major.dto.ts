@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty, IsString } from 'class-validator'
 
 export class AddMajorDto {
 
@@ -21,8 +21,8 @@ export class AddMajorDto {
     target: string;
 
     @IsNotEmpty()
-    admissionGroup: string;
-
-    @IsNotEmpty()
     program: string;
+
+    @IsString()
+    majorVideo: string;
 }

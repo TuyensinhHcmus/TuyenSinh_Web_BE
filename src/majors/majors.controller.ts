@@ -10,9 +10,8 @@ import {
 
 import { AddMajorDto } from './dto/add-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
-
 import { MajorsService } from './majors.service';
-import { Major } from './major.model';
+import { major } from './major.entity';
 
 @Controller('majors')
 export class MajorsController {
@@ -20,14 +19,14 @@ export class MajorsController {
 
   // [GET] /majors
   @Get()
-  async getAllMajors(): Promise<Major[]> {
+  async getAllMajors(): Promise<major[]> {
     const majors = await this.majorsService.getMajors();
     return majors;
   }
 
   // [POST] /majors
   @Post()
-  async addMajor(@Body() addMajorDto: AddMajorDto): Promise<Major> {
+  async addMajor(@Body() addMajorDto: AddMajorDto): Promise<major> {
     return await this.majorsService.insertMajor(addMajorDto);
   }
 
@@ -39,17 +38,17 @@ export class MajorsController {
 
   // [GET] /majors/:id
   @Get(':id')
-  async getMajor(@Param('id') majorId: string): Promise<Major> {
+  async getMajor(@Param('id') majorId: string): Promise<major> {
     const major = await this.majorsService.getSingleMajor(majorId);
     return major;
   }
 
-  // [PATCH] /majors/:id
-  @Patch(':id')
-  async updateMajor(
-    @Param('id') idMajor: string,
-    @Body() updateMajorDto: UpdateMajorDto,
-  ): Promise<Major> {
-    return await this.majorsService.updateMajor(idMajor, updateMajorDto);
-  }
+  // // [PATCH] /majors/:id
+  // @Patch(':id')
+  // async updateMajor(
+  //   @Param('id') idMajor: string,
+  //   @Body() updateMajorDto: UpdateMajorDto,
+  // ): Promise<major> {
+  //   return await this.majorsService.updateMajor(idMajor, updateMajorDto);
+  // }
 }

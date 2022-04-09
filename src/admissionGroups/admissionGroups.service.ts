@@ -1,34 +1,37 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AdmissionsGroup } from './admissionGroup.entity';
 
-import { AdmissionGroup } from './admissionGroup.model';
+
 
 @Injectable()
 export class AdmissionGroupsService {
   constructor(
-    @InjectModel('AdmissionGroup') private readonly admissionGroupModel: Model<AdmissionGroup>,
+    @InjectRepository(AdmissionsGroup)
+    private readonly admissionGroupRepo: Repository<AdmissionsGroup>,
+
   ) {}
 
-  async getAdmissionGroups(): Promise<AdmissionGroup[]> {
-    const admissionGroups = await this.admissionGroupModel.find().exec();
+  async getAdmissionGroups(): Promise<AdmissionsGroup[]> {
+    const admissionGroups = await this.admissionGroupRepo.find({});
       
     return admissionGroups;
   }
 
-  async getSingleAdmissionGroup(admissionGroupId: string ): Promise<AdmissionGroup> {
-    let addmissionGroup;
+  async getSingleAdmissionGroup(admissionGroupId: string ): Promise<AdmissionsGroup> {
+    let admissionGroup;
   
     try {
-      addmissionGroup = await this.admissionGroupModel.findOne({ idGroup: admissionGroupId }).exec();     
+      admissionGroup = await this.admissionGroupRepo.findOne({admissionsGroupId:admissionGroupId});     
     } catch(err) {
-      throw new NotFoundException('Could not find addmission group');
+      throw new NotFoundException('Could not find admission group');
     }
 
-    if (!addmissionGroup) {
-      throw new NotFoundException('Could not find addmission group');
+    if (!admissionGroup) {
+      throw new NotFoundException('Could not find admission group');
     }
 
-    return addmissionGroup;
+    return admissionGroup;
   }
 }

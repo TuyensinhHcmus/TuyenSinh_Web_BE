@@ -1,99 +1,102 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Model } from 'mongoose';
+import { Repository } from 'typeorm';
 import { AddMajorDto } from './dto/add-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
 
-import { Major } from './major.model';
+import { major } from './major.entity';
 
 @Injectable()
 export class MajorsService {
   constructor(
-    @InjectModel('Major') private readonly majorModel: Model<Major>,
-  ) {}
+    @InjectRepository(major)
+    private readonly majorRepo: Repository<major>,
+  ) { }
 
-  async insertMajor(addMajorDto: AddMajorDto): Promise<Major> {
-    const { 
+  async insertMajor(addMajorDto: AddMajorDto): Promise<major> {
+    const {
       majorId,
-      facultyId, 
-      name, 
-      introduction, 
-      imageName, 
-      target, 
-      admissionGroup, 
-      program 
+      facultyId,
+      name,
+      introduction,
+      imageName,
+      target,
+      program,
+      majorVideo
     } = addMajorDto;
 
-    const major = new this.majorModel({
+    const major = await this.majorRepo.create({
       majorId: majorId,
-      majorFacultyId: facultyId,
+      majorFaculty: parseInt(facultyId),
       majorName: name,
       majorIntroduction: introduction,
       majorImageName: imageName,
-      majorTarget: target,
-      majorAdmissionGroup: admissionGroup,
-      majorProgram: program,
+      majorTarget: parseInt(target),
+      majorTypeProgram: program,
+      majorVideo: majorVideo
     });
 
-    const result = await major.save();
+    const result = await this.majorRepo.save(major);
+
     return result;
   }
 
-  async getMajors(): Promise<Major[]> {
-    const majors = await this.majorModel.find({});
+  async getMajors(): Promise<major[]> {
+    const majors = await this.majorRepo.find({});
 
     return majors;
   }
 
   async deleteMajor(majorId: string): Promise<void> {
     try {
-      await this.majorModel.deleteOne({ _id: majorId }).exec();
+      await this.majorRepo.delete({ majorId: majorId });
     } catch (err) {
       throw new NotFoundException('Could not delete major.', err);
     }
   }
 
-  async getSingleMajor(majorId: string): Promise<Major> {
+  async getSingleMajor(majorId: string): Promise<major> {
     const major = await this.findMajor(majorId);
     return major;
   }
 
-  async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<Major> {
+  // async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {
 
-    const { 
-      majorId,
-      facultyId, 
-      name, 
-      introduction, 
-      imageName, 
-      target, 
-      admissionGroup, 
-      program 
-    } = updateMajorDto;
+  //   const {
+  //     majorId,
+  //     facultyId,
+  //     name,
+  //     introduction,
+  //     imageName,
+  //     target,
+  //     program,
+  //     majorVideo
+  //   } = updateMajorDto;
 
-    const major = await this.findMajor(id);
+  //   const major = await this.findMajor(id);
 
-    Object.assign(major, {
-      majorId: majorId,
-      majorFacultyId: facultyId,
-      majorName: name,
-      majorIntroduction: introduction,
-      majorImageName: imageName,
-      majorTarget: target,
-      majorAdmissionGroup: admissionGroup,
-      majorProgram: program,
-    })
+  //   Object.assign(major, {
+  //     majorId: majorId,
+  //     majorFacultyId: facultyId,
+  //     majorName: name,
+  //     majorIntroduction: introduction,
+  //     majorImageName: imageName,
+  //     majorTarget: target,
+  //     majorProgram: program,
+  //   })
 
-    major.save();
-    
-    return major;
-  }
+  //   //major.save();
 
-  private async findMajor(id: string): Promise<Major> {
+  //   return major;
+  // }
+
+  private async findMajor(id: string): Promise<major> {
     let major;
 
     try {
-      major = await this.majorModel.findById(id).exec();
+      major = await this.majorRepo.findOne({majorId: id});
     } catch (error) {
       throw new NotFoundException('Could not find major.');
     }

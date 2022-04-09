@@ -12,7 +12,7 @@ import { AddMethodDto } from './dto/add-method.dto';
 import { UpdateMethodDto } from './dto/update-method.dto';
 
 import { MethodsService } from './methods.service';
-import { Method } from './method.model';
+import { method } from './method.entity';
 
 @Controller('methods')
 export class MethodsController {
@@ -20,14 +20,14 @@ export class MethodsController {
 
   // [GET] /methods
   @Get()
-  async getAllMethods(): Promise<Method[]> {
+  async getAllMethods(): Promise<method[]> {
     const methods = await this.methodsService.getMethods();
     return methods;
   }
 
   // [POST] /methods
   @Post()
-  async addMethod(@Body() addMethodDto: AddMethodDto): Promise<Method> {
+  async addMethod(@Body() addMethodDto: AddMethodDto): Promise<method> {
     return await this.methodsService.insertMethod(addMethodDto);
   }
 
@@ -39,7 +39,7 @@ export class MethodsController {
 
   // [GET] /methods/:id
   @Get(':id')
-  async getMethod(@Param('id') methodId: string): Promise<Method> {
+  async getMethod(@Param('id') methodId: string): Promise<method> {
     const method = await this.methodsService.getSingleMethod(methodId);
     return method;
   }
@@ -49,7 +49,7 @@ export class MethodsController {
   async updateMethod(
     @Param('id') idMethod: string,
     @Body() updateMethodDto: UpdateMethodDto,
-  ): Promise<Method> {
+  ): Promise<method> {
     return await this.methodsService.updateMethod(idMethod, updateMethodDto);
   }
 }

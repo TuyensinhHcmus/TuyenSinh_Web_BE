@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MethodsService } from './methods.service';
-import { MethodSchema } from './method.model';
+import { method } from './method.entity';
 import { MethodsController } from './methods.controller'
+
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'Method', schema: MethodSchema }]),
+    TypeOrmModule.forFeature([method]),
   ],
   controllers: [MethodsController],
   providers: [MethodsService],
