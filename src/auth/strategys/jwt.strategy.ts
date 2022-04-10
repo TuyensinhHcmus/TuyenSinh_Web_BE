@@ -21,7 +21,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
         const { userEmail } = payload;
         const user = await this.userService.getSingleUser(userEmail);
-        if (!user || user.refreshToken === "") {
+        if (!user || user.userRefreshToken === "") {
             throw new UnauthorizedException();
         }
         return { ...user, ...payload };
