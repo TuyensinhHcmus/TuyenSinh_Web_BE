@@ -23,12 +23,12 @@ export class UsersController {
 
     const hashedPassword = await this.usersService.hashPassword(userPassword);
 
-    const _id = await this.usersService.insertUser(
+    const newUser = await this.usersService.insertUser(
       userName,
       userEmail,
       hashedPassword
     );
-    return { _id: _id };
+    return {...newUser, id: newUser.userId};
   }
 
   @Get()

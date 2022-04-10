@@ -15,7 +15,7 @@ export class UsersService {
   private salt = 10;
   constructor(
     @InjectRepository(user)
-    private readonly usesrModel: Repository<user>,
+    private readonly userModel: Repository<user>,
   ) { }
 
   // Bcrypt
@@ -35,21 +35,21 @@ export class UsersService {
   // Add user
   async insertUser(userName: string, userEmail: string, userPasswordHash: string) {
 
-    const newUser = await this.usesrModel.create({
+    const newUser = await this.userModel.create({
       userId: uuid(),
       userName: userName,
       userEmail: userEmail,
       userPassword: userPasswordHash,
     });
 
-    const result = await this.usesrModel.save(newUser);
+    const result = await this.userModel.save(newUser);
 
     return result;
   }
 
   // Get user
   async getUsers() {
-    const users = await this.usesrModel.find({});
+    const users = await this.userModel.find({});
     return users;
   }
 
@@ -65,7 +65,7 @@ export class UsersService {
 
     user.userPassword = userPasswordHash
 
-    await this.usesrModel.update({ userId: userId }, user);
+    await this.userModel.update({ userId: userId }, user);
 
     return user;
   }
@@ -73,7 +73,7 @@ export class UsersService {
   // Get user by amount
   async getUsersByAmount(amount: number, sortCondition: number) {
     const condition = sortCondition === -1 ? sortCondition : 1;
-    const users = await this.usesrModel.find({
+    const users = await this.userModel.find({
       take: amount,
       order: {
         userName: condition
@@ -87,7 +87,7 @@ export class UsersService {
 
     user.userRefreshToken = rtHash
 
-    await this.usesrModel.update({ userId: userId }, user);
+    await this.userModel.update({ userId: userId }, user);
 
     return user;
   }
@@ -97,7 +97,7 @@ export class UsersService {
     let user;
 
     try {
-      user = await this.usesrModel.findOne({ userEmail: userEmail });
+      user = await this.userModel.findOne({ userEmail: userEmail });
     } catch (error) {
       throw new NotFoundException('Could not find user.');
     }
@@ -113,7 +113,7 @@ export class UsersService {
     let user;
 
     try {
-      user = await this.usesrModel.findOne({ userId: id });
+      user = await this.userModel.findOne({ userId: id });
     } catch (error) {
       throw new NotFoundException('Could not find user.');
     }
