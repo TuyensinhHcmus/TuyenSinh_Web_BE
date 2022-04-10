@@ -71,8 +71,8 @@ export class AuthService {
                 createdUser.userPassword = undefined;
 
 
-            const tokens = await this.getTokens(createdUser.id, createdUser.userEmail);
-            await this.updateRefreshToken(createdUser.id, tokens.refreshToken)
+            const tokens = await this.getTokens(createdUser.userId, createdUser.userEmail);
+            await this.updateRefreshToken(createdUser.userId, tokens.refreshToken)
             // console.log(tokens, createdUser);
             return tokens;
         } catch (error) {
@@ -111,8 +111,8 @@ export class AuthService {
         const comparePassword = user !== null ? await this.usersService.comparePassword(pass, user.userPassword) : false;
         console.log(comparePassword);
         if (user && comparePassword) {
-            const tokens = await this.getTokens(user.id, user.userEmail);
-            await this.updateRefreshToken(user.id, tokens.refreshToken)
+            const tokens = await this.getTokens(user.userId, user.userEmail);
+            await this.updateRefreshToken(user.userId, tokens.refreshToken)
             return {'user':user,'token': tokens};
         }
         return null;
@@ -127,7 +127,7 @@ export class AuthService {
             const hashPassword = await this.usersService.hashPassword(forgetPasswordDto.userPassword);
 
             // update password of user
-            await this.usersService.updatePasswordUser(user._id.toString(), hashPassword);
+            await this.usersService.updatePasswordUser(user.userId.toString(), hashPassword);
         } catch (error) {
             console.error(error);
         }

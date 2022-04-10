@@ -14,7 +14,7 @@ export const UserSchema = new mongoose.Schema({
 
 export interface User {
     userId: string,
-    refreshToken: string,
+    userRefreshToken: string,
     userName: string,
     userPhone: string,
     userEmail: string,
