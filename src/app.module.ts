@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 /* eslint-disable */
 import { FacultiesModule } from './faculties/faculties.module';
 import { UsersModule } from './users/users.module';
-// import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
 import { ProgramsModule } from './programs/programs.module';
@@ -38,7 +38,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     NewsAdmissionModule,
     ResQuestionsModule,
     UsersModule,
-    // AuthModule,
+    AuthModule,
     MethodsModule,
     MajorsModule,
     ProgramsModule,

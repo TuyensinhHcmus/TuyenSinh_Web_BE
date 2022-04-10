@@ -46,7 +46,7 @@ export class UsersController {
   //   await this.usersService.updatePasswordUser(userId, userPasswordHash);
 
   //   return userPasswordHash;
-  //}
+  // }
 
   @Get('getUserByQuantity/:amount')
   async getNumberUser(

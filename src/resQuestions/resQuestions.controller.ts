@@ -8,10 +8,10 @@ import { ResQuestionsService } from './resQuestions.service';
 export class ResQuestionsController {
     constructor(private readonly resQuestionService: ResQuestionsService) {}
 
-    // @Post()
-    // async addResQuestion(@Body() addResQuestionDto: AddResQuestionDto): Promise<qna> {
-    //   return await this.resQuestionService.insertResQuestion(addResQuestionDto);
-    // }
+    @Post('/add')
+    async addResQuestion(@Body() addResQuestionDto: AddResQuestionDto): Promise<qna> {
+      return await this.resQuestionService.insertResQuestion(addResQuestionDto);
+    }
 
     @Get('getlist')
     async getListResQuestion(): Promise<qna[]> {
