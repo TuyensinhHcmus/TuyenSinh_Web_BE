@@ -14,6 +14,7 @@ import { ResQuestionsModule } from './resQuestions/resQuestions.module';
 import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
 
 
 
@@ -25,11 +26,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'us-cdbr-east-05.cleardb.net',
-      port: 3306,
-      username: 'b2e06d331c6a45',
-      password: 'f0f9c5af',
-      database: 'heroku_9c18382388ad366',
+      host: process.env.MYSQL_HOST,
+      port: parseInt(process.env.MYSQL_PORT),
+      username:  process.env.MYSQL_USER,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DB,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
       synchronize: true,
@@ -42,6 +43,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     MethodsModule,
     MajorsModule,
     ProgramsModule,
+    SchoolInfoModule
   ],
 
   controllers: [AppController],

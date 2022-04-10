@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+
+
 
 @Injectable()
 export class NewsAdmissionService {
@@ -29,7 +30,6 @@ export class NewsAdmissionService {
   async getListNews(): Promise<news[]> {
     // const listNews = await this.newsModel.find({});
     const listNews = await this.newsRepo.find({})
-
     //sort({ news_date: -1 }).limit(10).select('slug title news_date');
 
     return listNews;

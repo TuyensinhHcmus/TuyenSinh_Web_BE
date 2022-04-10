@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { news } from './newsAdmission.entity';
 import { NewsAdmissionService } from './newsAdmission.service';

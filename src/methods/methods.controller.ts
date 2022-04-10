@@ -10,7 +10,6 @@ import {
 
 import { AddMethodDto } from './dto/add-method.dto';
 import { UpdateMethodDto } from './dto/update-method.dto';
-
 import { MethodsService } from './methods.service';
 import { method } from './method.entity';
 
