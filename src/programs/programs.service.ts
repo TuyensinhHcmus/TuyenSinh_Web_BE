@@ -14,18 +14,19 @@ export class ProgramsService {
     private readonly programRepo: Repository<program>,
   ) {}
 
-  // async insertProgram(addProgramDto: AddProgramDto): Promise<Program> {
-  //   const { name, programId, url } = addProgramDto;
+  async insertProgram(addProgramDto: AddProgramDto): Promise<program> {
+    const { majorId, name, content, documentLink } = addProgramDto;
 
-  //   const program = new this.programModel({
-  //     programName: name,
-  //     programId: programId,
-  //     programUrl: url
-  //   });
+    const program = this.programRepo.create({
+      programMajorId: majorId,
+      programName: name,
+      programContent: content,
+      programDocumentLink: documentLink
+    });
 
-  //   const result = await program.save();
-  //   return result;
-  // }
+    const result = await this.programRepo.save(program);
+    return result;
+  }
 
   async getPrograms(): Promise<program[]> {
     const programs = await this.programRepo.find({});

@@ -25,11 +25,11 @@ export class ProgramsController {
     return programs;
   }
 
-  // // [POST] /programs
-  // @Post()
-  // async addProgram(@Body() addProgramDto: AddProgramDto): Promise<program> {
-  //   return await this.programsService.insertProgram(addProgramDto);
-  // }
+  // [POST] /programs
+  @Post()
+  async addProgram(@Body() addProgramDto: AddProgramDto): Promise<program> {
+    return await this.programsService.insertProgram(addProgramDto);
+  }
 
   // // [DELETE] /programs/:id
   // @Delete(':id')
