@@ -16,4 +16,8 @@ export class AddResQuestionDto {
     @IsNotEmpty()
     trans: TransResQuestion[];
 
+    qnaAnswerImage: string | null;
+
+    qnaQuestionImage: string | null;
+
 }

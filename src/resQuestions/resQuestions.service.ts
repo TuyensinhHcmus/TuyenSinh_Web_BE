@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 
 
 import { qna, qna_trans } from './resQuestions.entity';
-import { AddResQuestionDto } from './dto/addResQuestions.dto';
+import { AddResQuestionDto, TransResQuestion } from './dto/addResQuestions.dto';
 
 
 @Injectable()
@@ -18,48 +18,79 @@ export class ResQuestionsService {
   ) { }
 
   async insertResQuestion(addResQuestionDto: AddResQuestionDto): Promise<qna> {
-    const { trans } = addResQuestionDto;
+    const { trans, qnaAnswerImage, qnaQuestionImage } = addResQuestionDto;
 
     const qnaDateCreate = new Date();
-    // let qnaCreator = '17eee754-b253-4094-90b2-c6248714d3f2'
-    let qnaCreator = 0
+    let qnaCreator = '17eee754-b253-4094-90b2-c6248714d3f2'
 
     let res;
 
     try {
-      const newQna = this.qnaRepo.create({
+      let qnaAddition = {
+        qna_trans: trans,  
         qnaDateCreate: qnaDateCreate,
-        qnaCreator: qnaCreator
-      });
+        qnaCreator: qnaCreator,
+        qnaAnswerImage: qnaAnswerImage,
+        qnaQuestionImage: qnaQuestionImage
+      }
 
-      res = await this.qnaRepo.save(newQna)
+      res = await this.qnaRepo.save(qnaAddition)
     } catch (err) {
-      throw new Error("Save failure")
-    }
-
-    try {
-      let listQnaTrans = [...trans.map( i=> ({
-        qnaQuestion: i.qnaQuestion,
-        qnaAnswer: i.qnaAnswer,
-        qnaId: res.qnaId
-      }))]
-  
-      let listQnaTransObj = this.qnaTransRepo.create(listQnaTrans)
-
-      let result = await this.qnaTransRepo.save(listQnaTransObj);
-
-    } catch (err) {
-      // await this.qnaTransRepo.delete({qnaId: res.qnaId})
       throw new Error("Save failure")
     }
 
     return res;
   }
+  // async insertResQuestion(addResQuestionDto: AddResQuestionDto): Promise<qna> {
+  //   const { trans, qnaAnswerImage, qnaQuestionImage } = addResQuestionDto;
 
-  async getListResQuestion(): Promise<qna[]> {
-    // const listNews = await this.newsModel.find({});
-    const listResQuestion = await this.qnaRepo.find({});
+  //   const qnaDateCreate = new Date();
+  //   let qnaCreator = '17eee754-b253-4094-90b2-c6248714d3f2'
 
-    return listResQuestion;
+  //   let res;
+
+  //   try {
+  //     const newQna = this.qnaRepo.create({
+  //       qnaDateCreate: qnaDateCreate,
+  //       qnaCreator: qnaCreator,
+  //       qnaAnswerImage: qnaAnswerImage,
+  //       qnaQuestionImage: qnaAnswerImage
+  //     });
+
+  //     res = await this.qnaRepo.save(newQna)
+  //   } catch (err) {
+  //     throw new Error("Save failure")
+  //   }
+
+  //   try {
+  //     let listQnaTrans = [...trans.map( i=> ({
+  //       qnaQuestion: i.qnaQuestion,
+  //       qnaAnswer: i.qnaAnswer,
+  //       qnaId: res.qnaId
+  //     }))]
+  
+  //     let listQnaTransObj = this.qnaTransRepo.create(listQnaTrans)
+
+  //     let result = await this.qnaTransRepo.save(listQnaTransObj);
+
+  //   } catch (err) {
+  //     await this.qnaTransRepo.delete({qnaId: res.qnaId})
+  //     throw new Error("Save failure")
+  //   }
+
+  //   return res;
+  // }
+
+  // async getListResQuestion(localeCode: string): Promise<qna[]> {
+  //   // const listNews = await this.newsModel.find({});
+  //   const listResQuestion = await this.qnaRepo.find({});
+
+  //   return listResQuestion;
+  // }
+  async getListResQuestion(localeCode: string): Promise<qna[]> {
+    const res = await this.qnaRepo.find({
+      relations:["qna_trans"]
+    })
+    return res
   }
 }
