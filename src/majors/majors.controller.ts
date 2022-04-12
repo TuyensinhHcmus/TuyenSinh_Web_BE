@@ -43,12 +43,12 @@ export class MajorsController {
     return major;
   }
 
-  // // [PATCH] /majors/:id
-  // @Patch(':id')
-  // async updateMajor(
-  //   @Param('id') idMajor: string,
-  //   @Body() updateMajorDto: UpdateMajorDto,
-  // ): Promise<major> {
-  //   return await this.majorsService.updateMajor(idMajor, updateMajorDto);
-  // }
+  // [PATCH] /majors/:id
+  @Patch(':id')
+  async updateMajor(
+    @Param('id') idMajor: string,
+    @Body() updateMajorDto: UpdateMajorDto,
+  ): Promise<major> {
+    return await this.majorsService.updateMajor(idMajor, updateMajorDto);
+  }
 }

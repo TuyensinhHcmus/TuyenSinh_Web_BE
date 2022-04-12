@@ -8,10 +8,10 @@ import { NewsAdmissionService } from './newsAdmission.service';
 export class NewsAdmissionController {
   constructor(private readonly newsAdmissionService: NewsAdmissionService) { }
 
-  // @Post()
-  // async addNews(@Body() addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-  //   return await this.newsAdmissionService.insertNews(addNewsAdmissionDto);
-  // }
+  @Post()
+  async addNews(@Body() addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    return await this.newsAdmissionService.insertNews(addNewsAdmissionDto);
+  }
 
   @Get('getlist')
   async getAllNewsAdmission(): Promise<news[]> {

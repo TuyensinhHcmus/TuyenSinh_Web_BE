@@ -21,8 +21,10 @@ export class MajorsService {
       introduction,
       imageName,
       target,
-      program,
-      majorVideo
+      typeProgram,
+      majorVideo,
+      majorTuition,
+      majorAdmissionsInfo
     } = addMajorDto;
 
     const major = await this.majorRepo.create({
@@ -32,8 +34,10 @@ export class MajorsService {
       majorIntroduction: introduction,
       majorImageName: imageName,
       majorTarget: parseInt(target),
-      majorTypeProgram: program,
-      majorVideo: majorVideo
+      majorTypeProgram: typeProgram,
+      majorVideo: majorVideo,
+      majorTuition,
+      majorAdmissionsInfo
     });
 
     const result = await this.majorRepo.save(major);
@@ -60,35 +64,36 @@ export class MajorsService {
     return major;
   }
 
-  // async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {
+  async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {
 
-  //   const {
-  //     majorId,
-  //     facultyId,
-  //     name,
-  //     introduction,
-  //     imageName,
-  //     target,
-  //     program,
-  //     majorVideo
-  //   } = updateMajorDto;
+    const {
+      majorId,
+      facultyId,
+      name,
+      introduction,
+      imageName,
+      target,
+      typeProgram,
+      majorVideo,
+      majorTuition,
+      majorAdmissionsInfo
+    } = updateMajorDto;
 
-  //   const major = await this.findMajor(id);
+    await this.majorRepo.update({ majorId: id }, {
+      majorId: majorId,
+      majorFaculty: parseInt(facultyId),
+      majorName: name,
+      majorIntroduction: introduction,
+      majorImageName: imageName,
+      majorTarget: parseInt(target),
+      majorTypeProgram: typeProgram,
+      majorVideo: majorVideo,
+      majorTuition: majorTuition,
+      majorAdmissionsInfo: majorAdmissionsInfo
+    });
 
-  //   Object.assign(major, {
-  //     majorId: majorId,
-  //     majorFacultyId: facultyId,
-  //     majorName: name,
-  //     majorIntroduction: introduction,
-  //     majorImageName: imageName,
-  //     majorTarget: target,
-  //     majorProgram: program,
-  //   })
-
-  //   //major.save();
-
-  //   return major;
-  // }
+    return await this.findMajor(majorId);
+  }
 
   private async findMajor(id: string): Promise<major> {
     let major;

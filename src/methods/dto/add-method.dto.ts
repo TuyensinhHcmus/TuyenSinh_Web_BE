@@ -1,6 +1,10 @@
 import { IsNotEmpty } from 'class-validator'
 
 export class AddMethodDto {
+
+    @IsNotEmpty()
+    methodId: string;
+
     @IsNotEmpty()
     name: string;
 
@@ -9,4 +13,7 @@ export class AddMethodDto {
 
     @IsNotEmpty()
     image: string;
+
+    @IsNotEmpty()
+    parentId: string;
 }

@@ -31,8 +31,7 @@ export class faculty {
 
     @Column(
         {
-            type: 'varchar',
-            length: 255
+            type: 'text',
         }
     )
     facultyImageHighlight: string

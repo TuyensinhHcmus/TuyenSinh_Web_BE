@@ -14,18 +14,21 @@ export class NewsAdmissionService {
     private readonly newsRepo: Repository<news>,
   ) { }
 
-  // async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-  //   const { content, news_date, title } = addNewsAdmissionDto;
+  async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    const { title, content, dateCreate, creator, state, slug } = addNewsAdmissionDto;
 
-  //   const news = new this.newsRepo.create({
-  //     newsContent: content,
-  //     newsDateCreate: news_date,
-  //     newsTitle: title,
-  //   });
+    const news = this.newsRepo.create({
+      newsTitle: title,
+      newsContent: content,
+      newsDateCreate: dateCreate,
+      newsCreator: creator,
+      newsState: state,
+      newsSlug: slug
+    });
 
-  //   const result = await news.save();
-  //   return result;
-  // }
+    const result = await this.newsRepo.save(news);
+    return result;
+  }
 
   async getListNews(): Promise<news[]> {
     // const listNews = await this.newsModel.find({});

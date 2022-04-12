@@ -59,4 +59,19 @@ export class major {
     }
   )
   majorVideo: string
+
+  @Column(
+    {
+      type: 'varchar',
+      length: 30
+    }
+  )
+  majorTuition: string
+
+  @Column(
+    {
+      type: 'text',
+    }
+  )
+  majorAdmissionsInfo: string
 }
