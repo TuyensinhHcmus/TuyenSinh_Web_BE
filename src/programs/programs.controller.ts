@@ -31,11 +31,11 @@ export class ProgramsController {
     return await this.programsService.insertProgram(addProgramDto);
   }
 
-  // // [DELETE] /programs/:id
-  // @Delete(':id')
-  // async removeProgram(@Param('id') id: string): Promise<void> {
-  //   return await this.programsService.deleteProgram(id);
-  // }
+  // [DELETE] /programs/:id
+  @Delete(':id')
+  async removeProgram(@Param('id') id: string): Promise<void> {
+    return await this.programsService.deleteProgram(id);
+  }
 
   // [GET] /programs/:id
   @Get(':id')
@@ -44,12 +44,12 @@ export class ProgramsController {
     return program;
   }
 
-  // // [PATCH] /programs/:id
-  // @Patch(':id')
-  // async updateProgram(
-  //   @Param('id') id: string,
-  //   @Body() updateProgramDto: UpdateProgramDto,
-  // ): Promise<program> {
-  //   return await this.programsService.updateProgram(id, updateProgramDto);
-  // }
+  // [PATCH] /programs/:id
+  @Patch(':id')
+  async updateProgram(
+    @Param('id') id: string,
+    @Body() updateProgramDto: UpdateProgramDto,
+  ): Promise<program> {
+    return await this.programsService.updateProgram(id, updateProgramDto);
+  }
 }

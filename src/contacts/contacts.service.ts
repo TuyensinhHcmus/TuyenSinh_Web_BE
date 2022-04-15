@@ -63,7 +63,7 @@ export class ContactsService {
     
     await this.contactsRepo.update({contactId: parseInt(id)}, contact);
 
-    return await this.findContact(id);
+    return contact;
   }
 
   private async findContact(id: string): Promise<contact> {

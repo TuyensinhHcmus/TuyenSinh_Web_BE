@@ -61,7 +61,7 @@ export class MethodsService {
 
     await this.methodRepo.update({methodId: id}, method);
     
-    return await this.findMethod(id);
+    return method;
   }
 
   private async findMethod(id: string): Promise<method> {

@@ -34,33 +34,33 @@ export class ProgramsService {
     return programs;
   }
 
-  // async deleteProgram(id: string): Promise<void> {
-  //   try {
-  //     await this.programModel.deleteOne({ _id: id }).exec();
-  //   } catch (err) {
-  //     throw new NotFoundException('Could not delete program.', err);
-  //   }
-  // }
+  async deleteProgram(id: string): Promise<void> {
+    try {
+      await this.programRepo.delete({ programId: parseInt(id) });
+    } catch (err) {
+      throw new NotFoundException('Could not delete program.', err);
+    }
+  }
 
   async getSingleProgram(id: string): Promise<program> {
     const program = await this.findProgram(id);
     return program;
   }
 
-  // async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<Program> {
+  async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<program> {
 
-  //   const { name, programId, url } = updateProgramDto;
+    const { majorId, name, content, documentLink } = updateProgramDto;
 
-  //   const program = await this.findProgram(id);
+    await this.programRepo.update({ programId: parseInt(id) }, {
+      programId: parseInt(id),
+      programMajorId: majorId,
+      programName: name,
+      programContent: content,
+      programDocumentLink: documentLink
+    })
 
-  //   program.programName = name;
-  //   program.programId = programId;
-  //   program.programUrl = url;
-
-  //   program.save();
-    
-  //   return program;
-  // }
+    return await this.findProgram(id);
+  }
 
   private async findProgram(id: string): Promise<program> {
     let program;

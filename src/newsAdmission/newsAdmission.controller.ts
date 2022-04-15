@@ -23,14 +23,14 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.getNewsBySlug(_slug);
   }
 
-  // @Get('getNewsByQuantity')
-  // async getNumberNews(
-  //   @Query('sortBy') sortBy: string,
-  //   @Query('Page') page: number,
-  //   @Query('perPage') perPage: number,
-  // ) {
-  //   const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
-  //   return news;
-  // }
+  @Get('getNewsByQuantity')
+  async getNumberNews(
+    @Query('sortBy') sortBy: string,
+    @Query('Page') page: number,
+    @Query('perPage') perPage: number,
+  ) {
+    const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
+    return news;
+  }
 
 }

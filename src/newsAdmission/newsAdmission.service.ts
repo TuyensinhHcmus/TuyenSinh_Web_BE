@@ -49,12 +49,15 @@ export class NewsAdmissionService {
     return news;
   }
 
-  // async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
-  //   const condition = sortCondition === "desc" ? sortCondition : "asc";
-  //   const news = await this.newsRepo.find().limit(perPage).sort({
-  //     news_date: condition
-  //   }).skip((Page - 1) * perPage).exec();
+  async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
 
-  //   return news;
-  // }
+    const condition = sortCondition === "DESC" ? sortCondition : "ASC";
+
+    const news = await this.newsRepo
+      .createQueryBuilder('news')
+      .limit(perPage)
+      .orderBy('news.newsDateCreate', condition)
+      .skip((Page - 1) * perPage).getMany();
+    return news;
+  }
 }
