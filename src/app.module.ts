@@ -15,6 +15,7 @@ import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
+import { TimelineModule } from './timeline/timeline.module';
 
 
 
@@ -37,6 +38,7 @@ import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
     }),
     FacultiesModule,
     NewsAdmissionModule,
+    TimelineModule,
     ResQuestionsModule,
     UsersModule,
     AuthModule,
