@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
+import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 
 
@@ -46,12 +47,12 @@ export class NewsAdmissionService {
     return news;
   }
 
-  // async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
-  //   const condition = sortCondition === "desc" ? sortCondition : "asc";
-  //   const news = await this.newsRepo.find().limit(perPage).sort({
-  //     news_date: condition
-  //   }).skip((Page - 1) * perPage).exec();
+  async getNewsByAmount(options: IPaginationOptions, sortCondition): Promise<Pagination<news>> {
+    const queryBuilder = this.newsRepo.createQueryBuilder('c');
 
-  //   return news;
-  // }
+    sortCondition = sortCondition === 'DESC'? sortCondition:'ASC';
+    queryBuilder.orderBy('c.newsDateCreate', sortCondition); 
+
+    return paginate<news>(queryBuilder, options);
+  }
 }

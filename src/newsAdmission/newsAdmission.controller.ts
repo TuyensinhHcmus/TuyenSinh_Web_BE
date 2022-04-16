@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { news } from './newsAdmission.entity';
@@ -23,14 +24,21 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.getNewsBySlug(_slug);
   }
 
-  // @Get('getNewsByQuantity')
-  // async getNumberNews(
-  //   @Query('sortBy') sortBy: string,
-  //   @Query('Page') page: number,
-  //   @Query('perPage') perPage: number,
-  // ) {
-  //   const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
-  //   return news;
-  // }
+  @Get('getNewsByQuantity')
+  async getNumberNews(
+    @Query('sortBy') sortBy: string,
+    @Query('Page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number = 10,
+  ): Promise<Pagination<news>> {
+    const news = await this.newsAdmissionService.getNewsByAmount(
+      {
+        limit: perPage,
+        page: page
+      },
+      sortBy.toUpperCase()
+    );
+
+    return news;
+  }
 
 }
