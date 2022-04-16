@@ -22,6 +22,15 @@ export class program {
     )
     programMajorId: string
 
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 30,
+        }
+    )
+    programName: string
+
     @Column({
         type: 'text',
     })

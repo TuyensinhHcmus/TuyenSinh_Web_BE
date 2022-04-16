@@ -6,7 +6,7 @@
 // newsState varchar(10) 
 // newsSlug varchar(255)
 
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 
 @Entity("news")
 export class news {
@@ -34,16 +34,16 @@ export class news {
             type: 'timestamp',
         }
     )
-    newsDateCreate: Date
+    newsDateCreate: Timestamp
 
     @Column({
-        type: 'int',
-        unsigned: true,
+        type: 'char',
+        length: 36
     })
-    newsCreator: number
+    newsCreator: string
 
     @Column({
-        type: 'varchar',
+        type: 'char',
         length: 10,
     })
     newsState: string
