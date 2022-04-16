@@ -15,6 +15,7 @@ import { ResQuestionsModule } from './resQuestions/resQuestions.module';
 import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
 import { ContactsModule } from './contacts/contacts.module';
+import { TimelineModule } from './timeline/timeline.module';
 
 
 
@@ -37,6 +38,7 @@ import { ContactsModule } from './contacts/contacts.module';
     }),
     FacultiesModule,
     NewsAdmissionModule,
+    TimelineModule,
     ResQuestionsModule,
     UsersModule,
     AuthModule,

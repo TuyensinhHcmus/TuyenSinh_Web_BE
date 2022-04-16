@@ -4,24 +4,20 @@
 // qnaQuestionImage text 
 // qnaAnswerImage text
 
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("qna")
 export class qna {
-    @PrimaryGeneratedColumn({
-        type: 'int',
-        unsigned: true,
-    })
+    @PrimaryGeneratedColumn()
     qnaId: number
 
     @Column(
         {
-            type: 'int',
-            unsigned: true,
-            nullable: false
+            type: 'char',
+            length: 36
         }
     )
-    qnaCreator: number
+    qnaCreator: string
 
     @Column({
         type: 'timestamp',
@@ -42,6 +38,9 @@ export class qna {
         }
     )
     qnaAnswerImage: string
+
+    @OneToMany(() => qna_trans, (qna_trans) => qna_trans.qna, { cascade: ['insert', 'update'] }) // note: we will create author property in the Photo class below
+    qna_trans: qna_trans[]
 }
 
 @Entity("qna_trans")
@@ -52,14 +51,8 @@ export class qna_trans {
     })
     qnaTransId: number
 
-    @Column(
-        {
-            type: 'int',
-            unsigned: true,
-            nullable: false
-        }
-    )
-    qnaId: number
+    @ManyToOne(() => qna, (qna) => qna.qna_trans)
+    qna: qna
 
     @Column(
         {

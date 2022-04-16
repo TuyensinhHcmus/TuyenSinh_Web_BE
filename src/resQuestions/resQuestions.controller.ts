@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { AddResQuestionDto } from './dto/addResQuestions.dto';
 import { qna } from './resQuestions.entity';
@@ -14,8 +14,8 @@ export class ResQuestionsController {
     }
 
     @Get('getlist')
-    async getListResQuestion(): Promise<qna[]> {
-      return await this.resQuestionService.getListResQuestion();
+    async getListResQuestion(@Param('localeCode') localeCode: string): Promise<qna[]> {
+      return await this.resQuestionService.getListResQuestion(localeCode);
     }
 
 }
