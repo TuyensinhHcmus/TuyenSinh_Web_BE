@@ -3,6 +3,7 @@ import RegisterDto from "src/auth/dto/register.dto";
 import { google } from 'googleapis';
 import * as Mail from 'nodemailer/lib/mailer';
 import { createTransport } from "nodemailer";
+import { access } from "fs";
 //import { MailerModule, MailerService, MailerTransportFactory } from "@nestjs-modules/mailer";
 
 
@@ -21,6 +22,7 @@ export class MailService {
             process.env.CLIENT_SECRET,
             process.env.REDIRECT_URI
         )
+
         this.oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
     }
 
@@ -48,12 +50,9 @@ export class MailService {
             subject: "MÃ XÁC NHẬN EMAIL",
 
             //template: 'confirmation',
-            // context: {
-            //     name: user.userName,
-            //     token: token
-            // },
+            html: "<b>Mã xác nhận của bạn là: </b>" + token
         });
 
-        console.log(res);
+        //console.log(res);
     }
 }

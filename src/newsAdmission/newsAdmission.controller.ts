@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { news } from './newsAdmission.entity';

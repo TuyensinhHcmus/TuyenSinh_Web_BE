@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
+import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 
 
 
