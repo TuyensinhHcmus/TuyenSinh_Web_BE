@@ -40,10 +40,11 @@ export class UsersService {
       userName: userName,
       userEmail: userEmail,
       userPassword: userPasswordHash,
+      userType: userEmail ? 'email': 'phone',
+      userRole: 'user'
     });
 
     const result = await this.userModel.save(newUser);
-
     return result;
   }
 

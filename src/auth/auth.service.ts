@@ -73,10 +73,11 @@ export class AuthService {
 
             const tokens = await this.getTokens(createdUser.userId, createdUser.userEmail);
             await this.updateRefreshToken(createdUser.userId, tokens.refreshToken)
-            // console.log(tokens, createdUser);
+            //console.log(tokens, createdUser);
             return tokens;
         } catch (error) {
-            if (error.code === 11000) {
+            //console.log(error)
+            if (error.code === 'ER_DUP_ENTRY') {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
             }
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
