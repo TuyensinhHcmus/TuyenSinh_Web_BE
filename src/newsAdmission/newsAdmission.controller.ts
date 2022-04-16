@@ -27,7 +27,7 @@ export class NewsAdmissionController {
   @Get('getNewsByQuantity')
   async getNumberNews(
     @Query('sortBy') sortBy: string,
-    @Query('Page') page: number,
+    @Query('page') page: number,
     @Query('perPage') perPage: number,
   ) {
     const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);

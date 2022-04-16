@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -48,13 +49,13 @@ export class UsersController {
   //   return userPasswordHash;
   // }
 
-  @Get('getUserByQuantity/:amount')
+  @Get('getUserByQuantity')
   async getNumberUser(
-    @Param('amount') amount: number,
-    @Body('sortCondition') sortCondition: number,
+    @Query('perPage') perPage: number,
+    @Query('page') page: number,
   )
   {
-    const users = await this.usersService.getUsersByAmount(amount, sortCondition);
+    const users = await this.usersService.getUsersByAmount(perPage, page);
     return users;
   }
 }  
