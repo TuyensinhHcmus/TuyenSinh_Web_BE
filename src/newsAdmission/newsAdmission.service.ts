@@ -15,18 +15,21 @@ export class NewsAdmissionService {
     private readonly newsRepo: Repository<news>,
   ) { }
 
-  // async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-  //   const { content, news_date, title } = addNewsAdmissionDto;
+  async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    const { title, content, dateCreate, creator, state, slug } = addNewsAdmissionDto;
 
-  //   const news = new this.newsRepo.create({
-  //     newsContent: content,
-  //     newsDateCreate: news_date,
-  //     newsTitle: title,
-  //   });
+    const news = this.newsRepo.create({
+      newsTitle: title,
+      newsContent: content,
+      newsDateCreate: dateCreate,
+      newsCreator: creator,
+      newsState: state,
+      newsSlug: slug
+    });
 
-  //   const result = await news.save();
-  //   return result;
-  // }
+    const result = await this.newsRepo.save(news);
+    return result;
+  }
 
   async getListNews(): Promise<news[]> {
     // const listNews = await this.newsModel.find({});
@@ -47,12 +50,15 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async getNewsByAmount(options: IPaginationOptions, sortCondition): Promise<Pagination<news>> {
-    const queryBuilder = this.newsRepo.createQueryBuilder('c');
+  async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
 
-    sortCondition = sortCondition === 'DESC'? sortCondition:'ASC';
-    queryBuilder.orderBy('c.newsDateCreate', sortCondition); 
+    const condition = sortCondition === "DESC" ? sortCondition : "ASC";
 
-    return paginate<news>(queryBuilder, options);
+    const news = await this.newsRepo
+      .createQueryBuilder('news')
+      .limit(perPage)
+      .orderBy('news.newsDateCreate', condition)
+      .skip((Page - 1) * perPage).getMany();
+    return news;
   }
 }

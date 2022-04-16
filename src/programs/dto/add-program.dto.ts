@@ -2,11 +2,14 @@ import { IsNotEmpty } from 'class-validator'
 
 export class AddProgramDto {
     @IsNotEmpty()
+    majorId: string;
+
+    @IsNotEmpty()
     name: string;
 
     @IsNotEmpty()
-    programId: string;
+    content: string;
 
     @IsNotEmpty()
-    url: string;
+    documentLink: string;
 }

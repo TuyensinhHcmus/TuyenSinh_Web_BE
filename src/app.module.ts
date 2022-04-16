@@ -2,19 +2,19 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 /* eslint-disable */
 import { FacultiesModule } from './faculties/faculties.module';
-// import { UsersModule } from './users/users.module';
-// import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
 import { ProgramsModule } from './programs/programs.module';
 import { ResQuestionsModule } from './resQuestions/resQuestions.module';
 import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
-
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
+import { ContactsModule } from './contacts/contacts.module';
 
 
 
@@ -38,12 +38,13 @@ import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
     FacultiesModule,
     NewsAdmissionModule,
     ResQuestionsModule,
-    // UsersModule,
-    // AuthModule,
+    UsersModule,
+    AuthModule,
     MethodsModule,
     MajorsModule,
     ProgramsModule,
-    SchoolInfoModule
+    SchoolInfoModule,
+    ContactsModule
   ],
 
   controllers: [AppController],

@@ -43,3 +43,35 @@ export class qna {
     )
     qnaAnswerImage: string
 }
+
+@Entity("qna_trans")
+export class qna_trans {
+    @PrimaryGeneratedColumn({
+        type: 'int',
+        unsigned: true,
+    })
+    qnaTransId: number
+
+    @Column(
+        {
+            type: 'int',
+            unsigned: true,
+            nullable: false
+        }
+    )
+    qnaId: number
+
+    @Column(
+        {
+            type: 'text',
+        }
+    )
+    qnaQuestion: string
+
+    @Column(
+        {
+            type: 'text',
+        }
+    )
+    qnaAnswer: string
+}

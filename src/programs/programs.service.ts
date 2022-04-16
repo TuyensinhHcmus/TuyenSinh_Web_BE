@@ -14,18 +14,19 @@ export class ProgramsService {
     private readonly programRepo: Repository<program>,
   ) {}
 
-  // async insertProgram(addProgramDto: AddProgramDto): Promise<Program> {
-  //   const { name, programId, url } = addProgramDto;
+  async insertProgram(addProgramDto: AddProgramDto): Promise<program> {
+    const { majorId, name, content, documentLink } = addProgramDto;
 
-  //   const program = new this.programModel({
-  //     programName: name,
-  //     programId: programId,
-  //     programUrl: url
-  //   });
+    const program = this.programRepo.create({
+      programMajorId: majorId,
+      programName: name,
+      programContent: content,
+      programDocumentLink: documentLink
+    });
 
-  //   const result = await program.save();
-  //   return result;
-  // }
+    const result = await this.programRepo.save(program);
+    return result;
+  }
 
   async getPrograms(): Promise<program[]> {
     const programs = await this.programRepo.find({});
@@ -33,33 +34,33 @@ export class ProgramsService {
     return programs;
   }
 
-  // async deleteProgram(id: string): Promise<void> {
-  //   try {
-  //     await this.programModel.deleteOne({ _id: id }).exec();
-  //   } catch (err) {
-  //     throw new NotFoundException('Could not delete program.', err);
-  //   }
-  // }
+  async deleteProgram(id: string): Promise<void> {
+    try {
+      await this.programRepo.delete({ programId: parseInt(id) });
+    } catch (err) {
+      throw new NotFoundException('Could not delete program.', err);
+    }
+  }
 
   async getSingleProgram(id: string): Promise<program> {
     const program = await this.findProgram(id);
     return program;
   }
 
-  // async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<Program> {
+  async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<program> {
 
-  //   const { name, programId, url } = updateProgramDto;
+    const { majorId, name, content, documentLink } = updateProgramDto;
 
-  //   const program = await this.findProgram(id);
+    await this.programRepo.update({ programId: parseInt(id) }, {
+      programId: parseInt(id),
+      programMajorId: majorId,
+      programName: name,
+      programContent: content,
+      programDocumentLink: documentLink
+    })
 
-  //   program.programName = name;
-  //   program.programId = programId;
-  //   program.programUrl = url;
-
-  //   program.save();
-    
-  //   return program;
-  // }
+    return await this.findProgram(id);
+  }
 
   private async findProgram(id: string): Promise<program> {
     let program;

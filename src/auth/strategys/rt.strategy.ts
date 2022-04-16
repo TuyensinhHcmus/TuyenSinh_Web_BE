@@ -44,7 +44,7 @@ export class RtStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
         // const temp2 = await bcrypt.compare('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MjM0YjQwOTU1ZDZlZjIxMDNhZmYwZDIiLCJ1c2VyRW1haWwiOiJxdW9jbHVvbmcyNTAzc3BhbUBnbWFpbC5jb20iLCJpYXQiOjE2NDc2NjQwNjEsImV4cCI6MTY0ODI2ODg2MX0.ehqWuzMAbQtBKpfWGLhtToOnwnMjSP7yBfYeZ8Tz7q0', '$2b$10$v0a2/vIm4z8oYAkMIszlieDRPK0nnDKS4LR05ajKMW/gdH4GPIo.u')
         // console.log("temp 2", temp2);
         
-        const isMatch = await bcrypt.compare(refreshToken, user.refreshToken)
+        const isMatch = await bcrypt.compare(refreshToken, user.userRefreshToken)
         
         if(!isMatch)
         {

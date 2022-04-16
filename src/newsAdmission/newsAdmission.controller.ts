@@ -9,10 +9,10 @@ import { NewsAdmissionService } from './newsAdmission.service';
 export class NewsAdmissionController {
   constructor(private readonly newsAdmissionService: NewsAdmissionService) { }
 
-  // @Post()
-  // async addNews(@Body() addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-  //   return await this.newsAdmissionService.insertNews(addNewsAdmissionDto);
-  // }
+  @Post()
+  async addNews(@Body() addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    return await this.newsAdmissionService.insertNews(addNewsAdmissionDto);
+  }
 
   @Get('getlist')
   async getAllNewsAdmission(): Promise<news[]> {
@@ -27,17 +27,10 @@ export class NewsAdmissionController {
   @Get('getNewsByQuantity')
   async getNumberNews(
     @Query('sortBy') sortBy: string,
-    @Query('Page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('perPage', new DefaultValuePipe(10), ParseIntPipe) perPage: number = 10,
-  ): Promise<Pagination<news>> {
-    const news = await this.newsAdmissionService.getNewsByAmount(
-      {
-        limit: perPage,
-        page: page
-      },
-      sortBy.toUpperCase()
-    );
-
+    @Query('Page') page: number,
+    @Query('perPage') perPage: number,
+  ) {
+    const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
     return news;
   }
 

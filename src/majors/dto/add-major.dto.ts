@@ -21,8 +21,14 @@ export class AddMajorDto {
     target: string;
 
     @IsNotEmpty()
-    program: string;
+    typeProgram: string;
 
     @IsString()
     majorVideo: string;
+
+    @IsString()
+    majorTuition: string;
+
+    @IsString()
+    majorAdmissionsInfo: string;
 }
