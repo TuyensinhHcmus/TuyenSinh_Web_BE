@@ -7,7 +7,7 @@ import { User } from './users.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { user } from './users.entity';
 import { Repository } from 'typeorm';
-import { uuid } from 'uuidv4';
+const { v4: uuidv4 } = require('uuid')
 
 
 @Injectable()
@@ -36,7 +36,7 @@ export class UsersService {
   async insertUser(userName: string, userEmail: string, userPasswordHash: string) {
 
     const newUser = await this.userModel.create({
-      userId: uuid(),
+      userId: uuidv4(),
       userName: userName,
       userEmail: userEmail,
       userPassword: userPasswordHash,
