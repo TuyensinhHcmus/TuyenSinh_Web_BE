@@ -3,43 +3,52 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 
-import { qna, qna_trans } from './resQuestions.entity';
-import { AddResQuestionDto, TransResQuestion } from './dto/addResQuestions.dto';
+import { qna } from './resQuestions.entity';
+import { AddResQuestionDto } from './dto/addResQuestions.dto';
 
 
 @Injectable()
 export class ResQuestionsService {
   constructor(
     @InjectRepository(qna)
-    private readonly qnaRepo: Repository<qna>,
-    
-    @InjectRepository(qna_trans)
-    private readonly qnaTransRepo: Repository<qna_trans>,
+    private readonly qnaRepo: Repository<qna>
   ) { }
 
   async insertResQuestion(addResQuestionDto: AddResQuestionDto): Promise<qna> {
-    const { trans, qnaAnswerImage, qnaQuestionImage } = addResQuestionDto;
+    const { qnaAnswerImage, qnaCreator, qnaQuestionImage } = addResQuestionDto;
 
-    const qnaDateCreate = new Date();
-    let qnaCreator = '17eee754-b253-4094-90b2-c6248714d3f2'
+    let resquestion = this.qnaRepo.create({
+      qnaAnswerImage:  qnaAnswerImage, 
+      qnaCreator: qnaCreator, 
+      qnaQuestionImage: qnaQuestionImage
+    });
 
-    let res;
+    const result = await this.qnaRepo.save(resquestion);
+    return result;
 
-    try {
-      let qnaAddition = {
-        qna_trans: trans,  
-        qnaDateCreate: qnaDateCreate,
-        qnaCreator: qnaCreator,
-        qnaAnswerImage: qnaAnswerImage,
-        qnaQuestionImage: qnaQuestionImage
-      }
 
-      res = await this.qnaRepo.save(qnaAddition)
-    } catch (err) {
-      throw new Error("Save failure")
-    }
+    // const { trans, qnaAnswerImage, qnaQuestionImage } = addResQuestionDto;
 
-    return res;
+    // const qnaDateCreate = new Date();
+    // let qnaCreator = '17eee754-b253-4094-90b2-c6248714d3f2'
+
+    // let res;
+
+    // try {
+    //   let qnaAddition = {
+    //     qna_trans: trans,  
+    //     qnaDateCreate: qnaDateCreate,
+    //     qnaCreator: qnaCreator,
+    //     qnaAnswerImage: qnaAnswerImage,
+    //     qnaQuestionImage: qnaQuestionImage
+    //   }
+
+    //   res = await this.qnaRepo.save(qnaAddition)
+    // } catch (err) {
+    //   throw new Error("Save failure")
+    // }
+
+    // return res;
   }
   // async insertResQuestion(addResQuestionDto: AddResQuestionDto): Promise<qna> {
   //   const { trans, qnaAnswerImage, qnaQuestionImage } = addResQuestionDto;
@@ -88,9 +97,11 @@ export class ResQuestionsService {
   //   return listResQuestion;
   // }
   async getListResQuestion(localeCode: string): Promise<qna[]> {
-    const res = await this.qnaRepo.find({
-      relations:["qna_trans"]
-    })
-    return res
+    const listNews = await this.qnaRepo.find({})
+    return listNews
+    // const res = await this.qnaRepo.find({
+    //   relations:["qna_trans"]
+    // })
+    // return res
   }
 }

@@ -3,12 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ResQuestionsService } from './resQuestions.service';
 import { ResQuestionsController } from './resQuestions.controller';
-import {  qna, qna_trans } from './resQuestions.entity';
+import {  qna } from './resQuestions.entity';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([qna, qna_trans]),
+    TypeOrmModule.forFeature([qna]),
   ],
   providers: [ResQuestionsService],
   controllers: [ResQuestionsController]
