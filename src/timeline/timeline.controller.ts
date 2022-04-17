@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { TimelineService } from "./timeline.service";
 import { TimelineDto } from "./dto/add-timeline-dto";
@@ -8,28 +8,35 @@ import { TimelineDto } from "./dto/add-timeline-dto";
 export class TimelineController {
     constructor( private readonly timelineService: TimelineService) {}
 
-    @Post('/add')
-    addTimeline(@Body() notification: TimelineDto) {
-        const genId =  this.timelineService.insertTimeline(notification)
+    @Post('add')
+    addTimeline(@Body() timelineInfo: TimelineDto) {
+        const genId =  this.timelineService.insertTimeline(timelineInfo)
         return { id : genId}
     }
 
-    // @Post('/getNotificationById')
-    // getListNotificaitonById(@Body('userId') userId: string) {
-    //     const notifications =  this.admissionNotificationsService.getListNotificationByUserId(userId)
-    //     return notifications
-    // }
+    @Post('delete')
+    deleteTimeline(@Body('timelineId') timelineId: number) {
+        const res =  this.timelineService.deleteTimeline(timelineId)
+        return res
+    }
 
-    // @Post('/updateState')
-    // updateStateNotification(@Body('state') state: string, @Body('notificationId') notificationId: number) {
-    //     const genId =  this.admissionNotificationsService.updateStateNotification(notificationId, state)
-    //     return { id : genId}
-    // }
+    @Post('update')
+    updateTimeline(@Body() timelineInfo: TimelineDto) {
+        let {timelineId, ...other} = timelineInfo
+        const genId =  this.timelineService.updateTimeline(timelineId, timelineInfo)
+        return { id : genId}
+    }
 
-    // @Post('/getLatestNotification')
-    // getLatestNotification(@Body('userId') userId: string, @Body('amount') amount: number) {
-    //     const notifications =  this.admissionNotificationsService.getLatestNotifications(userId, amount)
-    //     return notifications
-    // }
+    @Get('getall')
+    getTimelines() {
+        const notifications =  this.timelineService.getTimelines()
+        return notifications
+    }
+
+    @Get(':id')
+    getTimelineById(@Param('id') id: number) {
+        const notifications =  this.timelineService.getTimelineById(id)
+        return notifications
+    }
 
 }
