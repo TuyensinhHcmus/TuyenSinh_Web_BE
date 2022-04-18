@@ -3,7 +3,7 @@ import { AuthGuard } from "@nestjs/passport";
 import { TimelineService } from "./timeline.service";
 import { TimelineDto } from "./dto/add-timeline-dto";
 
-@UseGuards(AuthGuard())
+// @UseGuards(AuthGuard())
 @Controller('timeline')
 export class TimelineController {
     constructor( private readonly timelineService: TimelineService) {}
@@ -11,7 +11,7 @@ export class TimelineController {
     @Post('add')
     addTimeline(@Body() timelineInfo: TimelineDto) {
         const genId =  this.timelineService.insertTimeline(timelineInfo)
-        return { id : genId}
+        return genId
     }
 
     @Post('delete')
@@ -24,7 +24,7 @@ export class TimelineController {
     updateTimeline(@Body() timelineInfo: TimelineDto) {
         let {timelineId, ...other} = timelineInfo
         const genId =  this.timelineService.updateTimeline(timelineId, timelineInfo)
-        return { id : genId}
+        return genId
     }
 
     @Get('getall')
