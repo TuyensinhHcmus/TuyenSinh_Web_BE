@@ -5,11 +5,11 @@ export class AddFacultyDto {
     name: string;
 
     @IsNotEmpty()
-    introduction: string;
-
-    @IsNotEmpty()
     imageCompare: string;
 
     @IsNotEmpty()
     imageHighlight: string;
+
+    @IsNotEmpty()
+    introduction: string;
 }

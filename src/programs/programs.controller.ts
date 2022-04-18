@@ -49,7 +49,7 @@ export class ProgramsController {
   async updateProgram(
     @Param('id') id: string,
     @Body() updateProgramDto: UpdateProgramDto,
-  ): Promise<program> {
+  ): Promise<program> {   
     return await this.programsService.updateProgram(id, updateProgramDto);
   }
 }

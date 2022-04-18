@@ -16,9 +16,9 @@ import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
 import { TimelineModule } from './timeline/timeline.module';
 import { ContactsModule } from './contacts/contacts.module';
-
-
-
+import { TuitionsModule } from './tuitions/tuitions.module';
+import { BenchmarksModule } from './benchmarks/benchmarks.module';
+import { TypeProgramsModule } from './typePrograms/typePrograms.module';
 
 @Module({
   imports: [
@@ -46,7 +46,10 @@ import { ContactsModule } from './contacts/contacts.module';
     MajorsModule,
     ProgramsModule,
     SchoolInfoModule,
-    ContactsModule
+    ContactsModule,
+    TuitionsModule,
+    BenchmarksModule,
+    TypeProgramsModule
   ],
 
   controllers: [AppController],
