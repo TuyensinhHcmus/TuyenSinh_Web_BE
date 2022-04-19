@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { HttpException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { timeline } from "./timeline.entity";
@@ -39,7 +39,13 @@ export class TimelineService {
 
   async updateTimeline(timelineId: number, timelineInformation: TimelineDto) {
     let result =  await this.timelineModel.update({ timelineId: timelineId }, timelineInformation);
-    return result;
+    if( result.affected ===0 )
+    {
+      throw new HttpException("No data updated", 400);
+    }
+    else{
+      return result;
+    }
   }
 
   // async getLatestNotifications(userId: string, amount: number) {

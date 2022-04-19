@@ -24,15 +24,16 @@ export class faculty {
 
     @Column(
         {
+            type: 'text',
+        }
+    )
+    facultyImageHighlight: string
+
+    @Column(
+        {
             type: 'text'
         }
     )
     facultyIntroduction: string
 
-    @Column(
-        {
-            type: 'text',
-        }
-    )
-    facultyImageHighlight: string
 }

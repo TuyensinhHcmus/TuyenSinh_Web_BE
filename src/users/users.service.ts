@@ -52,7 +52,11 @@ export class UsersService {
   // Get user
   async getUsers() {
     const users = await this.userModel.find({});
-    return users;
+    const response = users.map(i => {
+      let {userPassword ,...other} =  i;
+      return other
+    })
+    return response;
   }
 
   async getSingleUser(userEmail: string) {
@@ -78,13 +82,16 @@ export class UsersService {
   }
 
   // Get user by amount
-  async getUsersByAmount(amount: number, sortCondition: number) {
-    const condition = sortCondition === -1 ? sortCondition : 1;
+  async getUsersByAmount(perPage: number, page: number) {
+    // const users = await this.userModel
+    //   .createQueryBuilder('user')
+    //   .limit(perPage)
+    //   .skip((page - 1) * perPage).getMany();
+    // return users;
+
     const users = await this.userModel.find({
-      take: amount,
-      order: {
-        userName: condition
-      }
+      take: perPage,
+      skip: (page - 1) * perPage
     })
     return users;
   }

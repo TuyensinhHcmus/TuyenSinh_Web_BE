@@ -50,15 +50,25 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async getNewsByAmount(perPage: number, sortCondition: string, Page: number) {
+  async getNewsByAmount(perPage: number, sortCondition: string, page: number) {
 
-    const condition = sortCondition === "DESC" ? sortCondition : "ASC";
+    const condition = sortCondition === "DESC" ? -1 : 1;
 
-    const news = await this.newsRepo
-      .createQueryBuilder('news')
-      .limit(perPage)
-      .orderBy('news.newsDateCreate', condition)
-      .skip((Page - 1) * perPage).getMany();
+    // const news = await this.newsRepo
+    //   .createQueryBuilder('news')
+    //   .limit(perPage)
+    //   .orderBy('news.newsDateCreate', condition)
+    //   .skip((Page - 1) * perPage).getMany();
+    // return news;
+    // console.log('perPage', perPage, "sortCondition", sortCondition, "page", page);
+    
+    const news = await this.newsRepo.find({
+      take: perPage,
+      order:{
+        newsDateCreate: condition
+      },
+      skip: (page - 1) * perPage
+    })
     return news;
   }
 }
