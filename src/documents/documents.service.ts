@@ -33,6 +33,33 @@ export class DocumentsService {
     return document;
   }
 
+  async insertDocument(addDocumentDto: AddDocumentDto): Promise<document> {
+    const { title, content, image } = addDocumentDto;
+
+    const document = await this.documentsRepo.create({
+      documentTitle: title,
+      documentContent: content,
+      documentImage: image
+    })
+
+    const result = await this.documentsRepo.save(document);
+
+    return result;
+  }
+
+  async deleteDocument(documentId: string): Promise<void> {
+    try {
+      await this.documentsRepo.delete({ documentId: parseInt(documentId) })
+    } catch (err) {
+      throw new NotFoundException('Could not delete document.', err);
+    }
+  }
+
+  async getSingleDocument(documentId: string): Promise<document> {
+    const document = await this.findDocument(documentId);
+    return document;
+  }
+
   private async findDocument(id: string): Promise<document> {
     let document;
 

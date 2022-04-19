@@ -31,4 +31,23 @@ export class DocumentsController {
   ): Promise<document> {
     return await this.documentsService.updateDocument(id, updateDocumentDto);
   }
+ 
+   // [POST] /documents
+   @Post()
+   async addDocument(@Body() addDocumentDto: AddDocumentDto): Promise<document> {
+     return await this.documentsService.insertDocument(addDocumentDto);
+   }
+ 
+   // [DELETE] /documents/:id
+   @Delete(':id')
+   async removeDocument(@Param('id') documentId: string): Promise<void> {
+     return await this.documentsService.deleteDocument(documentId);
+   }
+ 
+   // [GET] /documents/:id
+   @Get(':id')
+   async getDocument(@Param('id') documentId: string): Promise<document> {
+     const document = await this.documentsService.getSingleDocument(documentId);
+     return document;
+   }
 }
