@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -37,6 +38,13 @@ export class AuthController {
     @Body('userId') userId: string
   ) {
     return this.authService.verifyOTP(otp, userId)
+  }
+
+  @Get('refreshOTP')
+  async refreshOtp(
+    @Query('userId') userId: string
+  ) {
+    return this.authService.refreshOTP(userId)
   }
 
   @UseGuards(LocalAuthenticationGuard)

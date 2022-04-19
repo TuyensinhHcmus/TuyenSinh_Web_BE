@@ -20,6 +20,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { TuitionsModule } from './tuitions/tuitions.module';
 import { BenchmarksModule } from './benchmarks/benchmarks.module';
 import { TypeProgramsModule } from './typePrograms/typePrograms.module';
+import { CvsModule } from './cv/cv.module';
 
 @Module({
   imports: [
@@ -51,7 +52,8 @@ import { TypeProgramsModule } from './typePrograms/typePrograms.module';
     UnVerifyUsersModule,
     TuitionsModule,
     BenchmarksModule,
-    TypeProgramsModule
+    TypeProgramsModule,
+    CvsModule
   ],
 
   controllers: [AppController],
