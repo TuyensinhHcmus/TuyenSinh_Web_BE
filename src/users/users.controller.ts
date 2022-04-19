@@ -26,7 +26,8 @@ export class UsersController {
     const newUser = await this.usersService.insertUser(
       userName,
       userEmail,
-      hashedPassword
+      hashedPassword,
+      ''
     );
     return {...newUser, id: newUser.userId};
   }

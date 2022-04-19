@@ -33,7 +33,7 @@ export class UsersService {
   }
 
   // Add user
-  async insertUser(userName: string, userEmail: string, userPasswordHash: string) {
+  async insertUser(userName: string, userEmail: string, userPasswordHash: string, userSecret: string) {
 
     const newUser = await this.userModel.create({
       userId: uuidv4(),
@@ -41,7 +41,8 @@ export class UsersService {
       userEmail: userEmail,
       userPassword: userPasswordHash,
       userType: userEmail ? 'email': 'phone',
-      userRole: 'user'
+      userRole: 'user',
+      userSecret: userSecret
     });
 
     const result = await this.userModel.save(newUser);
@@ -56,6 +57,11 @@ export class UsersService {
 
   async getSingleUser(userEmail: string) {
     const user = await this.findUser(userEmail)
+    return user;
+  }
+
+  async checkExistUser(userEmail: string) {
+    const user = await this.userModel.findOne({userEmail: userEmail});
     return user;
   }
 

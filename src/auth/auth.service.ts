@@ -6,12 +6,16 @@ import ForgetPasswordDto from './dto/forgetPassword.dto';
 import * as bcrypt from 'bcrypt'
 import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './token-payload.interface';
+var otpGenerator = require('otp-generator')
+import { UnVerifyUsersService } from 'src/unverifyuser/unverifyuser.service';
+
 
 @Injectable()
 export class AuthService {
-    constructor(private readonly usersService: UsersService, 
+    constructor(private readonly usersService: UsersService,
         private readonly jwtService: JwtService,
-        private mailService: MailService) { }
+        private mailService: MailService,
+        private readonly unVerifyUsersService: UnVerifyUsersService) { }
 
     async hashData(data: string) {
         const salt = await bcrypt.genSalt(10);
@@ -57,29 +61,111 @@ export class AuthService {
     }
 
     async registerUser(registrationData: RegisterDto) {
-        const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
+        //Check user is exist in database user
+        const isExistUser = await this.usersService.checkExistUser(registrationData.userEmail);
 
-        try {
-            const createdUser = await this.usersService.insertUser(
+        if (isExistUser === undefined) {
+            // Generate OTP and time expired for user
+            const OTP = otpGenerator.generate(6, { alphabets: false,
+                 upperCase: false, 
+                 specialChars: false });
+            //console.log("OTP:", OTP)
+            let time = Date.now() + 60000;
+            const time_1 = Math.floor(time/1000000);
+            console.log(time_1)
+            time = time - time_1*1000000;
+            //console.log("Time", time)
+
+            // Save information of user into unverifieduser database
+            const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
+            const verifyUser = await this.unVerifyUsersService.insertUser(
                 registrationData.userName,
                 registrationData.userEmail,
-                hashedPassword
-            );
-            await this.mailService.sendUserConfirmation(registrationData, "hello");
+                hashedPassword,
+                OTP+ '-'+ time
+            )
+            
 
-            if (createdUser !== undefined)
-                createdUser.userPassword = undefined;
+            // Send mail
+            await this.mailService.sendUserConfirmation(registrationData, OTP);
 
-
-            const tokens = await this.getTokens(createdUser.userId, createdUser.userEmail);
-            await this.updateRefreshToken(createdUser.userId, tokens.refreshToken)
-            //console.log(tokens, createdUser);
-            return tokens;
-        } catch (error) {
-            //console.log(error)
-            if (error.code === 'ER_DUP_ENTRY') {
-                throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
+            return {
+                user: verifyUser.userId,
+                expired: (time + Math.floor(Date.now()/1000000)*1000000) - Date.now()
             }
+        }
+        else {
+            throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
+        }
+
+        // const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
+        // try {
+        //     const createdUser = await this.usersService.insertUser(
+        //         registrationData.userName,
+        //         registrationData.userEmail,
+        //         hashedPassword
+        //     );
+        //     await this.mailService.sendUserConfirmation(registrationData, "hello");
+
+        //     if (createdUser !== undefined)
+        //         createdUser.userPassword = undefined;
+
+
+        //     const tokens = await this.getTokens(createdUser.userId, createdUser.userEmail);
+        //     await this.updateRefreshToken(createdUser.userId, tokens.refreshToken)
+        //     //console.log(tokens, createdUser);
+        //     return tokens;
+        // } catch (error) {
+        //     //console.log(error)
+        //     if (error.code === 'ER_DUP_ENTRY') {
+        //         throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
+        //     }
+        //     throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        // }
+    }
+
+    async verifyOTP(otp: string, userId: string) {
+        try {
+            // Get user from unverifyuser database
+            const user = await this.unVerifyUsersService.getSingleUser(userId)
+            
+            const [OTP, time] = user.userSecret.split('-');
+
+            const time_1 = parseInt(time) + Math.floor(Date.now()/1000000)*1000000
+            const verify = ()=>{
+                if(OTP === otp && time_1 >= Date.now()){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }
+
+            if (verify()) {
+                // transfer database of user from unVerifyUser to user
+                const verifiedUser = await this.usersService.insertUser(
+                    user.userName,
+                    user.userEmail,
+                    user.userPassword,
+                    user.userSecret
+                )
+
+                const tokens = await this.getTokens(verifiedUser.userId, verifiedUser.userEmail);
+                await this.updateRefreshToken(verifiedUser.userId, tokens.refreshToken)
+
+                return {
+                    verify: verify(),
+                    message: "Đã xác thực thành công !",
+                    user: verifiedUser,
+                    tokens: tokens
+                }
+            }
+            return {
+                verify: verify(),
+                expire: time_1 - Date.now()
+            };
+        }
+        catch (error) {
             throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,17 +179,17 @@ export class AuthService {
         await this.updateRefreshToken(userId, tokens.refreshToken)
         return tokens
     }
-    
+
     googleLogin(req) {
         if (!req.user) {
-          return 'No user from google'
+            return 'No user from google'
         }
-    
+
         return {
-          message: 'User information from google',
-          user: req.user
+            message: 'User information from google',
+            user: req.user
         }
-      }
+    }
 
     async validateUser(userEmail: string, pass: string): Promise<any> {
         const user = await this.usersService.getSingleUser(userEmail);
@@ -114,7 +200,7 @@ export class AuthService {
         if (user && comparePassword) {
             const tokens = await this.getTokens(user.userId, user.userEmail);
             await this.updateRefreshToken(user.userId, tokens.refreshToken)
-            return {'user':user,'token': tokens};
+            return { 'user': user, 'token': tokens };
         }
         return null;
     }

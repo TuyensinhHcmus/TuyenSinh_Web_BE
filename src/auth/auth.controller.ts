@@ -31,6 +31,14 @@ export class AuthController {
     return this.authService.registerUser(registrationData);
   }
 
+  @Post('verify')
+  async VerifyOtp(
+    @Body('otp') otp: string,
+    @Body('userId') userId: string
+  ) {
+    return this.authService.verifyOTP(otp, userId)
+  }
+
   @UseGuards(LocalAuthenticationGuard)
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -41,11 +49,10 @@ export class AuthController {
   }
 
   @Post('forget-password')
-  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto)
-  {
+  async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return this.authService.forgetPassword(forgetPasswordDto);
   }
-  
+
 
   @Post('logout')
   @UseGuards(AtGuard)
@@ -68,7 +75,7 @@ export class AuthController {
   async googleAuth(@Req() req) {
     console.log('req gg', req);
   }
-  
+
   @Get('redirect')
   @UseGuards(GgGuard)
   googleAuthRedirect(@Req() req) {

@@ -16,6 +16,7 @@ import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TimelineModule } from './timeline/timeline.module';
+import { UnVerifyUsersModule } from './unverifyuser/unverifyuser.module';
 
 
 
@@ -46,7 +47,8 @@ import { TimelineModule } from './timeline/timeline.module';
     MajorsModule,
     ProgramsModule,
     SchoolInfoModule,
-    ContactsModule
+    ContactsModule,
+    UnVerifyUsersModule
   ],
 
   controllers: [AppController],

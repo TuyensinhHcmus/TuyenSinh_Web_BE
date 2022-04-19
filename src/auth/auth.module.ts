@@ -9,11 +9,13 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategys/jwt.strategy';
 import { RtStrategy } from './strategys/rt.strategy';
 import { GoogleStrategy } from './strategys/gg.strategy';
+import { UnVerifyUsersModule } from 'src/unverifyuser/unverifyuser.module';
 
 
 @Module({
   imports: [
-    UsersModule, 
+    UsersModule,
+    UnVerifyUsersModule, 
     PassportModule.register({defaultStrategy: 'jwt'}), 
     JwtModule.register({
       secret: "topSecret51",

@@ -49,7 +49,8 @@ export class user {
     @Column(
         {
             type: 'char',
-            length: 50
+            length: 50,
+            unique: true
         }
     )
     userPhone: string
@@ -97,4 +98,12 @@ export class user {
         type: 'text',
     })
     userAvatar: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 17
+        }
+    )
+    userSecret: string
 }
