@@ -22,7 +22,7 @@ import { BenchmarksModule } from './benchmarks/benchmarks.module';
 import { TypeProgramsModule } from './typePrograms/typePrograms.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
-
+import { CvsModule } from './cv/cv.module';
 
 @Module({
   imports: [
@@ -56,7 +56,8 @@ import { AdmissionProcessModule } from './admissionProcess/admissionProcess.modu
     BenchmarksModule,
     TypeProgramsModule,
     DocumentsModule,
-    AdmissionProcessModule
+    AdmissionProcessModule,
+    CvsModule
   ],
 
   controllers: [AppController],
