@@ -20,6 +20,9 @@ import { ContactsModule } from './contacts/contacts.module';
 import { TuitionsModule } from './tuitions/tuitions.module';
 import { BenchmarksModule } from './benchmarks/benchmarks.module';
 import { TypeProgramsModule } from './typePrograms/typePrograms.module';
+import { DocumentsModule } from './documents/documents.module';
+import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
+
 
 @Module({
   imports: [
@@ -51,7 +54,9 @@ import { TypeProgramsModule } from './typePrograms/typePrograms.module';
     UnVerifyUsersModule,
     TuitionsModule,
     BenchmarksModule,
-    TypeProgramsModule
+    TypeProgramsModule,
+    DocumentsModule,
+    AdmissionProcessModule
   ],
 
   controllers: [AppController],
