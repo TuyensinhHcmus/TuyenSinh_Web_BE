@@ -1,12 +1,17 @@
-import { IsNotEmpty } from "class-validator";
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from "class-validator";
+import { CvInterface } from "./cv.interface";
 
 export class AddCVDto {
-    cvMethodId: string;
-
-    cvUserId: string;
-
-    cvFile: string
+    @IsNotEmpty()
+    userId: string
 
     @IsNotEmpty()
-    cvState: string;
+    method: string
+
+    @IsArray()
+    @ValidateNested({each: true})
+    listAspiration: [CvInterface]
+
+    @IsString()
+    fileUrl: string
 }

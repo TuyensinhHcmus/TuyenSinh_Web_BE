@@ -10,6 +10,7 @@ import {
 import { AddCVDto } from './dto/add-cv.dto';
 import { CvsService } from './cv.service';
 import { cv } from './cv.entity';
+import { AddListCVDto } from './dto/add-listcv.dto';
 @Controller('cvs')
 export class CvsController {
     constructor(private readonly cvsService: CvsService) { }
@@ -21,10 +22,16 @@ export class CvsController {
         return cvs;
     }
 
-    // [POST] /addCv
-    @Post('addCv')
-    async addContact(@Body() addCvDto: AddCVDto): Promise<cv> {
+    // [POST] /addACV
+    @Post('addACV')
+    async addCv(@Body() addCvDto: AddCVDto) {
       return await this.cvsService.insertCv(addCvDto);
+    }
+
+    // [POST] /addListCV 
+    @Post('addListCV')
+    async addListCV(@Body() addListCVData: AddListCVDto) {
+      return await this.cvsService.changeStateCv(addListCVData);
     }
 
     // // [DELETE] /contacts/:id

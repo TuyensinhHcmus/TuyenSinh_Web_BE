@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { aspiration } from './aspirtation.entity';
+import { aspiration } from './aspiration.entity';
 import { AddAspirationDto } from './dto/add-aspiration.dto';
 import { UpdateAspirationDto } from './dto/update-aspiration.dto';
 
@@ -15,7 +15,7 @@ export class AspirationService {
         private readonly aspirationRepo: Repository<aspiration>,
     ) { }
 
-    async insertAAspiration(addAspirationDto: AddAspirationDto): Promise<aspiration> {
+    async insertAspiration(addAspirationDto: AddAspirationDto): Promise<aspiration> {
         const { aspirationMajor, aspirationCvId } = addAspirationDto;
 
         const admissionProcess = await this.aspirationRepo.create({

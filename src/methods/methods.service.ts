@@ -79,4 +79,16 @@ export class MethodsService {
 
     return method;
   }
+
+  async getMethodCanApply()
+  {
+    const methods = await this.methodRepo.find({});
+    const listMethod = [];
+    methods.forEach(method => { 
+      if(method.methodParentId != ''){
+        listMethod.push(method);
+      } 
+    });
+    return listMethod;
+  }
 }

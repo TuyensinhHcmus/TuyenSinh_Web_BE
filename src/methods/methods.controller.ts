@@ -17,6 +17,13 @@ import { method } from './method.entity';
 export class MethodsController {
   constructor(private readonly methodsService: MethodsService) {}
 
+
+  @Get('getMethodCanApply')
+  async getMethodCanApply()
+  {
+    return await this.methodsService.getMethodCanApply();
+  }
+
   // [GET] /methods
   @Get()
   async getAllMethods(): Promise<method[]> {

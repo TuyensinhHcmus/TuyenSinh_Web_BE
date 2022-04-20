@@ -26,7 +26,6 @@ export class aspiration {
     @Column(
         {
             type: 'int',
-            length: 10,
             unsigned: true,
         }
     )
