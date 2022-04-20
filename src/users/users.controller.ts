@@ -8,12 +8,44 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+import { EditUserDto } from './dto/edit-user-dto';
 
 import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
+
+  @Post('/ban')
+  async banUser(
+    @Body('userId') userId: string,
+    @Body('isBlock') isBlock: boolean
+  ) {
+
+    const res = await this.usersService.banUser(userId, isBlock);
+    return res;
+  }
+
+
+  @Post('/editUserById')
+  async editUserById(
+    @Body('userId') userId: string,
+    @Body() userInfor: EditUserDto
+  ) {
+
+    const res = await this.usersService.editUserById(userId, userInfor);
+    return res;
+  }
+
+  @Post('/getUserById')
+  async getUserById(
+    @Body('userId') userId: string
+  ) {
+
+    const res = await this.usersService.getUserById(userId);
+    return res;
+  }
+
 
   @Post('/register')
   async addUser(

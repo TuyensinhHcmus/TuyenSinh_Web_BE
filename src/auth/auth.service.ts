@@ -224,6 +224,10 @@ export class AuthService {
     async validateUser(userEmail: string, pass: string): Promise<any> {
         const user = await this.usersService.getSingleUser(userEmail);
         console.log(user);
+        if(user.userIsBlock)
+        {
+            throw new HttpException("User is banned", 403)
+        }
 
         const comparePassword = user !== null ? await this.usersService.comparePassword(pass, user.userPassword) : false;
         console.log(comparePassword);
