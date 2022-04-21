@@ -29,6 +29,8 @@ export class AspirationService {
         return result;
     }
 
+    
+
     // async getAdmissionProcess(): Promise<admissionProcess[]> {
     //     const admissionProcess = await this.admissionProcessRepo.find({});
     //     return admissionProcess;
@@ -47,7 +49,7 @@ export class AspirationService {
     //     return admissionProcess;
     // }
 
-    async updateAspiration(id: string, updateAspirationDto: UpdateAspirationDto): Promise<aspiration> {
+    async updateAspiration(id: number, updateAspirationDto: UpdateAspirationDto): Promise<aspiration> {
 
         const { aspirationMajor, aspirationState, aspirationCvId } = updateAspirationDto;
 
@@ -57,16 +59,16 @@ export class AspirationService {
         aspiration.aspirationState = aspirationState ? aspirationState: aspiration.aspirationState;
         aspiration.aspirationCvId = aspirationCvId ? aspirationCvId: aspiration.aspirationCvId;
 
-        await this.aspirationRepo.update({ aspirationId: parseInt(id) }, aspiration);
+        await this.aspirationRepo.update({ aspirationId: id }, aspiration);
 
         return aspiration;
     }
 
-    private async findAspiration(id: string): Promise<aspiration> {
+    private async findAspiration(id: number): Promise<aspiration> {
         let aspiration;
 
         try {
-            aspiration = await this.aspirationRepo.findOne({ aspirationId: parseInt(id) });
+            aspiration = await this.aspirationRepo.findOne({ aspirationId: id });
         } catch (error) {
             throw new NotFoundException('Could not find aspiration.');
         }

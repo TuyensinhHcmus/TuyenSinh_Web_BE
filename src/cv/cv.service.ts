@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { createQueryBuilder, LessThan, Repository } from 'typeorm';
 
 import { AddCVDto } from './dto/add-cv.dto';
 
@@ -8,6 +8,12 @@ import { cv } from './cv.entity';
 import { AspirationService } from 'src/aspiration/aspiration.service';
 import { AddAspirationDto } from 'src/aspiration/dto/add-aspiration.dto';
 import { AddListCVDto } from './dto/add-listcv.dto';
+import { aspiration } from 'src/aspiration/aspiration.entity';
+import { major } from 'src/majors/major.entity';
+import { typeProgram } from 'src/typePrograms/typeProgram.entity';
+import { method } from 'src/methods/method.entity';
+import { UpdateCVDto } from './dto/update-cv.dto';
+import { UpdateAspirationDto } from 'src/aspiration/dto/update-aspiration.dto';
 
 @Injectable()
 export class CvsService {
@@ -40,7 +46,6 @@ export class CvsService {
     await this.aspirationService.insertAspiration(aspirationData);
   }
 
-  //Promise<cv>  
   async insertCv(addCVDto: AddCVDto) {
     try {
       const { userId, method, listAspiration, fileUrl } = addCVDto;
@@ -55,6 +60,7 @@ export class CvsService {
       }
 
       return {
+        cvId: cvId,
         message: "Đã lưu thành công !"
       };
     } catch (error) {
@@ -64,27 +70,112 @@ export class CvsService {
 
   async changeStateCv(addListCVData: AddListCVDto) {
     const { userId } = addListCVData;
-    // await this.cvsRepo.createQueryBuilder("cv")
-    // .update(
-      
-    // )
-
     // Find all cv have cvUserId is userId
     const listCv = await this.cvsRepo.find({ cvUserId: userId });
 
     // Update state of cv
     for (let i = 0; i < listCv.length; i++) {
-      if(listCv[i].cvState === "Đã lưu"){
-        await this.cvsRepo.update({cvId: listCv[i].cvId}, {cvState: "Đã nộp"})
+      if (listCv[i].cvState === "Đã lưu") {
+        await this.cvsRepo.update({ cvId: listCv[i].cvId }, { cvState: "Đã nộp" })
       }
     }
 
     return "";
   }
 
-  async getCvs(): Promise<cv[]> {
-    const contacts = await this.cvsRepo.find({});
-    return contacts;
+  async unique(arr) {
+    var newArr = []
+    for (var i = 0; i < arr.length; i++) {
+      if (!newArr.includes(arr[i])) {
+        newArr.push(arr[i])
+      }
+    }
+    return newArr
+  }
+
+  async getListCVByUserId(userId: string): Promise<any[]> {
+    let listcvs = await createQueryBuilder('cv')
+      .where('cv.cvUserId = :cvUserId', { cvUserId: userId })
+      .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+      .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+      .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
+      .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
+      .select([
+        'cv.cvId',
+        'method.methodName',
+        'aspiration.aspirationId',
+        'major.majorName',
+        'typeProgram.typeProgramName',
+        'cv.cvFile'
+      ])
+      .getRawMany();
+
+    const cvs = await this.cvsRepo.createQueryBuilder('cv')
+      .where('cv.cvUserId = :cvUserId', { cvUserId: userId })
+      .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+      .select([
+        'cv.cvId',
+        'method.methodName',
+        'cv.cvFile'
+      ])
+      .getRawMany()
+
+    let result = cvs.map(cv => {
+      return {
+        cvId: cv.cv_cvId,
+        method: cv.method_methodName,
+        fileUrl: cv.cv_cvFile,
+        listAspiration: []
+      }
+    })
+
+    result.map((cvId, index) => {
+      listcvs.forEach(cv => {
+        if (cv.cv_cvId === cvId.cvId) {
+          result[index].listAspiration.push({
+            aspirationId: cv.aspiration_aspirationId,
+            typeProgram: cv.typeProgram_typeProgramName,
+            major: cv.major_majorName
+          })
+        }
+      })
+    })
+
+    return result;
+  }
+
+  // Update
+  async updateCv(updateCVData: UpdateCVDto){
+    try {
+      const { userId, cvId, method, listAspiration, fileUrl } = updateCVData;
+
+      // Find cv by cvId
+      let cv = await this.cvsRepo.findOne({cvId: cvId});
+
+      cv.cvMethodId = method;
+      cv.cvFile = fileUrl;
+
+      // Update cv
+      await this.cvsRepo.update({cvId: cvId}, cv);
+
+      // Update list aspiration
+      for (let i = 0; i < listAspiration.length; i++) {
+
+        // Save aspiration into aspiration database
+        let aspiration = new UpdateAspirationDto();
+        aspiration.aspirationMajor = listAspiration[i].major;
+        aspiration.aspirationCvId = cvId;
+
+        let updateAspiration = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+      }
+
+      return {
+        cvId: cvId,
+        message: "Đã cập nhật thành công !"
+      };
+    } catch (error) {
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   //   async deleteContact(contactId: string): Promise<void> {
