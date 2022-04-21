@@ -92,6 +92,10 @@ export class CvsService {
     }
     return newArr
   }
+  async getCvByUserId(userId: string) {
+    const listCV = await this.cvsRepo.find({cvUserId: userId});
+    return listCV;
+  }
 
   async getListCVByUserId(userId: string): Promise<any[]> {
     let listcvs = await createQueryBuilder('cv')

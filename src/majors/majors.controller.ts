@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { AddMajorDto } from './dto/add-major.dto';
@@ -17,9 +18,19 @@ import { major } from './major.entity';
 export class MajorsController {
   constructor(private readonly majorsService: MajorsService) {}
 
+  // [GET] /majors/getByTypeProgram
+  @Get('getByTypeProgram')
+  async getByTypeProgram(
+    @Query('typeProgramId') typeProgramId: string,
+  ): Promise<any[]> {
+
+    const majors = await this.majorsService.getByTypeProgram(typeProgramId);
+    return majors;
+  }
+
   // [GET] /majors
   @Get()
-  async getAllMajors(): Promise<major[]> {
+  async getAllMajors(): Promise<any[]> {
     const majors = await this.majorsService.getMajors();
     return majors;
   }

@@ -14,6 +14,11 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.insertNews(addNewsAdmissionDto);
   }
 
+  @Post('updatestatus')
+  async changeStatus(@Body('newsId') id: number, @Body('status') status: string) {
+    return await this.newsAdmissionService.updateStatus(id, status);
+  }
+
   @Get('getlist')
   async getAllNewsAdmission(): Promise<news[]> {
     return await this.newsAdmissionService.getListNews();

@@ -12,7 +12,7 @@ export class typeProgram {
 
     @Column({
         type: 'varchar',
-        length: 50
+        length: 50,
     })
     typeProgramName: string
 }

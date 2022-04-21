@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, createQueryBuilder } from 'typeorm';
 
 import { AddMajorDto } from './dto/add-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
 import { major } from './major.entity';
+import { faculty } from 'src/faculties/faculty.entity';
 
 @Injectable()
 export class MajorsService {
@@ -45,9 +46,25 @@ export class MajorsService {
     return result;
   }
 
-  async getMajors(): Promise<major[]> {
-    const majors = await this.majorRepo.find({});
-
+  async getMajors(): Promise<any[]> {
+    const majors = await this.majorRepo.createQueryBuilder('major')
+    .leftJoinAndMapOne( 'major.majorFaculty', faculty, 'faculty', 'faculty.facultyId = major.majorFaculty')
+    .select([
+          "major.majorId",
+          "major.majorFaculty",
+          "major.majorName",
+          "major.majorIntroduction",
+          "major.majorImageName",
+          "major.majorTarget", 
+          "major.majorTypeProgram",
+          "major.majorVideo",
+          "major.majorTuition",
+          "major.majorAdmissionsInfo",
+          "faculty.facultyName",
+          "faculty.facultyId"
+        ],)   
+    .getMany()
+  
     return majors;
   }
 
@@ -93,6 +110,15 @@ export class MajorsService {
     });
 
     return await this.findMajor(majorId);
+  }
+
+  async getByTypeProgram(typeProgramId: string): Promise<any> {
+    const majors = await this.majorRepo.find({
+      select: ["majorId", "majorName"],
+      where: { majorTypeProgram: typeProgramId }
+    })
+    
+    return majors;
   }
 
   private async findMajor(id: string): Promise<major> {

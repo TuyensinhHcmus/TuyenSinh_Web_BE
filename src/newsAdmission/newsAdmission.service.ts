@@ -39,6 +39,11 @@ export class NewsAdmissionService {
     return listNews;
   }
 
+  async updateStatus(id: number, status: string) {
+    const res = await this.newsRepo.update({newsId: id}, {newsState: status})
+    return res;
+  }
+
   async getNewsBySlug(_slug: string): Promise<news> {
     // const listNews = await this.newsModel.find({});
     const news = await this.newsRepo.findOne({ newsSlug: _slug });
