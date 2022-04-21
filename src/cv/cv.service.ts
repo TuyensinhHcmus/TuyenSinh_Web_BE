@@ -33,6 +33,10 @@ export class CvsService {
     const contacts = await this.cvsRepo.find({});
     return contacts;
   }
+  async getCvByUserId(userId: string) {
+    const listCV = await this.cvsRepo.find({cvUserId: userId});
+    return listCV;
+  }
 
 //   async deleteContact(contactId: string): Promise<void> {
 //     try {

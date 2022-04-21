@@ -21,6 +21,13 @@ export class CvsController {
         return cvs;
     }
 
+    // [GET] /getlistcv
+    @Post('getlistcvbyuserId')
+    async getListCvByUserId(@Body('userId') userId: string) {
+        const listCV = await this.cvsService.getCvByUserId(userId);
+        return listCV;
+    }
+
     // [POST] /addCv
     @Post('addCv')
     async addContact(@Body() addCvDto: AddCVDto): Promise<cv> {

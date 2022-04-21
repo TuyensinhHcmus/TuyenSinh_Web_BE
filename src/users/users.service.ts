@@ -7,6 +7,7 @@ import { User } from './users.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { user } from './users.entity';
 import { Repository } from 'typeorm';
+import { EditUserDto } from './dto/edit-user-dto';
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -30,6 +31,30 @@ export class UsersService {
     const validPassword = await bcrypt.compare(userPassword, hashedPassword);
 
     return validPassword;
+  }
+
+  //banUser
+  async banUser(userId: string, isBlock: boolean) {
+    const res = await this.userModel.update({userId: userId}, {userIsBlock: isBlock});
+    return res;
+  }
+
+  //banUser
+  async getUserById(userId: string) {
+    const res = await this.userModel.findOne({userId: userId});
+    return res;
+  }
+
+  //banUser
+  async editUserById(userId: string, userInfor: EditUserDto) {
+    let obj = {}
+    for (const [key, value] of Object.entries(userInfor)) {
+      if( value !== null && value !== "" ){
+        obj[`${key}`] = value
+      }
+    }
+    const res = await this.userModel.update({userId: userId}, obj);
+    return res;
   }
 
   // Add user
