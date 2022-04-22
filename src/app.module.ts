@@ -23,6 +23,7 @@ import { TypeProgramsModule } from './typePrograms/typePrograms.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
 import { CvsModule } from './cv/cv.module';
+import { InforCandidatesModule } from './informationcandidate/inforcandidate.module';
 
 @Module({
   imports: [
@@ -57,7 +58,8 @@ import { CvsModule } from './cv/cv.module';
     TypeProgramsModule,
     DocumentsModule,
     AdmissionProcessModule,
-    CvsModule
+    CvsModule,
+    InforCandidatesModule
   ],
 
   controllers: [AppController],

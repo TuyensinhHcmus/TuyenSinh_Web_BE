@@ -129,7 +129,7 @@ export class AuthService {
     async verifyOTP(otp: string, userId: string) {
         try {
             // Get user from unverifyuser database
-            const user = await this.unVerifyUsersService.getSingleUser(userId)
+            let user = await this.unVerifyUsersService.getSingleUser(userId)
 
             const [OTP, time] = user.userSecret.split('-');
 
@@ -155,12 +155,17 @@ export class AuthService {
                 const tokens = await this.getTokens(verifiedUser.userId, verifiedUser.userEmail);
                 await this.updateRefreshToken(verifiedUser.userId, tokens.refreshToken)
 
+                // return {
+                //     verify: verify(),
+                //     message: "Đã xác thực thành công !",
+                //     user: verifiedUser,
+                //     tokens: tokens
+                // }
+                user = await this.unVerifyUsersService.getSingleUser(userId)
                 return {
-                    verify: verify(),
-                    message: "Đã xác thực thành công !",
-                    user: verifiedUser,
-                    tokens: tokens
-                }
+                    user: user,
+                    token: tokens
+                };
             }
             return {
                 verify: verify(),
