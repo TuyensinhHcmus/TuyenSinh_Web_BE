@@ -22,10 +22,10 @@ export class TypeProgramsService {
     
     let typePrograms = await createQueryBuilder()
       .from(typeProgramMethod, 'tpm')
-      .where('tpm.methodId = :methodId', { methodId: methodId })
+      .where('tpm.methodId = :methodId', { methodId })
       .leftJoinAndSelect(typeProgram, 'tp', 'tp.typeProgramId = tpm.typeProgramId')
       .getRawMany()
-
+          
     typePrograms = typePrograms.map(item => ({
       typeProgramId: item.tp_typeProgramId,
       typeProgramName: item.tp_typeProgramName
