@@ -34,9 +34,9 @@ export class NewsAdmissionController {
     @Query('sortBy') sortBy: string,
     @Query('page') page: number,
     @Query('perPage') perPage: number,
-  ) {
-    const news = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
-    return news;
+  ): Promise<any> {
+    const { newsTotal, news } = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
+    return { newsTotal, news };
   }
 
 }
