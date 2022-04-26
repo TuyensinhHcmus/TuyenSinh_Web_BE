@@ -7,7 +7,9 @@ import {
   Patch,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { AtGuard } from 'src/common/guards';
 import { EditUserDto } from './dto/edit-user-dto';
 
 import { UsersService } from './users.service';
@@ -26,7 +28,7 @@ export class UsersController {
     return res;
   }
 
-
+  @UseGuards(AtGuard)
   @Post('/editUserById')
   async editUserById(
     @Body('userId') userId: string,
@@ -37,6 +39,7 @@ export class UsersController {
     return res;
   }
 
+  @UseGuards(AtGuard)
   @Post('/getUserById')
   async getUserById(
     @Body('userId') userId: string
