@@ -84,7 +84,7 @@ export class MethodsService {
   {
     const methods = await this.methodRepo
       .createQueryBuilder('method')
-      .where("(method.methodParentId != '') and (timestamp(curdate()) between method.methodDateStart AND method.methodDateEnd)")
+      .where("(method.methodParentId != '') and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)")
       .getMany()
     return methods;
   }
@@ -93,7 +93,7 @@ export class MethodsService {
   {
     const method = await this.methodRepo
       .createQueryBuilder('method')
-      .where("(method.methodId = :id) and (timestamp(curdate()) between method.methodDateStart AND method.methodDateEnd)", { id: methodId })
+      .where("(method.methodId = :id) and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)", { id: methodId })
       .getOne()
 
     return !!method;
