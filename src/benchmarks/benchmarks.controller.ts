@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AddBenchmarkDto } from './dto/add-benchmark.dto';
 import { UpdateBenchmarkDto } from './dto/update-benchmark.dto';
@@ -20,6 +21,15 @@ export class BenchmarksController {
   @Get()
   async getAllBenchmarks(): Promise<benchmark[]> {
     const benchmarks = await this.benchmarksService.getBenchmarks();
+    return benchmarks;
+  }
+
+  @Get('getByYear')
+  async getAllBenchmarksByYear(
+    @Query('year') year: string
+  ): Promise<any[]> {
+    const benchmarks = await this.benchmarksService.getBenchmarksByYear(year);
+
     return benchmarks;
   }
 

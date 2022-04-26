@@ -18,13 +18,24 @@ export class BenchmarksService {
     return benchmarks;
   }
 
+  async getBenchmarksByYear(year: string): Promise<any[]> {
+    const benchmarks = await this.benchmarksRepo.find({
+      select: ["benchmarkMajorId", "benchmarkScore"],
+      where: { benchmarkYear: parseInt(year) }
+    })
+
+    return benchmarks;
+  }
+
   async updateBenchmark(id: string, updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
 
-    const { benchmarkImage } = updateBenchmarkDto;
+    const { benchmarkMajorId, benchmarkYear, benchmarkScore } = updateBenchmarkDto;
 
     const benchmark = await this.findBenchmark(id);
 
-    benchmark.benchmarkImage = benchmarkImage;
+    benchmark.benchmarkMajorId = benchmarkMajorId;
+    benchmark.benchmarkYear = benchmarkYear;
+    benchmark.benchmarkScore = benchmarkScore;
    
     await this.benchmarksRepo.update({benchmarkId: parseInt(id)}, benchmark);
 

@@ -12,7 +12,18 @@ export class benchmark {
     benchmarkId: number
 
     @Column({
-        type: 'text',
+        type: 'char',
+        length: 20
     })
-    benchmarkImage: string
+    benchmarkMajorId: string
+
+    @Column({
+        type: 'year',
+    })
+    benchmarkYear: number
+
+    @Column({
+        type: 'float',
+    })
+    benchmarkScore: number
 }

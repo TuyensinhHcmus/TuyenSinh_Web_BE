@@ -4,7 +4,7 @@
 // methodImage text 
 // methodParentId char(5)
 
-import { Column, Entity } from "typeorm";
+import { Column, Entity, Timestamp } from "typeorm";
 
 @Entity("method")
 export class method {
@@ -39,4 +39,14 @@ export class method {
         length: 5,
     })
     methodParentId: string
+
+    @Column({
+        type: 'timestamp',
+    })
+    methodDateStart: Timestamp
+
+    @Column({
+        type: 'timestamp',
+    })
+    methodDateEnd: Timestamp
 }
