@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { AddMethodDto } from './dto/add-method.dto';
@@ -17,11 +18,19 @@ import { method } from './method.entity';
 export class MethodsController {
   constructor(private readonly methodsService: MethodsService) {}
 
-
+  // [GET] /methods/getMethodCanApply
   @Get('getMethodCanApply')
   async getMethodCanApply()
   {
     return await this.methodsService.getMethodCanApply();
+  }
+
+  // [GET] /methods/getStatusApply
+  @Get('getStatusApply')
+  async getStatusApply(
+    @Query('methodId') methodId: string
+  ) {
+    return await this.methodsService.getStatusApply(methodId);
   }
 
   // [GET] /methods

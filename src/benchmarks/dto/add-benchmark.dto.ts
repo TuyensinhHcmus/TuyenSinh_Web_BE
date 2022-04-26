@@ -2,5 +2,11 @@ import { IsNotEmpty } from 'class-validator'
 
 export class AddBenchmarkDto {
     @IsNotEmpty()
-    benchmarkImage: string;
+    benchmarkMajorId: string;
+
+    @IsNotEmpty()
+    benchmarkYear: number;
+
+    @IsNotEmpty()
+    benchmarkScore: number;
 }

@@ -90,4 +90,13 @@ export class schoolinfo {
         }
     )
     schoolinforImages: string
+
+
+    @Column(
+        {
+            type: 'text',
+        }
+    )
+    schoolinfoBenchmarkImage: string
+    
 }

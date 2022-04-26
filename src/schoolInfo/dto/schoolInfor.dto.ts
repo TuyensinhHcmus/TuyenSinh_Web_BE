@@ -34,4 +34,7 @@ export class SchoolInforDto {
 
     @IsNotEmpty() 
     schoolinforImages: string
+
+    @IsNotEmpty() 
+    schoolinfoBenchmarkImage: string
 }

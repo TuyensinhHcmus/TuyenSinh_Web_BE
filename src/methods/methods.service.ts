@@ -82,13 +82,20 @@ export class MethodsService {
 
   async getMethodCanApply()
   {
-    const methods = await this.methodRepo.find({});
-    const listMethod = [];
-    methods.forEach(method => { 
-      if(method.methodParentId != ''){
-        listMethod.push(method);
-      } 
-    });
-    return listMethod;
+    const methods = await this.methodRepo
+      .createQueryBuilder('method')
+      .where("(method.methodParentId != '') and (timestamp(curdate()) between method.methodDateStart AND method.methodDateEnd)")
+      .getMany()
+    return methods;
+  }
+
+  async getStatusApply(methodId: string): Promise<boolean>
+  {
+    const method = await this.methodRepo
+      .createQueryBuilder('method')
+      .where("(method.methodId = :id) and (timestamp(curdate()) between method.methodDateStart AND method.methodDateEnd)", { id: methodId })
+      .getOne()
+
+    return !!method;
   }
 }
