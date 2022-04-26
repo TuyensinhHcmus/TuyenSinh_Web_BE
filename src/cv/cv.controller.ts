@@ -7,17 +7,20 @@ import {
     Patch,
     Delete,
     Query,
+    UseGuards,
 } from '@nestjs/common';
 import { AddCVDto } from './dto/add-cv.dto';
 import { CvsService } from './cv.service';
 import { cv } from './cv.entity';
 import { AddListCVDto } from './dto/add-listcv.dto';
 import { UpdateCVDto } from './dto/update-cv.dto';
+import { AtGuard } from 'src/common/guards';
 @Controller('cvs')
 export class CvsController {
     constructor(private readonly cvsService: CvsService) { }
 
     // [GET] /getlistcv
+    @UseGuards(AtGuard)
     @Get('getlistcv')
     async getListCvs(
       @Query('userId') userId: string
@@ -27,18 +30,21 @@ export class CvsController {
     }
 
     // [POST] /addACV
+    @UseGuards(AtGuard)
     @Post('addACV')
     async addCv(@Body() addCvDto: AddCVDto) {
       return await this.cvsService.insertCv(addCvDto);
     }
 
-    // [POST] /addListCV 
+    // [POST] /addListCV
+    @UseGuards(AtGuard)
     @Post('addListCV')
     async addListCV(@Body() addListCVData: AddListCVDto) {
       return await this.cvsService.changeStateCv(addListCVData);
     }
 
-    // [Update] /updateCV 
+    // [Update] /updateCV
+    @UseGuards(AtGuard)
     @Post('updateCV')
     async updateCV (@Body() updateCVData: UpdateCVDto) {
       return await this.cvsService.updateCv(updateCVData);

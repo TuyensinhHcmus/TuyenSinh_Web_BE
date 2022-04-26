@@ -67,7 +67,8 @@ export class UsersService {
       userPassword: userPasswordHash,
       userType: userEmail ? 'email': 'phone',
       userRole: 'user',
-      userSecret: userSecret
+      userSecret: userSecret,
+      userPhone: uuidv4()
     });
 
     const result = await this.userModel.save(newUser);
