@@ -8,6 +8,7 @@ import {
     Delete,
     Query,
     UseGuards,
+    Req,
 } from '@nestjs/common';
 import { AddCVDto } from './dto/add-cv.dto';
 import { CvsService } from './cv.service';
@@ -23,8 +24,9 @@ export class CvsController {
     @UseGuards(AtGuard)
     @Get('getlistcv')
     async getListCvs(
-      @Query('userId') userId: string
+      @Req() req
     ): Promise<any[]> {
+        const userId = req.user.userId;
         const cvs = await this.cvsService.getListCVByUserId(userId);
         return cvs;
     }

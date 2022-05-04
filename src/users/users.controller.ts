@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AtGuard } from 'src/common/guards';
 import { EditUserDto } from './dto/edit-user-dto';
@@ -31,10 +32,10 @@ export class UsersController {
   @UseGuards(AtGuard)
   @Post('/editUserById')
   async editUserById(
-    @Body('userId') userId: string,
+    @Req() req,
     @Body() userInfor: EditUserDto
   ) {
-
+    const userId = req.user.userId;
     const res = await this.usersService.editUserById(userId, userInfor);
     return res;
   }
@@ -42,9 +43,9 @@ export class UsersController {
   @UseGuards(AtGuard)
   @Post('/getUserById')
   async getUserById(
-    @Body('userId') userId: string
+    @Req() req
   ) {
-
+    const userId = req.user.userId
     const res = await this.usersService.getUserById(userId);
     return res;
   }
