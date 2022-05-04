@@ -3,9 +3,6 @@ import { CvInterface } from "./cv.interface";
 
 export class AddCVDto {
     @IsNotEmpty()
-    userId: string
-
-    @IsNotEmpty()
     method: string
 
     @IsArray()

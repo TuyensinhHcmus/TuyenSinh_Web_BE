@@ -34,22 +34,30 @@ export class CvsController {
     // [POST] /addACV
     @UseGuards(AtGuard)
     @Post('addACV')
-    async addCv(@Body() addCvDto: AddCVDto) {
-      return await this.cvsService.insertCv(addCvDto);
+    async addCv(
+      @Body() addCvDto: AddCVDto,
+      @Req() req) {
+      const userId = req.user.userId;
+      return await this.cvsService.insertCv(addCvDto, userId);
     }
 
     // [POST] /addListCV
     @UseGuards(AtGuard)
     @Post('addListCV')
-    async addListCV(@Body() addListCVData: AddListCVDto) {
-      return await this.cvsService.changeStateCv(addListCVData);
+    async addListCV(
+      @Req() req) {
+      const userId = req.user.userId;
+      return await this.cvsService.changeStateCv(userId);
     }
 
     // [Update] /updateCV
     @UseGuards(AtGuard)
     @Post('updateCV')
-    async updateCV (@Body() updateCVData: UpdateCVDto) {
-      return await this.cvsService.updateCv(updateCVData);
+    async updateCV (
+      @Body() updateCVData: UpdateCVDto,
+      @Req() req) {
+      const userId = req.user.userId;
+      return await this.cvsService.updateCv(updateCVData, userId);
     }
 
     // // [GET] /contacts/:id

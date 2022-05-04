@@ -46,9 +46,9 @@ export class CvsService {
     await this.aspirationService.insertAspiration(aspirationData);
   }
 
-  async insertCv(addCVDto: AddCVDto) {
+  async insertCv(addCVDto: AddCVDto, userId: string) {
     try {
-      const { userId, method, listAspiration, fileUrl } = addCVDto;
+      const { method, listAspiration, fileUrl } = addCVDto;
 
       // Save cv into cv database
       const { cvId } = await this.addCv(method, userId, fileUrl);
@@ -68,8 +68,7 @@ export class CvsService {
     }
   }
 
-  async changeStateCv(addListCVData: AddListCVDto) {
-    const { userId } = addListCVData;
+  async changeStateCv(userId: string) {
     // Find all cv have cvUserId is userId
     const listCv = await this.cvsRepo.find({ cvUserId: userId });
 
@@ -149,9 +148,9 @@ export class CvsService {
   }
 
   // Update
-  async updateCv(updateCVData: UpdateCVDto){
+  async updateCv(updateCVData: UpdateCVDto, userId: string){
     try {
-      const { userId, cvId, method, listAspiration, fileUrl } = updateCVData;
+      const { cvId, method, listAspiration, fileUrl } = updateCVData;
 
       // Find cv by cvId
       let cv = await this.cvsRepo.findOne({cvId: cvId});
