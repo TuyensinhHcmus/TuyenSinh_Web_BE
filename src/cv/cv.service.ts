@@ -147,8 +147,46 @@ export class CvsService {
     return result;
   }
 
+  async getAllCVs(): Promise<any[]> {
+    let listcvs = await this.cvsRepo.find({});
+    return listcvs;
+  }
+
   // Update
   async updateCv(updateCVData: UpdateCVDto, userId: string){
+    try {
+      const { cvId, method, listAspiration, fileUrl } = updateCVData;
+
+      // Find cv by cvId
+      let cv = await this.cvsRepo.findOne({cvId: cvId});
+
+      cv.cvMethodId = method;
+      cv.cvFile = fileUrl;
+
+      // Update cv
+      await this.cvsRepo.update({cvId: cvId}, cv);
+
+      // Update list aspiration
+      for (let i = 0; i < listAspiration.length; i++) {
+
+        // Save aspiration into aspiration database
+        let aspiration = new UpdateAspirationDto();
+        aspiration.aspirationMajor = listAspiration[i].major;
+        aspiration.aspirationCvId = cvId;
+
+        let updateAspiration = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+      }
+
+      return {
+        cvId: cvId,
+        message: "Đã cập nhật thành công !"
+      };
+    } catch (error) {
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async updateCVsStatusByFile(updateCVData: UpdateCVDto){
     try {
       const { cvId, method, listAspiration, fileUrl } = updateCVData;
 

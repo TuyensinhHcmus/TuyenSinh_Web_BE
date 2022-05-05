@@ -30,8 +30,8 @@ export class UsersController {
   }
 
   @UseGuards(AtGuard)
-  @Post('/editUserById')
-  async editUserById(
+  @Post('/editUserInfor')
+  async editUserInfor(
     @Req() req,
     @Body() userInfor: EditUserDto
   ) {
@@ -41,8 +41,8 @@ export class UsersController {
   }
 
   @UseGuards(AtGuard)
-  @Post('/getUserById')
-  async getUserById(
+  @Get('/getUserInfor')
+  async getUserInfor(
     @Req() req
   ) {
     const userId = req.user.userId
