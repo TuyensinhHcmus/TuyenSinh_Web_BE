@@ -17,13 +17,14 @@ export class UnVerifyUsersService {
     ) { }
 
     // Add user
-    async insertUser(userName: string, userEmail: string, userPasswordHash: string, userSecret: string) {
+    async insertUser(userName: string, userEmail: string, userPasswordHash: string, userPhone: string, userContactAddress: string ,userSecret: string) {
         //console.log(userSecret)
         const newUser = await this.unVerifyUserRepo.create({
             userId: uuidv4(),
             userName: userName,
             userEmail: userEmail,
             userPassword: userPasswordHash,
+            userContactAddress: userContactAddress,
             userSecret: userSecret
         });
 

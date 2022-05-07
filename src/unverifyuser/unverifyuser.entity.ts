@@ -58,4 +58,12 @@ export class unverifyuser {
         }
     )
     userSecret: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userContactAddress: string
 }

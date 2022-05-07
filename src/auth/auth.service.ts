@@ -84,6 +84,8 @@ export class AuthService {
                 registrationData.userName,
                 registrationData.userEmail,
                 hashedPassword,
+                registrationData.userPhone,
+                registrationData.useeContactAddress,
                 OTP + '-' + time
             )
 
@@ -149,6 +151,8 @@ export class AuthService {
                     user.userName,
                     user.userEmail,
                     user.userPassword,
+                    user.userPhone,
+                    user.userContactAddress,
                     user.userSecret
                 )
 

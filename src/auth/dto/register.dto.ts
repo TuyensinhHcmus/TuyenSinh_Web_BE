@@ -14,6 +14,14 @@ export class RegisterDto {
   @MaxLength(32)
   //@Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {message: 'Password is too week'})
   userPassword: string;
+
+  @IsString()
+  @IsNotEmpty()
+  userPhone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  useeContactAddress: string;
 }
  
 export default RegisterDto;
