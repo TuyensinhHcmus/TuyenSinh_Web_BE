@@ -106,4 +106,115 @@ export class user {
         }
     )
     userSecret: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 9
+        }
+    )
+    userGender: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 32
+        }
+    )
+    userEthnicity: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 50
+        }
+    )
+    userNationality: string
+
+    @Column(
+        {
+            type: 'date',
+        }
+    )
+    userBirthday: Date
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userBirthplace: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userContactAddress: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 32
+        }
+    )
+    userProvinceResidence: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 32
+        }
+    )
+    userDistrictResidence: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userAddress12: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 100
+        }
+    )
+    userSchool12: string
+	
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userAddress11: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 100
+        }
+    )
+    userSchool11: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userAddress10: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 100
+        }
+    )
+    userSchool10: string
 }

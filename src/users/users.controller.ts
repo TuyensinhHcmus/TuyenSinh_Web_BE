@@ -55,7 +55,9 @@ export class UsersController {
   async addUser(
     @Body('userName') userName: string,
     @Body('userEmail') userEmail: string,
+    @Body('userPhone') userPhone: string,
     @Body('userPassword') userPassword: string,
+    @Body('userContactAddress') userContactAddress: string,
   ) {
 
     const hashedPassword = await this.usersService.hashPassword(userPassword);
@@ -64,7 +66,9 @@ export class UsersController {
       userName,
       userEmail,
       hashedPassword,
-      ''
+      userPhone,
+      userContactAddress,
+      '',
     );
     return {...newUser, id: newUser.userId};
   }

@@ -8,6 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { user } from './users.entity';
 import { Repository } from 'typeorm';
 import { EditUserDto } from './dto/edit-user-dto';
+import { string } from '@hapi/joi';
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -58,7 +59,14 @@ export class UsersService {
   }
 
   // Add user
-  async insertUser(userName: string, userEmail: string, userPasswordHash: string, userSecret: string) {
+  async insertUser(
+      userName: string, 
+      userEmail: string, 
+      userPasswordHash: string, 
+      userPhone: string, 
+      userContactAddress: string,
+      userSecret: string 
+    ) {
 
     const newUser = await this.userModel.create({
       userId: uuidv4(),
@@ -68,7 +76,8 @@ export class UsersService {
       userType: userEmail ? 'email': 'phone',
       userRole: 'user',
       userSecret: userSecret,
-      userPhone: uuidv4()
+      userPhone: userPhone,
+      userContactAddress: userContactAddress
     });
 
     const result = await this.userModel.save(newUser);
