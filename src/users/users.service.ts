@@ -99,9 +99,19 @@ export class UsersService {
     return user;
   }
 
-  async checkExistUser(userEmail: string) {
+  async checkExistUser(userEmail: string, userPhone: string) {
     const user = await this.userModel.findOne({userEmail: userEmail});
-    return user;
+    const user1 = await this.userModel.findOne({userPhone: userPhone});
+    let result = undefined;
+    if(user !== undefined)
+    {
+      result = user;
+    }
+    else if(user1 !== undefined)
+    {
+      result = user1;
+    }
+    return result;
   }
 
 

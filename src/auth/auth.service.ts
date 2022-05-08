@@ -62,7 +62,7 @@ export class AuthService {
 
     async registerUser(registrationData: RegisterDto) {
         //Check user is exist in database user
-        const isExistUser = await this.usersService.checkExistUser(registrationData.userEmail);
+        const isExistUser = await this.usersService.checkExistUser(registrationData.userEmail, registrationData.userPhone);
  
         if (isExistUser === undefined) {
             // Generate OTP and time expired for user
@@ -99,7 +99,7 @@ export class AuthService {
             }
         }
         else {
-            throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
+            throw new HttpException('User with that email or number phone already exists', HttpStatus.BAD_REQUEST);
         }
 
         // const hashedPassword = await this.usersService.hashPassword(registrationData.userPassword);
