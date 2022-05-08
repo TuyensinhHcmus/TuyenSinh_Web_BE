@@ -85,7 +85,7 @@ export class AuthService {
                 registrationData.userEmail,
                 hashedPassword,
                 registrationData.userPhone,
-                registrationData.useeContactAddress,
+                registrationData.userContactAddress,
                 OTP + '-' + time
             )
 
