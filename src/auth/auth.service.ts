@@ -63,7 +63,7 @@ export class AuthService {
     async registerUser(registrationData: RegisterDto) {
         //Check user is exist in database user
         const isExistUser = await this.usersService.checkExistUser(registrationData.userEmail);
-
+ 
         if (isExistUser === undefined) {
             // Generate OTP and time expired for user
             const OTP = otpGenerator.generate(6, {

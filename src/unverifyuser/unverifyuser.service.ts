@@ -24,6 +24,7 @@ export class UnVerifyUsersService {
             userName: userName,
             userEmail: userEmail,
             userPassword: userPasswordHash,
+            userPhone: userPhone,
             userContactAddress: userContactAddress,
             userSecret: userSecret
         });
