@@ -24,6 +24,17 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.getListNews();
   }
 
+  @Get('search')
+  async searchNewsByKeyword(
+    @Query('keyword') keyword: string,
+    @Query('sortBy') sortBy: string,
+    @Query('page') page: number,
+    @Query('perPage') perPage: number,
+    ): Promise<any> {
+      const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword);
+      return { newsTotal, news };
+  }
+
   @Get('detail/:id')
   async getNewsBySlug(@Param('id') _slug: string): Promise<news> {
     return await this.newsAdmissionService.getNewsBySlug(_slug);

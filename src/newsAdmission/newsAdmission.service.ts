@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -54,6 +54,27 @@ export class NewsAdmissionService {
     }
 
     return news;
+  }
+
+  async searchNews(perPage: number, sortCondition: string, page: number ,keyword: string) {
+
+    const condition = sortCondition === "DESC" ? -1 : 1;
+    
+    const [ news, newsTotal ] = await Promise.all([
+      this.newsRepo.find({
+        where:{
+          newsTitle: Like(`%${keyword}%`),
+        },
+        take: perPage,
+        order:{
+          newsDateCreate: condition
+        },
+        skip: (page - 1) * perPage
+      }),
+      this.newsRepo.count({})
+    ]) 
+    
+    return { newsTotal, news };
   }
 
   async getNewsByAmount(perPage: number, sortCondition: string, page: number) {
