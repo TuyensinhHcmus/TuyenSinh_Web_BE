@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator'
+import { Timestamp } from 'typeorm';
 
 export class AddMethodDto {
 
@@ -16,4 +17,14 @@ export class AddMethodDto {
 
     @IsNotEmpty()
     parentId: string;
+
+    @IsNotEmpty()
+    dateStart: Timestamp;
+
+    @IsNotEmpty()
+    dateEnd: Timestamp;
+
+    @IsNotEmpty()
+    typeOfTrainingID: string;
+
 }

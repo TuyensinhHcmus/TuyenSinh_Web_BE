@@ -49,4 +49,10 @@ export class method {
         type: 'timestamp',
     })
     methodDateEnd: Timestamp
+
+    @Column({
+        type: 'char',
+        length: 4,
+    })
+    methodTypeOfTrainingID: string
 }

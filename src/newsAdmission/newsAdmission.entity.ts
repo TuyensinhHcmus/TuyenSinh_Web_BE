@@ -53,4 +53,10 @@ export class news {
         length: 255,
     })
     newsSlug: string
+
+    @Column({
+        type: 'char',
+        length: 4,
+    })
+    newsTypeOfTrainingID: string
 }

@@ -1,4 +1,5 @@
 import { IsNotEmpty } from 'class-validator'
+import { Timestamp } from 'typeorm';
 
 export class AddResQuestionDto {
 
@@ -6,8 +7,14 @@ export class AddResQuestionDto {
     qnaCreator: string;
 
     @IsNotEmpty()
-    qnaQuestionImage: string;
+    qnaDateCreate: Timestamp;
 
     @IsNotEmpty()
-    qnaAnswerImage: string;
+    qnaQuestion: string;
+
+    @IsNotEmpty()
+    qnaAnswer: string;
+
+    @IsNotEmpty()
+    qnaTypeOfTrainingID: string;
 }

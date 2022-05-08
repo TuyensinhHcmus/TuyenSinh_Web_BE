@@ -14,14 +14,17 @@ export class MethodsService {
   ) {}
 
   async insertMethod(addMethodDto: AddMethodDto): Promise<method> {
-    const { methodId, name, content, image, parentId } = addMethodDto;
+    const { methodId, name, content, image, parentId, dateStart, dateEnd, typeOfTrainingID } = addMethodDto;
 
     const method = await this.methodRepo.create({
       methodId: methodId,
       methodName: name,
       methodContent: content,  
       methodImage: image,
-      methodParentId: parentId
+      methodParentId: parentId,
+      methodDateStart: dateStart,
+      methodDateEnd: dateEnd,
+      methodTypeOfTrainingID: typeOfTrainingID
     });
 
     const result = await this.methodRepo.save(method);
@@ -49,7 +52,7 @@ export class MethodsService {
 
   async updateMethod(id: string, updateMethodDto: UpdateMethodDto): Promise<method> {
 
-    const { methodId, name, content, image, parentId } = updateMethodDto;
+    const { methodId, name, content, image, parentId, dateStart, dateEnd, typeOfTrainingID } = updateMethodDto;
 
     const method = await this.findMethod(id);
 
@@ -58,6 +61,9 @@ export class MethodsService {
     method.methodContent = content;
     method.methodImage = image;
     method.methodParentId = parentId;
+    method.methodDateStart = dateStart;
+    method.methodDateEnd = dateEnd;
+    method.methodTypeOfTrainingID = typeOfTrainingID;
 
     await this.methodRepo.update({methodId: id}, method);
     

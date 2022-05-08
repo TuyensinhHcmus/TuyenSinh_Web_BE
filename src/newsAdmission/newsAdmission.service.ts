@@ -16,7 +16,7 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-    const { title, content, dateCreate, creator, state, slug } = addNewsAdmissionDto;
+    const { title, content, dateCreate, creator, state, slug, typeOfTrainingID } = addNewsAdmissionDto;
 
     const news = this.newsRepo.create({
       newsTitle: title,
@@ -24,7 +24,8 @@ export class NewsAdmissionService {
       newsDateCreate: dateCreate,
       newsCreator: creator,
       newsState: state,
-      newsSlug: slug
+      newsSlug: slug,
+      newsTypeOfTrainingID: typeOfTrainingID
     });
 
     const result = await this.newsRepo.save(news);

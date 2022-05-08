@@ -4,7 +4,7 @@
 // qnaQuestionImage text 
 // qnaAnswerImage text
 
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 
 @Entity("qna")
 export class qna {
@@ -14,22 +14,38 @@ export class qna {
     @Column(
         {
             type: 'char',
-            length: 36
+            length: 36,
+            nullable: false
         }
     )
     qnaCreator: string
 
     @Column(
         {
-            type: 'text',
+            type: 'timestamp',
         }
     )
-    qnaQuestionImage: string
+    qnaDateCreate: Timestamp
 
     @Column(
         {
-            type: 'text',
+            type: 'text'
         }
     )
-    qnaAnswerImage: string
+    qnaQuestion: string
+
+    @Column(
+        {
+            type: 'text'
+        }
+    )
+    qnaAnswer: string
+
+    @Column(
+        {
+            type: 'char',
+            length: 4
+        }
+    )
+    qnaTypeOfTrainingID: string
 }

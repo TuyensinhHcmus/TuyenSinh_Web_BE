@@ -42,4 +42,12 @@ export class program {
         }
     )
     programDocumentLink: string
+
+    @Column(
+        {
+            type: 'char',
+            length: 4,
+        }
+    )
+    programTypeOfTrainingID: string
 }

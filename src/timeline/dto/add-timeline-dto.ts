@@ -14,4 +14,7 @@ export class TimelineDto {
 
     @IsNotEmpty()
     timelineEnd: Date;
+
+    @IsNotEmpty()
+    timelineTypeOfTrainingID: string;
 }

@@ -15,12 +15,14 @@ export class ResQuestionsService {
   ) { }
 
   async insertResQuestion(addResQuestionDto: AddResQuestionDto): Promise<qna> {
-    const { qnaAnswerImage, qnaCreator, qnaQuestionImage } = addResQuestionDto;
+    const { qnaCreator, qnaDateCreate, qnaQuestion, qnaAnswer, qnaTypeOfTrainingID } = addResQuestionDto;
 
     let resquestion = this.qnaRepo.create({
-      qnaAnswerImage:  qnaAnswerImage, 
-      qnaCreator: qnaCreator, 
-      qnaQuestionImage: qnaQuestionImage
+      qnaCreator,
+      qnaDateCreate,
+      qnaAnswer,
+      qnaQuestion,
+      qnaTypeOfTrainingID
     });
 
     const result = await this.qnaRepo.save(resquestion);
@@ -97,8 +99,8 @@ export class ResQuestionsService {
   //   return listResQuestion;
   // }
   async getListResQuestion(localeCode: string): Promise<qna[]> {
-    const listNews = await this.qnaRepo.find({})
-    return listNews
+    const listResQuestion = await this.qnaRepo.find({})
+    return listResQuestion;
     // const res = await this.qnaRepo.find({
     //   relations:["qna_trans"]
     // })

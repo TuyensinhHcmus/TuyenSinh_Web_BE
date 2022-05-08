@@ -15,13 +15,14 @@ export class ProgramsService {
   ) {}
 
   async insertProgram(addProgramDto: AddProgramDto): Promise<program> {
-    const { majorId, name, content, documentLink } = addProgramDto;
+    const { majorId, name, content, documentLink, typeOfTrainingID } = addProgramDto;
 
     const program = this.programRepo.create({
       programMajorId: majorId,
       programName: name,
       programContent: content,
-      programDocumentLink: documentLink
+      programDocumentLink: documentLink,
+      programTypeOfTrainingID: typeOfTrainingID
     });
 
     const result = await this.programRepo.save(program);
@@ -49,14 +50,15 @@ export class ProgramsService {
 
   async updateProgram(id: string, updateProgramDto: UpdateProgramDto): Promise<program> {
 
-    const { majorId, name, content, documentLink } = updateProgramDto;
+    const { majorId, name, content, documentLink, typeOfTrainingID } = updateProgramDto;
 
     await this.programRepo.update({ programId: parseInt(id) }, {
       programId: parseInt(id),
       programMajorId: majorId,
       programName: name,
       programContent: content,
-      programDocumentLink: documentLink
+      programDocumentLink: documentLink,
+      programTypeOfTrainingID: typeOfTrainingID
     })
 
     return await this.findProgram(id);

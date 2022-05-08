@@ -12,4 +12,7 @@ export class AddProgramDto {
 
     @IsNotEmpty()
     documentLink: string;
+
+    @IsNotEmpty()
+    typeOfTrainingID: string;
 }

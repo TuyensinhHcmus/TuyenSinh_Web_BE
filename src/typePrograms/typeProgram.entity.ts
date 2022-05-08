@@ -15,4 +15,11 @@ export class typeProgram {
         length: 50,
     })
     typeProgramName: string
+
+    @Column({
+        type: 'char',
+        length: 4,
+    })
+    typeProgramTypeOfTrainingID: string
+
 }

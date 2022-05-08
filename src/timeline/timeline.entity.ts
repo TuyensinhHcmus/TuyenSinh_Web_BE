@@ -35,4 +35,10 @@ export class timeline {
     })
     timelineContent: string
 
+    @Column({
+        type: 'char',
+        length: 4
+    })
+    timelineTypeOfTrainingID: string
+
 }
