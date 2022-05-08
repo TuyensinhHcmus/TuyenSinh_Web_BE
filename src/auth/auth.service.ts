@@ -85,7 +85,7 @@ export class AuthService {
                 registrationData.userEmail,
                 hashedPassword,
                 registrationData.userPhone,
-                registrationData.useeContactAddress,
+                registrationData.userContactAddress,
                 OTP + '-' + time
             )
 
@@ -144,7 +144,7 @@ export class AuthService {
                     return false;
                 }
             }
-
+            console.log("before insert")
             if (verify()) {
                 //transfer database of user from unVerifyUser to user
                 const verifiedUser = await this.usersService.insertUser(
@@ -155,7 +155,7 @@ export class AuthService {
                     user.userContactAddress,
                     user.userSecret
                 )
-
+                console.log("after insert")
                 const tokens = await this.getTokens(verifiedUser.userId, verifiedUser.userEmail);
                 await this.updateRefreshToken(verifiedUser.userId, tokens.refreshToken)
 

@@ -21,7 +21,7 @@ export class RegisterDto {
 
   @IsString()
   @IsNotEmpty()
-  useeContactAddress: string;
+  userContactAddress: string;
 }
  
 export default RegisterDto;
