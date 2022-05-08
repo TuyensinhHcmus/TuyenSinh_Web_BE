@@ -16,6 +16,7 @@ import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
 import { TimelineModule } from './timeline/timeline.module';
 import { UnVerifyUsersModule } from './unverifyuser/unverifyuser.module';
+import { TypeOfTrainingModule } from './typeOfTraining/typeOfTraining.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TuitionsModule } from './tuitions/tuitions.module';
 import { BenchmarksModule } from './benchmarks/benchmarks.module';
@@ -46,6 +47,7 @@ import { InforCandidatesModule } from './informationcandidate/inforcandidate.mod
     TimelineModule,
     ResQuestionsModule,
     UsersModule,
+    TypeOfTrainingModule,
     AuthModule,
     MethodsModule,
     MajorsModule,
