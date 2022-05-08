@@ -197,6 +197,8 @@ export class AuthService {
             registerData.userEmail = user.userEmail;
             registerData.userName = user.userName;
             registerData.userPassword = user.userPassword;
+            registerData.userPhone = user.userPhone;
+            registerData.userContactAddress = user.userContactAddress;
 
             await this.mailService.sendUserConfirmation(registerData, OTP);
 
