@@ -14,13 +14,19 @@ import { typeProgram } from 'src/typePrograms/typeProgram.entity';
 import { method } from 'src/methods/method.entity';
 import { UpdateCVDto } from './dto/update-cv.dto';
 import { UpdateAspirationDto } from 'src/aspiration/dto/update-aspiration.dto';
+import { CvaisService } from 'src/cvapplyinformation/cvapplyinformation.service';
+import { SaveCVAIDto } from 'src/cvapplyinformation/dto/save-cvai.dto';
+import { UsersService } from 'src/users/users.service';
+import { EditUserDto } from 'src/users/dto/edit-user-dto';
 
 @Injectable()
 export class CvsService {
   constructor(
     @InjectRepository(cv)
     private readonly cvsRepo: Repository<cv>,
-    private readonly aspirationService: AspirationService
+    private readonly aspirationService: AspirationService,
+    private readonly cvaiSerivce: CvaisService,
+    private readonly userService: UsersService,
   ) { }
 
   async addCv(cvMethodId: string, cvUserId: string, cvFile: string): Promise<cv> {
@@ -29,7 +35,7 @@ export class CvsService {
       cvUserId: cvUserId,
       cvFile: cvFile,
       cvDateCreate: new Date(),
-      cvState: "Đã lưu"
+      cvState: "Đã lưu",
     })
 
     const result = await this.cvsRepo.save(cv);
@@ -48,8 +54,25 @@ export class CvsService {
 
   async insertCv(addCVDto: AddCVDto, userId: string) {
     try {
-      const { method, listAspiration, fileUrl } = addCVDto;
-
+      const { method, listAspiration, fileUrl,
+        userName,
+        userGender,
+        userPhone,
+        userEmail,
+        userEthnicity,
+        userNationality,
+        userBirthday,
+        userBirthplace,
+        userContactAddress,
+        userProvinceResidence,
+        userDistrictResidence,
+        userAddress12,
+        userSchool12,
+        userAddress11,
+        userSchool11,
+        userAddress10,
+        userSchool10,
+        ...CVAIData } = addCVDto;
       // Save cv into cv database
       const { cvId } = await this.addCv(method, userId, fileUrl);
 
@@ -58,6 +81,31 @@ export class CvsService {
         // Save aspiration into aspiration database
         await this.addAspiration(cvId, listAspiration[i].typeProgram, listAspiration[i].major);
       }
+
+      // Save Information of CV into database
+      this.cvaiSerivce.saveApplyInformationCV(CVAIData);
+
+      // Update information of user in database
+      const userInfo = new EditUserDto();
+      userInfo.userName = userName,
+      userInfo.userGender = userGender,
+      userInfo.userPhone = userPhone,
+      userInfo.userEmail = userEmail,
+      userInfo.userEthnicity = userEthnicity,
+      userInfo.userNationality = userNationality,
+      userInfo.userBirthday = userBirthday,
+      userInfo.userBirthplace = userBirthplace,
+      userInfo.userContactAddress = userContactAddress,
+      userInfo.userProvinceResidence = userProvinceResidence,
+      userInfo.userDistrictResidence = userDistrictResidence,
+      userInfo.userAddress12 = userAddress12,
+      userInfo.userSchool12 = userSchool12,
+      userInfo.userAddress11 = userAddress11,
+      userInfo.userSchool11 = userSchool11,
+      userInfo.userAddress10 = userAddress10,
+      userInfo.userSchool10 = userSchool10,
+
+      this.userService.editUserById(userId, userInfo);
 
       return {
         cvId: cvId,
@@ -92,7 +140,7 @@ export class CvsService {
     return newArr
   }
   async getCvByUserId(userId: string) {
-    const listCV = await this.cvsRepo.find({cvUserId: userId});
+    const listCV = await this.cvsRepo.find({ cvUserId: userId });
     return listCV;
   }
 
@@ -153,18 +201,18 @@ export class CvsService {
   }
 
   // Update
-  async updateCv(updateCVData: UpdateCVDto, userId: string){
+  async updateCv(updateCVData: UpdateCVDto, userId: string) {
     try {
       const { cvId, method, listAspiration, fileUrl } = updateCVData;
 
       // Find cv by cvId
-      let cv = await this.cvsRepo.findOne({cvId: cvId});
+      let cv = await this.cvsRepo.findOne({ cvId: cvId });
 
       cv.cvMethodId = method;
       cv.cvFile = fileUrl;
 
       // Update cv
-      await this.cvsRepo.update({cvId: cvId}, cv);
+      await this.cvsRepo.update({ cvId: cvId }, cv);
 
       // Update list aspiration
       for (let i = 0; i < listAspiration.length; i++) {
@@ -186,18 +234,18 @@ export class CvsService {
     }
   }
 
-  async updateCVsStatusByFile(updateCVData: UpdateCVDto){
+  async updateCVsStatusByFile(updateCVData: UpdateCVDto) {
     try {
       const { cvId, method, listAspiration, fileUrl } = updateCVData;
 
       // Find cv by cvId
-      let cv = await this.cvsRepo.findOne({cvId: cvId});
+      let cv = await this.cvsRepo.findOne({ cvId: cvId });
 
       cv.cvMethodId = method;
       cv.cvFile = fileUrl;
 
       // Update cv
-      await this.cvsRepo.update({cvId: cvId}, cv);
+      await this.cvsRepo.update({ cvId: cvId }, cv);
 
       // Update list aspiration
       for (let i = 0; i < listAspiration.length; i++) {

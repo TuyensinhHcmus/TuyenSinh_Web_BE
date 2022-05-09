@@ -20,7 +20,7 @@ export class AspirationService {
 
         const admissionProcess = await this.aspirationRepo.create({
             aspirationMajor: aspirationMajor,
-            aspirationState: "Đã lưu",
+            aspirationState: "",
             aspirationCvId: aspirationCvId
         })
 

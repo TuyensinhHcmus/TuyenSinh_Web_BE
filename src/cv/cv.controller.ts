@@ -43,9 +43,10 @@ export class CvsController {
         return cvs;
     }
 
-    // [POST] /addACV
+    // [POST] /saveCv
+    // Thêm cv vào database
     @UseGuards(AtGuard)
-    @Post('addACV')
+    @Post('saveCv')
     async addCv(
       @Body() addCvDto: AddCVDto,
       @Req() req) {
@@ -53,9 +54,10 @@ export class CvsController {
       return await this.cvsService.insertCv(addCvDto, userId);
     }
 
-    // [POST] /addListCV
+    // [POST] /applyCVs
+    // Đổi trạng thái của CV sang đã nộp
     @UseGuards(AtGuard)
-    @Post('addListCV')
+    @Post('applyCVs')
     async addListCV(
       @Req() req) {
       const userId = req.user.userId;
