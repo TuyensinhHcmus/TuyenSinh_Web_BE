@@ -14,7 +14,8 @@ import { UsersModule } from 'src/users/users.module';
     TypeOrmModule.forFeature([cv]),
     AspirationModule,
     CvaisModule,
-    UsersModule
+    UsersModule,
+    CvaisModule
   ],
   
   controllers: [CvsController],

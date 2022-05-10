@@ -17,6 +17,7 @@ import { cv } from './cv.entity';
 import { AddListCVDto } from './dto/add-listcv.dto';
 import { UpdateCVDto } from './dto/update-cv.dto';
 import { AtGuard } from 'src/common/guards';
+import { UpdateStatusCVDto } from './dto/update-status.dto';
 @Controller('cvs')
 export class CvsController {
     constructor(private readonly cvsService: CvsService) { }
@@ -77,15 +78,17 @@ export class CvsController {
     @UseGuards(AtGuard)
     @Post('updateCVsStatusByFile')
     async updateCVsStatusByFile (
-      @Body() updateCVData: UpdateCVDto,
+      @Body() listUpdateStatusCVDto: Array<UpdateStatusCVDto>,
       @Req() req) {
-      const userRole = req.user.userRole;
-      if(userRole === 'admin')
-      {
-        return await this.cvsService.updateCVsStatusByFile(updateCVData);
-      }
+
+      return await this.cvsService.updateCVsStatusByFile(listUpdateStatusCVDto);
+      // const userRole = req.user.userRole;
+      // if(userRole === 'admin')
+      // {
+      //   return await this.cvsService.updateCVsStatusByFile(updateStatusCVDto);
+      // }
       
-      throw new UnauthorizedException("You don't have permission to perform this action");
+      // throw new UnauthorizedException("You don't have permission to perform this action");
     }
 
     // // [GET] /contacts/:id

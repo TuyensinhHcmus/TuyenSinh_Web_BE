@@ -2,10 +2,12 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("cvapplyinformation")
 export class cvapplyinformation {
-    @PrimaryGeneratedColumn({
+    @Column({
         type: 'int',
         unsigned: true,
-    })
+        primary: true
+    }
+    )
     cvaiId: number
 
     @Column(
