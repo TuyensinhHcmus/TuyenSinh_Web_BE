@@ -8,6 +8,7 @@ import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './token-payload.interface';
 let otpGenerator = require('otp-generator')
 import { UnVerifyUsersService } from 'src/unverifyuser/unverifyuser.service';
+import ChangePasswordDto from './dto/changePassword.dto';
 
 
 @Injectable()
@@ -250,20 +251,75 @@ export class AuthService {
         return null;
     }
 
+    async changePassword(changePasswordDto: ChangePasswordDto){
+        try {
+            // hash password of user
+            const hashPassword = await this.usersService.hashPassword(changePasswordDto.userPassword);
+
+            // update password of user
+            await this.usersService.updatePasswordUser(changePasswordDto.userId.toString(), hashPassword);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async veryfiOTPToChangePassword(userEmail: string, otp: string)
+    {
+        try {
+            // Get user from user database
+            let user = await this.usersService.getSingleUser(userEmail)
+
+            const [OTP, time] = user.userSecret.split('-');
+
+            const time_1 = parseInt(time) + Math.floor(Date.now() / 1000000) * 1000000
+            const verify = () => {
+                if (OTP === otp && time_1 >= Date.now()) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            if (verify()) {
+                
+                return {
+                    message: "Đã xác thực thành công !",
+                    userId: user.userId,
+                }
+            }
+            return {
+                verify: verify(),
+                expire: time_1 - Date.now()
+            };
+        }
+        catch (error) {
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     async forgetPassword(forgetPasswordDto: ForgetPasswordDto) {
         // get user
         const user = await this.usersService.getSingleUser(forgetPasswordDto.userEmail);
 
-        try {
-            // hash password of user
-            const hashPassword = await this.usersService.hashPassword(forgetPasswordDto.userPassword);
+        // Generate OTP and time expired for user
+        const OTP = otpGenerator.generate(6, {
+            alphabets: false,
+            upperCase: false,
+            specialChars: false
+        });
 
-            // update password of user
-            await this.usersService.updatePasswordUser(user.userId.toString(), hashPassword);
-        } catch (error) {
-            console.error(error);
-        }
+        let time = Date.now() + 60000;
+        const time_1 = Math.floor(time / 1000000);
+        time = time - time_1 * 1000000;
 
+        // Update userSecret of user
+        user.userSecret = OTP + '-' + time;
+        this.usersService.editUserById(user.userId, user);
+
+        // Send mail
+        await this.mailService.sendUserConfirmation(user, OTP);
+
+        return 
     }
-
 }

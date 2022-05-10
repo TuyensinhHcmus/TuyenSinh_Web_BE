@@ -18,6 +18,7 @@ import RegisterDto from './dto/register.dto';
 import ForgetPasswordDto from './dto/forgetPassword.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AtGuard, RtGuard, GgGuard } from 'src/common/guards';
+import ChangePasswordDto from './dto/changePassword.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -59,6 +60,19 @@ export class AuthController {
   @Post('forget-password')
   async forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return this.authService.forgetPassword(forgetPasswordDto);
+  }
+
+  @Post('veryfiOTPToChangePassword')
+  async veryfiOTPToChangePassword(
+    @Body('otp') otp: string,
+    @Body('userEmail') userEmail: string
+  ) {
+    return this.authService.veryfiOTPToChangePassword(userEmail, otp);
+  }
+
+  @Post('change-password')
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    return this.authService.changePassword(changePasswordDto);
   }
 
 
