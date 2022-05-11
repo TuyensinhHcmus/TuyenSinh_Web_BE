@@ -33,4 +33,14 @@ export class TypeProgramsService {
     
     return typePrograms;
   }
+
+  async getByTypeOfTraining(typeOfTrainingID: string): Promise<any []> {
+    
+    let typePrograms = await this.typeProgramsRepo.createQueryBuilder('tp')
+      .where('tp.typeProgramTypeOfTrainingID = :typeOfTrainingID', { typeOfTrainingID })
+      .getMany()
+        
+    return typePrograms;
+  }
+
 }
