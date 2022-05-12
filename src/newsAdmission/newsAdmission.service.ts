@@ -11,7 +11,7 @@ import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestj
 @Injectable()
 export class NewsAdmissionService {
   constructor(
-    @InjectRepository(news) 
+    @InjectRepository(news)
     private readonly newsRepo: Repository<news>,
   ) { }
 
@@ -41,7 +41,7 @@ export class NewsAdmissionService {
   }
 
   async updateStatus(id: number, status: string) {
-    const res = await this.newsRepo.update({newsId: id}, {newsState: status})
+    const res = await this.newsRepo.update({ newsId: id }, { newsState: status })
     return res;
   }
 
@@ -56,42 +56,53 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async searchNews(perPage: number, sortCondition: string, page: number ,keyword: string) {
+  async searchNews(perPage: number, sortCondition: string, page: number, keyword: string) {
 
     const condition = sortCondition === "DESC" ? -1 : 1;
-    
-    const [ news, newsTotal ] = await Promise.all([
+
+    const [news, newsTotal] = await Promise.all([
       this.newsRepo.find({
-        where:{
+        where: {
           newsTitle: Like(`%${keyword}%`),
         },
         take: perPage,
-        order:{
+        order: {
           newsDateCreate: condition
         },
         skip: (page - 1) * perPage
       }),
       this.newsRepo.count({})
-    ]) 
-    
+    ])
+
     return { newsTotal, news };
+  }
+
+  async getNewsByTypeOfTraining(typeOfTraining: string): Promise<news[]> {
+    const listNews = await this.newsRepo.find({
+      where: { newsTypeOfTrainingID: typeOfTraining },
+      order: {
+        newsDateCreate: 'ASC'
+      }
+    }
+    )
+    return listNews;
   }
 
   async getNewsByAmount(perPage: number, sortCondition: string, page: number) {
 
     const condition = sortCondition === "DESC" ? -1 : 1;
-    
-    const [ news, newsTotal ] = await Promise.all([
+
+    const [news, newsTotal] = await Promise.all([
       this.newsRepo.find({
         take: perPage,
-        order:{
+        order: {
           newsDateCreate: condition
         },
         skip: (page - 1) * perPage
       }),
       this.newsRepo.count({})
-    ]) 
-    
+    ])
+
     return { newsTotal, news };
   }
 }

@@ -11,6 +11,7 @@ import {
   Req,
 } from '@nestjs/common';
 import { AtGuard } from 'src/common/guards';
+import ChangePasswordDto from './dto/change-password.dto';
 import { EditUserDto } from './dto/edit-user-dto';
 
 import { UsersService } from './users.service';
@@ -70,7 +71,7 @@ export class UsersController {
       userContactAddress,
       '',
     );
-    return {...newUser, id: newUser.userId};
+    return { ...newUser, id: newUser.userId };
   }
 
   @Get()
@@ -79,23 +80,21 @@ export class UsersController {
     return users;
   }
 
-  // @Get(':id')
-  // async updatePasswordUser(
-  //   @Param('id') userId: string,
-  //   @Body('userPassword') userPassword: string,
-  // ) {
-  //   const userPasswordHash = await this.usersService.hashPassword(userPassword);
-  //   await this.usersService.updatePasswordUser(userId, userPasswordHash);
-
-  //   return userPasswordHash;
-  // }
+  @UseGuards(AtGuard)
+  @Post('change-password')
+  async resetPassword(
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req
+  ) {
+    const userId = req.user.userId;
+    return this.usersService.changePassword(changePasswordDto, userId);
+  }
 
   @Get('getUserByQuantity')
   async getNumberUser(
     @Query('perPage') perPage: number,
     @Query('page') page: number,
-  )
-  {
+  ) {
     const users = await this.usersService.getUsersByAmount(perPage, page);
     return users;
   }

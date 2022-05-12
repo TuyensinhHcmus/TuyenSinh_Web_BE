@@ -106,4 +106,9 @@ export class ResQuestionsService {
     // })
     // return res
   }
+
+  async getQnaByTypeOfTraining(typeOfTraining: string): Promise<qna[]> {
+    const listResQuestion = await this.qnaRepo.find({qnaTypeOfTrainingID: typeOfTraining})
+    return listResQuestion;
+  }
 }

@@ -8,7 +8,7 @@ import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './token-payload.interface';
 let otpGenerator = require('otp-generator')
 import { UnVerifyUsersService } from 'src/unverifyuser/unverifyuser.service';
-import ChangePasswordDto from './dto/changePassword.dto';
+import ChangePasswordDto from './dto/resetPassword.dto';
 
 
 @Injectable()
@@ -251,7 +251,7 @@ export class AuthService {
         return null;
     }
 
-    async changePassword(changePasswordDto: ChangePasswordDto){
+    async resetPassword(changePasswordDto: ChangePasswordDto){
         try {
             // hash password of user
             const hashPassword = await this.usersService.hashPassword(changePasswordDto.userPassword);

@@ -9,6 +9,7 @@ import { user } from './users.entity';
 import { Repository } from 'typeorm';
 import { EditUserDto } from './dto/edit-user-dto';
 import { string } from '@hapi/joi';
+import ChangePasswordDto from './dto/change-password.dto';
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -124,6 +125,35 @@ export class UsersService {
     await this.userModel.update({ userId: userId }, user);
 
     return user;
+  }
+
+  // Change password
+  async changePassword(changePasswordDto: ChangePasswordDto, userId: string){
+    const {oldPassword, newPassword} = changePasswordDto;
+
+    // Check oldPassword is true in database
+    let user = await this.userModel.findOne({userId: userId});
+    const password = user.userPassword;
+    const isPassword = await this.comparePassword(oldPassword, password);
+
+    // Update password
+    if(isPassword)
+    {
+      // Hash password
+      const hashPassword = await this.hashPassword(newPassword);
+
+      // Change password
+      user.userPassword = hashPassword;
+      await this.userModel.update({userId: userId}, user);
+
+      return {
+        message: "Đã cập nhật thành công!"
+      }
+    }
+
+    return {
+      message: "Mật khẩu cũ không đúng!"
+    };
   }
 
   // Get user by amount

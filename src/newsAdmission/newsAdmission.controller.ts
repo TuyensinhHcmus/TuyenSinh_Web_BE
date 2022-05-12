@@ -30,9 +30,9 @@ export class NewsAdmissionController {
     @Query('sortBy') sortBy: string,
     @Query('page') page: number,
     @Query('perPage') perPage: number,
-    ): Promise<any> {
-      const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword);
-      return { newsTotal, news };
+  ): Promise<any> {
+    const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword);
+    return { newsTotal, news };
   }
 
   @Get('detail/:id')
@@ -48,6 +48,13 @@ export class NewsAdmissionController {
   ): Promise<any> {
     const { newsTotal, news } = await this.newsAdmissionService.getNewsByAmount(perPage, sortBy, page);
     return { newsTotal, news };
+  }
+
+  @Get('getNewsByTypeOfTraining')
+  async getNewsByTypeOfTraining(
+    @Query('TypeOfTraining') typeOfTraining: string
+  ): Promise<news[]> {
+    return await this.newsAdmissionService.getNewsByTypeOfTraining(typeOfTraining);
   }
 
 }
