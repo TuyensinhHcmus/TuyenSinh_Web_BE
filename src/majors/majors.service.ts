@@ -12,6 +12,7 @@ export class MajorsService {
   constructor(
     @InjectRepository(major)
     private readonly majorRepo: Repository<major>,
+
   ) { }
 
   async insertMajor(addMajorDto: AddMajorDto): Promise<major> {
@@ -79,6 +80,24 @@ export class MajorsService {
   async getSingleMajor(majorId: string): Promise<major> {
     const major = await this.findMajor(majorId);
     return major;
+  }
+
+  async getMajorByMethodId( methodId: string)
+  {
+    // const majors = await this.majorRepo
+    //   .createQueryBuilder('major')
+    //   .leftJoinAndSelect("major.methods", "methods")
+    //   .getMany()
+    // console.log(majors);
+
+    const majors = await this.majorRepo.find({
+      relations:["method"],
+      where:{
+        majorId: "7420101"
+      }
+    })
+    
+    return majors;
   }
 
   async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {
