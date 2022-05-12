@@ -25,6 +25,15 @@ export class TypeProgramsController {
     return typePrograms;
   }
 
+  // [GET] /type-programs/getByTypeOfTraining
+  @Get('getByTypeOfTraining')
+  async getByTypeOfTraining(
+    @Query('typeOfTrainingID') typeOfTrainingID: string
+  ): Promise<any[]> {
+    const typePrograms = await this.typeProgramsService.getByTypeOfTraining(typeOfTrainingID);
+    return typePrograms;
+  }
+
   // [GET] /type-programs
   @Get()
   async getAllTypePrograms(): Promise<typeProgram[]> {
