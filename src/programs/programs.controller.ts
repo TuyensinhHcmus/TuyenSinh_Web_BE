@@ -37,6 +37,12 @@ export class ProgramsController {
     return await this.programsService.deleteProgram(id);
   }
 
+  @Get('/getlistbytypeoftraining/:id')
+  async getProgramByTypeOfTrainingID(@Param('id') typeOfTrainingId: string): Promise<program[]> {
+    const program = await this.programsService.getProgramsByTypeOfTrainingId(typeOfTrainingId);
+    return program;
+  }
+
   // [GET] /programs/:id
   @Get(':id')
   async getProgram(@Param('id') id: string): Promise<program> {

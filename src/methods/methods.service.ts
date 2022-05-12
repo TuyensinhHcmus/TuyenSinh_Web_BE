@@ -37,6 +37,14 @@ export class MethodsService {
     return methods;
   }
 
+  async getMethodsByTypeOfTrainingId(typeOfTrainingId: string): Promise<method[]> {
+    const methods = await this.methodRepo.find({
+      methodTypeOfTrainingID: typeOfTrainingId
+    });
+
+    return methods;
+  }
+
   async deleteMethod(methodId: string): Promise<void> {
     try {
       await this.methodRepo.delete({ methodId: methodId });

@@ -46,6 +46,13 @@ export class MethodsController {
     return await this.methodsService.insertMethod(addMethodDto);
   }
 
+  // [GET] /methods/:id
+  @Get('/getlistbytypeoftraining/:id')
+  async getMethodByTypeOfTraining(@Param('id') typeOfTrainingId: string): Promise<method[]> {
+    const methods = await this.methodsService.getMethodsByTypeOfTrainingId(typeOfTrainingId);
+    return methods;
+  }
+
   // [DELETE] /methods/:id
   @Delete(':id')
   async removeMethod(@Param('id') methodId: string): Promise<void> {
