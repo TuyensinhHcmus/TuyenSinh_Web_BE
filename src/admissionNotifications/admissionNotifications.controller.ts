@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
+import { AtGuard } from "src/common/guards";
 import { AdmissionNotificationsService } from "./admissionNotifications.service";
 import { AddNotificationDto } from "./dto/add-notification.dto";
 
@@ -32,4 +33,13 @@ export class AdmissionNotificationsController {
         return notifications
     }
 
+    @Post('/notifys')
+    getAllNotifys(
+        //@Req() req,
+        @Body('userId') userId: string
+    ) {
+        //const userId = req.user.userId;
+        const notifications =  this.admissionNotificationsService.getAllNotifys(userId)
+        return notifications
+    }
 }

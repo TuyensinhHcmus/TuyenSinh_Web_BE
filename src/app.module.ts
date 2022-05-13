@@ -25,6 +25,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
 import { CvsModule } from './cv/cv.module';
 import { InforCandidatesModule } from './informationcandidate/inforcandidate.module';
+import { AdmissionNotificationsModule } from './admissionNotifications/admissionNotifications.module';
 
 @Module({
   imports: [
@@ -61,7 +62,8 @@ import { InforCandidatesModule } from './informationcandidate/inforcandidate.mod
     DocumentsModule,
     AdmissionProcessModule,
     CvsModule,
-    InforCandidatesModule
+    InforCandidatesModule,
+    AdmissionNotificationsModule
   ],
 
   controllers: [AppController],
