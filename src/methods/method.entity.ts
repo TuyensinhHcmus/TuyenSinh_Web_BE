@@ -57,7 +57,7 @@ export class method {
     })
     methodTypeOfTrainingID: string
 
-    @ManyToMany(() => major, major => major.method, { cascade: ['insert', 'update'] })
+    @ManyToMany(() => major)
     @JoinTable()
     major: major[];
 }

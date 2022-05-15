@@ -37,8 +37,8 @@ export class MajorsController {
 
   // [GET] /majorsbyethodid
   @Get('/getmajorbymethodid/:id')
-  async getMajorsByMethodId(@Param('id') methodId: string): Promise<any[]> {
-    const majors = await this.majorsService.getMajorByMethodId(methodId);
+  async getMajorsByMethodId(@Param('id') methodId: string): Promise<any> {
+    const majors = await this.majorsService.getMajorsByMethodId(methodId);
     return majors;
   }
 

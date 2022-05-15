@@ -76,7 +76,30 @@ export class major {
   )
   majorAdmissionsInfo: string
 
-  @ManyToMany(() => method, method => method.major, { cascade: ['insert', 'update'] })
-  @JoinTable()
-  method: method[];
+  // @ManyToMany(() => method, method => method.major, { cascade: ['insert', 'update'] })
+  // @JoinTable()
+  // method: method[];
+}
+
+
+@Entity("majormethodrelation")
+export class majormethod {
+  @Column(
+    {
+      type: 'char',
+      length: 20,
+      primary: true
+    }
+  )
+  majorId: string
+
+  @Column(
+    {
+      type: 'char',
+      length: 5,
+      primary: true
+    }
+  )
+  methodId: string
+
 }
