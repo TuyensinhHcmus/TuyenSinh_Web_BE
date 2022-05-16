@@ -102,12 +102,12 @@ export class MajorsService {
     //   }
     // })
 
-    const methodContainListMajor = await this.methodRepo.find({
-      relations: ['major'],
-      where:{
-        methodId: methodId
-      }
-    })
+    // const methodContainListMajor = await this.methodRepo.find({
+    //   relations: ['major'],
+    //   where:{
+    //     methodId: methodId
+    //   }
+    // })
 
     const majors = await this.majorRepo.createQueryBuilder('major')
     .leftJoinAndMapOne( 'major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
