@@ -320,6 +320,8 @@ export class AuthService {
         // Send mail
         await this.mailService.sendUserConfirmation(user, OTP);
 
-        return 
+        return {
+            message: "Đã gửi OTP"
+        };
     }
 }

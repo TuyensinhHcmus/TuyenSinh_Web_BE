@@ -94,4 +94,5 @@ export class AdmissionNotificationsService {
     )
     return listNotify;
   }
+
 }
