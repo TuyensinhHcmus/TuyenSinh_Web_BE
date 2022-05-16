@@ -27,6 +27,12 @@ export class TimelineController {
         return genId
     }
 
+    @Get('/getlistbytypeoftraining/:id')
+    getTimelineByTypeOfTrainingID(@Param('id') typeOfTrainingId: string) {
+        const data =  this.timelineService.getTimelinesByTypeOfTrainingId(typeOfTrainingId)
+        return data
+    }
+
     @Get('getall')
     getTimelines() {
         const notifications =  this.timelineService.getTimelines()

@@ -1,4 +1,5 @@
-import { Column, Entity } from "typeorm";
+import { method } from "src/methods/method.entity";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 
 @Entity("major")
 export class major {
@@ -74,4 +75,31 @@ export class major {
     }
   )
   majorAdmissionsInfo: string
+
+  // @ManyToMany(() => method, method => method.major, { cascade: ['insert', 'update'] })
+  // @JoinTable()
+  // method: method[];
+}
+
+
+@Entity("majormethodrelation")
+export class majormethod {
+  @Column(
+    {
+      type: 'char',
+      length: 20,
+      primary: true
+    }
+  )
+  majorId: string
+
+  @Column(
+    {
+      type: 'char',
+      length: 5,
+      primary: true
+    }
+  )
+  methodId: string
+
 }

@@ -4,7 +4,8 @@
 // methodImage text 
 // methodParentId char(5)
 
-import { Column, Entity, Timestamp } from "typeorm";
+import { major } from "src/majors/major.entity";
+import { Column, Entity, JoinTable, ManyToMany, Timestamp } from "typeorm";
 
 @Entity("method")
 export class method {
@@ -55,4 +56,8 @@ export class method {
         length: 4,
     })
     methodTypeOfTrainingID: string
+
+    @ManyToMany(() => major)
+    @JoinTable()
+    major: major[];
 }

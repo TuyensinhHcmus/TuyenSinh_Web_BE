@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 import { Repository } from 'typeorm';
 
 import { AddMethodDto } from './dto/add-method.dto';
@@ -33,6 +34,14 @@ export class MethodsService {
 
   async getMethods(): Promise<method[]> {
     const methods = await this.methodRepo.find({});
+
+    return methods;
+  }
+
+  async getMethodsByTypeOfTrainingId(typeOfTrainingId: string): Promise<method[]> {
+    const methods = await this.methodRepo.find({
+      methodTypeOfTrainingID: typeOfTrainingId
+    });
 
     return methods;
   }
@@ -90,6 +99,7 @@ export class MethodsService {
   {
     const methods = await this.methodRepo
       .createQueryBuilder('method')
+      .leftJoinAndMapOne('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'typeoftraining.typeOfTrainingId = method.methodTypeOfTrainingID')
       .where("(method.methodParentId != '') and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)")
       .getMany()
     return methods;

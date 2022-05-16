@@ -4,14 +4,20 @@ import { Repository, createQueryBuilder } from 'typeorm';
 
 import { AddMajorDto } from './dto/add-major.dto';
 import { UpdateMajorDto } from './dto/update-major.dto';
-import { major } from './major.entity';
+import { major, majormethod } from './major.entity';
 import { faculty } from 'src/faculties/faculty.entity';
+import { method } from 'src/methods/method.entity';
+import { typeProgram } from 'src/typePrograms/typeProgram.entity';
 
 @Injectable()
 export class MajorsService {
   constructor(
     @InjectRepository(major)
     private readonly majorRepo: Repository<major>,
+
+    @InjectRepository(method)
+    private readonly methodRepo: Repository<method>,
+
   ) { }
 
   async insertMajor(addMajorDto: AddMajorDto): Promise<major> {
@@ -79,6 +85,55 @@ export class MajorsService {
   async getSingleMajor(majorId: string): Promise<major> {
     const major = await this.findMajor(majorId);
     return major;
+  }
+
+  async getMajorsByMethodId( methodId: string)
+  {
+    // const majors = await this.majorRepo
+    //   .createQueryBuilder('major')
+    //   .leftJoinAndSelect("major.methods", "methods")
+    //   .getMany()
+    // console.log(majors);
+
+    // const majors = await this.majorRepo.find({
+    //   relations:["method"],
+    //   where:{
+    //     majorId: "7420101"
+    //   }
+    // })
+
+    const methodContainListMajor = await this.methodRepo.find({
+      relations: ['major'],
+      where:{
+        methodId: methodId
+      }
+    })
+
+    const majors = await this.majorRepo.createQueryBuilder('major')
+    .leftJoinAndMapOne( 'major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
+    .leftJoinAndMapOne('major.majorMapMethod', majormethod, 'majormethod', 'majormethod.majorId = major.majorId')
+    .select([
+          "major.majorId",
+          "major.majorTypeProgram",
+          "major.majorName",
+          "major.majorIntroduction",
+          "major.majorImageName",
+          "major.majorTarget", 
+          "major.majorTypeProgram",
+          "major.majorVideo",
+          "major.majorTuition",
+          "major.majorAdmissionsInfo",
+          "typeProgram.typeProgramId",
+          "typeProgram.typeProgramName",
+          "majormethod.methodId",
+          "majormethod.majorId",
+        ],)
+    .where('majormethod.methodId = :methodId', { methodId })
+    .getMany()
+
+    // console.log(methodContainListMajor)
+    
+    return majors;
   }
 
   async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {

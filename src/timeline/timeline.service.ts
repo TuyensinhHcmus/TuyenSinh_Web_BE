@@ -32,6 +32,11 @@ export class TimelineService {
     return timeline;
   }
 
+  async getTimelinesByTypeOfTrainingId(typeOfTrainingId: string) {
+    let timeline = await this.timelineModel.find({ timelineTypeOfTrainingID: typeOfTrainingId })
+    return timeline;
+  }
+
   async getTimelines() {
     const timelines = await this.timelineModel.find({});
     return timelines;

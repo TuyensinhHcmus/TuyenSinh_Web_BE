@@ -35,6 +35,12 @@ export class ProgramsService {
     return programs;
   }
 
+  async getProgramsByTypeOfTrainingId(typeOfTrainingId: string): Promise<program[]> {
+    const programs = await this.programRepo.find({programTypeOfTrainingID: typeOfTrainingId});
+
+    return programs;
+  }
+
   async deleteProgram(id: string): Promise<void> {
     try {
       await this.programRepo.delete({ programId: parseInt(id) });

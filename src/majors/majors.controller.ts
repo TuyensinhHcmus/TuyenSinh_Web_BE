@@ -35,6 +35,13 @@ export class MajorsController {
     return majors;
   }
 
+  // [GET] /majorsbyethodid
+  @Get('/getmajorbymethodid/:id')
+  async getMajorsByMethodId(@Param('id') methodId: string): Promise<any> {
+    const majors = await this.majorsService.getMajorsByMethodId(methodId);
+    return majors;
+  }
+
   // [POST] /majors
   @Post()
   async addMajor(@Body() addMajorDto: AddMajorDto): Promise<major> {
