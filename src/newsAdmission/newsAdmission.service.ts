@@ -56,7 +56,7 @@ export class NewsAdmissionService {
     return news;
   }
 
-  async searchNews(perPage: number, sortCondition: string, page: number, keyword: string) {
+  async searchNews(perPage: number, sortCondition: string, page: number, keyword: string, typeOfTraining: string) {
 
     const condition = sortCondition === "DESC" ? -1 : 1;
 
@@ -64,6 +64,7 @@ export class NewsAdmissionService {
       this.newsRepo.find({
         where: {
           newsTitle: Like(`%${keyword}%`),
+          newsTypeOfTrainingID: typeOfTraining || ""
         },
         take: perPage,
         order: {
@@ -73,6 +74,9 @@ export class NewsAdmissionService {
       }),
       this.newsRepo.count({})
     ])
+
+    // console.log("typeOfTraining", typeOfTraining,news );
+    
 
     return { newsTotal, news };
   }

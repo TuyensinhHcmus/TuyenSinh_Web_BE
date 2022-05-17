@@ -30,8 +30,9 @@ export class NewsAdmissionController {
     @Query('sortBy') sortBy: string,
     @Query('page') page: number,
     @Query('perPage') perPage: number,
+    @Query('typeOfTraining') typeOfTraining: string,
   ): Promise<any> {
-    const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword);
+    const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword, typeOfTraining);
     return { newsTotal, news };
   }
 
