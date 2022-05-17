@@ -258,6 +258,10 @@ export class AuthService {
 
             // update password of user
             await this.usersService.updatePasswordUser(changePasswordDto.userId.toString(), hashPassword);
+
+            return {
+                message: "Đã cập nhật mật khẩu thành công!"
+            }
         } catch (error) {
             console.error(error);
         }

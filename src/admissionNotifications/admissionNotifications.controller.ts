@@ -6,7 +6,7 @@ import { AddNotificationDto } from "./dto/add-notification.dto";
 
 
 
-//@UseGuards(AuthGuard())
+@UseGuards(AuthGuard())
 @Controller('admission-notifications')
 export class AdmissionNotificationsController {
     constructor(private readonly admissionNotificationsService: AdmissionNotificationsService) { }
