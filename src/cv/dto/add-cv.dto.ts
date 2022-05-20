@@ -11,57 +11,57 @@ export class AddCVDto extends PartialType(SaveCVAIDto){
     @ValidateNested({each: true})
     listAspiration: [CvInterface]
 
-    @IsString()
+    //@IsString()
     fileUrl: string
 
-    @IsString()
+    //@IsString()
     userName: string
 
-    @IsString()
+    //@IsString()
     userGender: string
 
-    @IsString()
+    //@IsString()
     userPhone: string
 
-    @IsString()
+    //@IsString()
     userEmail: string
 
-    @IsString()
+    //@IsString()
     userEthnicity: string
 
-    @IsString()
+    //@IsString()
     userNationality: string
 
-    @IsDateString()
+    //@IsDateString()
     userBirthday: Date
 
-    @IsString()
+    //@IsString()
     userBirthplace: string
     
-    @IsString()
+    //@IsString()
     userContactAddress: string
 
-    @IsString()
+    //@IsString()
     userProvinceResidence: string
 
-    @IsString()
+    //@IsString()
     userDistrictResidence: string
 
-    @IsString()
+    //@IsString()
     userAddress12: string
 
-    @IsString()
+    //@IsString()
     userSchool12: string
 
-    @IsString()
+    //@IsString()
     userAddress11: string
 
-    @IsString()
+    //@IsString()
     userSchool11: string
 
-    @IsString()
+    //@IsString()
     userAddress10: string
 
-    @IsString()
+    //@IsString()
     userSchool10: string
 }
