@@ -25,6 +25,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
 import { CvsModule } from './cv/cv.module';
 import { InforCandidatesModule } from './informationcandidate/inforcandidate.module';
+import { ResultModule } from './result/result.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { InforCandidatesModule } from './informationcandidate/inforcandidate.mod
       autoLoadEntities: true,
       synchronize: true,
     }),
+    ResultModule,
     FacultiesModule,
     NewsAdmissionModule,
     TimelineModule,
