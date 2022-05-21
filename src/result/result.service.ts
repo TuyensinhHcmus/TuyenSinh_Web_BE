@@ -19,23 +19,23 @@ export class ResultService {
     const url = 'https://script.google.com/macros/s/AKfycbyABnXazg7oPI3IqfeT9WJmJuYCkOABVbxNlJexS5jWGrPJ3C13WaaHbmjbTGpyJ54jdg/exec?id=' + id
     // let res = this.httpService.get("34.125.14.233:3001/res-question/getlist?localeCode=vi_VN")
     const { data } = await firstValueFrom(this.httpService.get(url));
-    console.log("data", url, typeof data);
+    // console.log("data", url, typeof data);
     let dataString = data.toString();
     let pos1 = dataString.indexOf("<table")
     let pos2 = dataString.indexOf("</table>")
-    console.log('pos1', pos1, pos2);
+    // console.log('pos1', pos1, pos2);
     let tableDataString = dataString.slice(pos1, pos2)
 
     let endTr = tableDataString.indexOf("</tr>")
     let tableRows = tableDataString.slice(tableDataString.indexOf("<tr"), endTr)
-    console.log("tableRows", tableRows);
+    // console.log("tableRows", tableRows);
     let column = []
 
     let posTh = tableRows.indexOf('<th')
     while (posTh > 0) {
       let endRow = tableRows.indexOf('</th>')
       let thTag = tableRows.slice(posTh, endRow)
-      let row = thTag.slice(thTag.indexOf('>') + 1, thTag.indexOf('</th>'))
+      let row = thTag.slice(thTag.indexOf('>') + 1)
 
       tableRows = tableRows.slice(endRow + 5)
 
@@ -44,17 +44,17 @@ export class ResultService {
       posTh = tableRows.indexOf('<th')
     }
 
-    console.log("column", column);
+    // console.log("column", column);
 
     let valueRows = tableDataString.slice(endTr + 5)
-    console.log("valueRows", valueRows);
+    // console.log("valueRows", valueRows);
     let valueData = []
 
     let posTd = valueRows.indexOf('<td')
     while (posTd > 0) {
       let endRow = valueRows.indexOf('</td>')
       let tdTag = valueRows.slice(posTd, endRow)
-      let row = tdTag.slice(tdTag.indexOf('>') + 1, tdTag.indexOf('</td>'))
+      let row = tdTag.slice(tdTag.indexOf('>') + 1)
 
       valueRows = valueRows.slice(endRow + 5)
 
