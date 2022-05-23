@@ -14,6 +14,23 @@ import { firstValueFrom } from 'rxjs';
 export class ResultService {
   constructor(private httpService: HttpService) { }
 
+  decodeEntities = (encodedString : string) => {
+    var translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+    var translate = {
+      "nbsp": " ",
+      "amp": "&",
+      "quot": "\"",
+      "lt": "<",
+      "gt": ">"
+    };
+    return encodedString.replace(translate_re, function (match, entity) {
+      return translate[entity];
+    }).replace(/&#(\d+);/gi, function (match, numStr) {
+      var num = parseInt(numStr, 10);
+      return String.fromCharCode(num);
+    });
+  }
+
   // getResult(id: string): Observable<AxiosResponse<string>> {
   async getResult(id: string): Promise<any[]> {
     const url = 'https://script.google.com/macros/s/AKfycbyABnXazg7oPI3IqfeT9WJmJuYCkOABVbxNlJexS5jWGrPJ3C13WaaHbmjbTGpyJ54jdg/exec?id=' + id
@@ -28,6 +45,7 @@ export class ResultService {
 
     let endTr = tableDataString.indexOf("</tr>")
     let tableRows = tableDataString.slice(tableDataString.indexOf("<tr"), endTr)
+    tableRows = this.decodeEntities(tableRows)
     // console.log("tableRows", tableRows);
     let column = []
 
@@ -47,6 +65,7 @@ export class ResultService {
     // console.log("column", column);
 
     let valueRows = tableDataString.slice(endTr + 5)
+    valueRows = this.decodeEntities(valueRows)
     // console.log("valueRows", valueRows);
     let valueData = []
 
@@ -68,7 +87,7 @@ export class ResultService {
     for (let i = 0; i < column.length; i++) {
       let row = column[i] ?? ""
       let value = valueData[i] ?? ""
-      res.push({row, value})
+      res.push({ row, value })
     }
 
     return res
