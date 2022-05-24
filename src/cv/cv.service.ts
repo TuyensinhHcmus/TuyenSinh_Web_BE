@@ -77,6 +77,9 @@ export class CvsService {
         userSchool11,
         userAddress10,
         userSchool10,
+        // userIdentityNumber,
+        // userWardResidence,
+        // userStreetResidence,
         ...data } = addCVDto;
       // Save cv into cv database
       const { cvId } = await this.addCv(method, userId, fileUrl);
@@ -137,6 +140,9 @@ export class CvsService {
       userInfo.userSchool11 = userSchool11;
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
+      // userInfo.userIdentityNumber = userIdentityNumber;
+      // userInfo.userWardResidence = userWardResidence;
+      // userInfo.userStreetResidence = userStreetResidence;
 
       await this.userService.editUserById(userId, userInfo);
 
@@ -206,6 +212,7 @@ export class CvsService {
         'cv.cvId',
         'method.methodName',
         'cv.cvFile',
+        'cv.cvState',
 
         'user.userName',
         'user.userGender',
@@ -260,6 +267,7 @@ export class CvsService {
         cvId: cv.cv_cvId,
         method: cv.method_methodName,
         fileUrl: cv.cv_cvFile,
+        cvState: cv.cv_cvState,
 
         userName: cv.user_userName,
         userGender: cv.user_userGender,
@@ -620,6 +628,39 @@ export class CvsService {
       }
       return {
         message: "Đã cập nhật thành công !"
+      };
+    } catch (error) {
+      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async deleteCv(cvId: number) {
+    try {
+      // Find listAspiration
+      const listAspiration = await createQueryBuilder('cv')
+      .where('cv.cvId = :cvId', { cvId: cvId })
+      .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+      .select([
+        'cv.cvId',
+        'aspiration.aspirationId',
+      ])
+      .getRawMany();
+
+      
+      // Delete list aspiration of cv 
+      for (let i = 0; i < listAspiration.length; i++) {
+        // Delete aspiration of cv 
+        await this.aspirationService.deleteAspiration(listAspiration[i].aspiration_aspirationId);
+      }
+
+      // Delete cvInformation
+      await this.cvaiSerivce.deleteCvai(cvId);
+
+      // Delete cv
+      await this.cvsRepo.delete({cvId: cvId});
+
+      return {
+        message: "Đã xóa thành công !"
       };
     } catch (error) {
       throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);

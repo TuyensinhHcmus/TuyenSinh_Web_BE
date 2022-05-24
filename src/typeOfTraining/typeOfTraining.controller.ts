@@ -3,8 +3,11 @@ import {
   Post,
   Body,
   Get,
+  Query,
+  Delete,
 } from '@nestjs/common';
 import { AddTypeOfTrainingDto } from './dto/addTypeOfTraining.dto';
+import { UpdateTypeOfTrainingDto } from './dto/updateTypeOfTraining.dto';
 import { typeoftraining } from './typeOfTraining.entity';
 
 import { TypeOfTrainingService } from './typeOfTraining.service';
@@ -23,5 +26,27 @@ export class TypeOfTrainingController {
   async getAllTypeOfTraining()
   {
     return await this.typeOfTrainingService.getAll();
+  }
+
+  @Get('getOneTraining')
+  async getOneTraining(
+    @Query('typeOfTrainingId') typeOfTrainingId: string
+  )
+  {
+    return await this.typeOfTrainingService.getOne(typeOfTrainingId);
+  }
+
+  @Delete('deleteTraining')
+  async deleteTraining(
+    @Query('typeOfTrainingId') typeOfTrainingId: string
+  ){
+    return await this.typeOfTrainingService.deleteTraining(typeOfTrainingId);
+  }
+
+  @Post('updateTraining')
+  async updateTraining(
+    @Body() updateTypeOfTrainingDto: UpdateTypeOfTrainingDto
+  ){
+    return await this.typeOfTrainingService.updateTraining(updateTypeOfTrainingDto);
   }
 }

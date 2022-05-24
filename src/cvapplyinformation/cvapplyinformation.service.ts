@@ -29,4 +29,9 @@ export class CvaisService {
 
     await this.cvaisRepo.update({ cvaiId: updateCVAIDto.cvaiId }, updateCVAIDto)
   }
+
+  async deleteCvai(cvId: number) {
+
+    await this.cvaisRepo.delete({ cvaiId: cvId });
+  }
 }
