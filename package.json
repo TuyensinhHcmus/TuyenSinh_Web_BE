@@ -39,6 +39,7 @@
     "class-validator": "^0.13.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
+    "firebase-admin": "^10.2.0",
     "googleapis": "^97.0.0",
     "handlebars": "^4.7.7",
     "mongoose": "^6.2.4",
