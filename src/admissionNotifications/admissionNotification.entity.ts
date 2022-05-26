@@ -43,4 +43,25 @@ export class notification {
     })
     notificationState: string
 
+    @Column({
+        type: 'varchar',
+        length: 255
+    })
+    notificationBody: string
+
+    @Column({
+        type: 'varchar',
+        length: 30
+    })
+    notificationType: string
+
+    @Column({
+        type: 'text',
+    })
+    notificationImage: string
+
+    @Column({
+        type: 'text',
+    })
+    notificationData: string
 }
