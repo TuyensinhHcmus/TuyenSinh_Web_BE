@@ -217,4 +217,44 @@ export class user {
         }
     )
     userSchool10: string
+
+    @Column(
+        {
+            type: 'char',
+            length: 15
+        }
+    )
+    userIdentityNumber: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userWardResidence: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    userStreetResidence: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    currentTokenDevice: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 255
+        }
+    )
+    oldTokenDevice: string
 }
