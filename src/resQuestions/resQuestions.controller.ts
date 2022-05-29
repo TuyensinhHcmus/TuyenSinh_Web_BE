@@ -13,9 +13,31 @@ export class ResQuestionsController {
       return await this.resQuestionService.insertResQuestion(addResQuestionDto);
     }
 
+    @Post('/update')
+    async updateResQuestion(
+      @Body('qnaQuestion') qnaQuestion: string, 
+      @Body('qnaAnswer') qnaAnswer: string, 
+      @Body('qnaId') qnaId: number,
+      @Body('qnaTypeOfTrainingID') qnaTypeOfTrainingID: string,
+
+      ): Promise<any> 
+    {
+      return await this.resQuestionService.updateResQuestion(qnaId, qnaQuestion, qnaAnswer, qnaTypeOfTrainingID);
+    }
+
     @Get('getlist')
     async getListResQuestion(@Param('localeCode') localeCode: string): Promise<qna[]> {
       return await this.resQuestionService.getListResQuestion(localeCode);
+    }
+
+    @Get('getqnabyid')
+    async getOneResQuestion(@Query('qnaId') qnaid: number): Promise<qna> {
+      return await this.resQuestionService.getResQuestionById(qnaid);
+    }
+
+    @Post('delete')
+    async deleteResQuestion(@Body('qnaId') qnaId: number): Promise<any> {
+      return await this.resQuestionService.deleteResQuestion(qnaId);
     }
 
     @Get('getQnaByTypeOfTraining')
