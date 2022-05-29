@@ -7,9 +7,6 @@ export class AddResQuestionDto {
     qnaCreator: string;
 
     @IsNotEmpty()
-    qnaDateCreate: Timestamp;
-
-    @IsNotEmpty()
     qnaQuestion: string;
 
     @IsNotEmpty()
