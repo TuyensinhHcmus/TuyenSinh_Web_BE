@@ -1,15 +1,32 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { CronJob } from "cron";
+import RegisterDto from "src/auth/dto/register.dto";
+import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
 import { notification } from "./admissionNotification.entity";
 import { AddNotificationDto } from "./dto/add-notification.dto";
 
 @Injectable()
 export class AdmissionNotificationsService {
+  cronJob: CronJob
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
-  ) { }
+    private mailService: MailService
+  ) {
+    this.cronJob = new CronJob('*/10 * * * * *', async () => {
+      try {
+        console.log("test auto send mail")
+        const user = new RegisterDto();
+
+        user.userEmail = "lyhandong123@gmail.com"
+        await this.mailService.sendUserConfirmation(user, "hello");
+      } catch (e) {
+        console.error(e);
+      }
+    });
+  }
 
   async insertAdmissionNotification(notificationInformation: AddNotificationDto) {
     let notificationTimestamp = new Date();
@@ -95,4 +112,11 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
+  async testStart() {
+    this.cronJob.start();
+  }
+
+  async testStop() {
+    this.cronJob.stop();
+  }
 }
