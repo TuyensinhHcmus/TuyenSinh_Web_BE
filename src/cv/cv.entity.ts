@@ -52,28 +52,4 @@ export class cv {
         }
     )
     cvState: string
-
-    @Column(
-        {
-            type: 'varchar',
-            length: 50,
-        }
-    )
-    userIdentityNumber: string
-
-    @Column(
-        {
-            type: 'varchar',
-            length: 50,
-        }
-    )
-    userWardResidence: string
-
-    @Column(
-        {
-            type: 'varchar',
-            length: 50,
-        }
-    )
-    userStreetResidence: string
 }
