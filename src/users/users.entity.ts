@@ -257,4 +257,13 @@ export class user {
         }
     )
     oldTokenDevice: string
+    
+    @Column(
+        {
+            type: 'varchar',
+            length: 20,
+            unique: true
+        }
+    )
+    userCandicateId: string
 }

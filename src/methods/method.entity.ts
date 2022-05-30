@@ -60,4 +60,15 @@ export class method {
     @ManyToMany(() => major)
     @JoinTable()
     major: major[];
+
+    @Column({
+        type: 'varchar',
+        length: 100,
+    })
+    methodTarget: string
+
+    @Column({
+        type: 'text',
+    })
+    methodObject: string
 }
