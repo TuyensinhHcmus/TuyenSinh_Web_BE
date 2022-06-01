@@ -56,4 +56,12 @@ export class imageData {
         }
     )
     imageEndDate: Timestamp
+
+    @Column(
+        {
+            type: 'int',
+            unsigned: true,
+        }
+    )
+    imageFacultyId: number
 }
