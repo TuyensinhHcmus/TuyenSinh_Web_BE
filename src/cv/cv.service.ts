@@ -636,6 +636,9 @@ export class CvsService {
 
   async deleteCv(cvId: number) {
     try {
+      // Find CV
+      await this.findCV(cvId);
+
       // Find listAspiration
       const listAspiration = await createQueryBuilder('cv')
       .where('cv.cvId = :cvId', { cvId: cvId })
@@ -658,6 +661,7 @@ export class CvsService {
 
       // Delete cv
       await this.cvsRepo.delete({cvId: cvId});
+
 
       return {
         message: "Đã xóa thành công !"
@@ -698,19 +702,19 @@ export class CvsService {
   //     return contact;
   //   }
 
-  //   private async findContact(id: string): Promise<contact> {
-  //     let contact;
+    private async findCV(cvId: number): Promise<cv> {
+      let cv;
 
-  //     try {
-  //       contact = await this.contactsRepo.findOne({contactId: parseInt(id)});
-  //     } catch (error) {
-  //       throw new NotFoundException('Could not find contact.');
-  //     }
+      try {
+        cv = await this.cvsRepo.findOne({cvId: cvId});
+      } catch (error) {
+        throw new NotFoundException('Could not find CV.');
+      }
 
-  //     if (!contact) {
-  //       throw new NotFoundException('Could not find contact.');
-  //     }
+      if (!cv) {
+        throw new NotFoundException('Could not find CV');
+      }
 
-  //     return contact;
-  //   }
+      return cv;
+    }
 }
