@@ -65,7 +65,7 @@ export class AddCVDto extends PartialType(SaveCVAIDto){
     //@IsString()
     userSchool10: string
 
-    // userIdentityNumber: string
+    userIdentityNumber: string
 
     // userWardResidence: string
 

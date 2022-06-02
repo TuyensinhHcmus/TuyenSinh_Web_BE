@@ -35,6 +35,7 @@ export class AdmissionNotificationsController {
         return notifications
     }
 
+    @UseGuards(AtGuard)
     @Get('/notifys')
     getAllNotifys(
         @Req() req,
@@ -53,5 +54,16 @@ export class AdmissionNotificationsController {
     @Get('/testStop')
     testEnd() {
         this.admissionNotificationsService.testStop();
+    }
+
+    @UseGuards(AtGuard)
+    @Post('/postNotify')
+    postNotify(
+        //@Req() req,
+        @Body('notifyId') notifyId: number
+    ) {
+        //const userId = req.user.userId;
+        const notifications = this.admissionNotificationsService.changeStateNotification(notifyId)
+        return notifications
     }
 }

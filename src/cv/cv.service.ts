@@ -77,7 +77,7 @@ export class CvsService {
         userSchool11,
         userAddress10,
         userSchool10,
-        // userIdentityNumber,
+        userIdentityNumber,
         // userWardResidence,
         // userStreetResidence,
         ...data } = addCVDto;
@@ -140,7 +140,7 @@ export class CvsService {
       userInfo.userSchool11 = userSchool11;
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
-      // userInfo.userIdentityNumber = userIdentityNumber;
+      userInfo.userIdentityNumber = userIdentityNumber;
       // userInfo.userWardResidence = userWardResidence;
       // userInfo.userStreetResidence = userStreetResidence;
 
@@ -166,7 +166,9 @@ export class CvsService {
       }
     }
 
-    return "";
+    return {
+      message: "Đã thay đổi trạng thái của CV thành công"
+    };
   }
 
   async unique(arr) {

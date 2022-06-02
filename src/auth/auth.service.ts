@@ -213,6 +213,10 @@ export class AuthService {
     }
 
     async logOut(userId: string) {
+        // Thay thế device token bằng chuỗi rỗng
+        await this.usersService.updateDeviceToken(userId, '');
+
+        // Đăng xuất
         await this.usersService.updateUserRt(userId, '')
     }
 
