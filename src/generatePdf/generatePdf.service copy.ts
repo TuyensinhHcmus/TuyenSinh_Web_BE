@@ -10,24 +10,10 @@ import { createTransport } from 'nodemailer';
 const fs = require('fs-extra');
 const pdf = require('html-pdf');
 
-interface dataTuiHoSO {
-  name: String,
-  phone: String,
-  address: String,
-  address2: String,
-  birthday: String,
-  birthplace: String,
-  gender: String,
-  code: String,
-  email: String,
-}
-
 @Injectable()
 export class PdfService {
   async generatePdf() {
     let name = './tuihoso' + (new Date().getTime()).toString() + '.pdf'
-
-
     let file = await fs
       .readFile('./src/generatePdf/templatePdf/Tui_Hs.html', 'utf8')
       .then(async (res) => {
@@ -81,39 +67,15 @@ export class PdfService {
         //   fs.writeFile('fileName.pdf', res);
         // });
 
-        // let temp = pdf.create(strHtml, options)
-        // return temp
-        // let temp = pdf.create(strHtml, options).toStream( (a, b)=> {
-        //   console.log("ádfgádfà",a ,b);
-        //   return b;
 
-        // } )
-        // return temp
+        await pdf.create(strHtml, options).toStream(function(err, stream){
+          stream.pipe(fs.createWriteStream(name));
+        });
+      }).then(()=> {
+        const file = createReadStream(join(process.cwd(), name));
+        return file;
+      });
 
-        const streamValue = async () => {
-          const value = await new Promise(r => {
-            pdf.create(strHtml, options).toStream((a, stream) => {
-
-              r(stream);
-            })
-          })
-          return value
-        }
-
-        let result = await streamValue()
-
-        // console.log('result', result);
-        
-
-        return result
-        
-
-
-        // pdf.create(strHtml, options).toStream(function(err, stream){
-        //   stream.pipe(fs.createWriteStream(name));
-        // });
-      })
-
-    return file
+      return file
   }
 }

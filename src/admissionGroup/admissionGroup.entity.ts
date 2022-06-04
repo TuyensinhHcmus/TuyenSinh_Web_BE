@@ -31,3 +31,25 @@ export class admissionsgroup {
     agThirdSubject: string
 
 }
+
+@Entity("admissionsgroupmajor")
+export class admissionsgroupmajor {
+  @Column(
+    {
+      type: 'char',
+      length: 20,
+      primary: true
+    }
+  )
+  majorId: string
+
+  @Column(
+    {
+      type: 'char',
+      length: 5,
+      primary: true
+    }
+  )
+  agId: string
+
+}

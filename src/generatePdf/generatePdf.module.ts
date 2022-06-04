@@ -3,6 +3,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { Global, Module } from '@nestjs/common';
 //import { ConfigService } from "@nestjs/config";
 import { join } from 'path';
+import { GenPdfController } from './generatePdf.controller';
 import { PdfService } from './generatePdf.service';
 
 @Global() // 👈 global module
@@ -33,6 +34,7 @@ import { PdfService } from './generatePdf.service';
   //   }),
   // ],
   providers: [PdfService],
+  controllers: [GenPdfController],
   exports: [PdfService],
 })
 export class PdfModule {}
