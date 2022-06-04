@@ -109,4 +109,17 @@ export class UsersController {
     const res = await this.usersService.updateDeviceToken(userId, deviceToken);
     return res;
   }
+
+  @UseGuards(AtGuard)
+  @Delete('/deleteToken')
+  async deleteToken(
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+
+    // Thay thế device token bằng chuỗi rỗng
+    const res = await this.usersService.updateDeviceToken(userId, '');
+
+    return res;
+  }
 }  
