@@ -6,7 +6,7 @@ import ForgetPasswordDto from './dto/forgetPassword.dto';
 import * as bcrypt from 'bcrypt'
 import RegisterDto from './dto/register.dto';
 import { JwtPayload } from './token-payload.interface';
-let otpGenerator = require('otp-generator')
+let otpGenerator = require('otp-generator');
 import { UnVerifyUsersService } from 'src/unverifyuser/unverifyuser.service';
 import ChangePasswordDto from './dto/resetPassword.dto';
 
@@ -213,6 +213,7 @@ export class AuthService {
     }
 
     async logOut(userId: string) {
+        // Đăng xuất
         await this.usersService.updateUserRt(userId, '')
     }
 

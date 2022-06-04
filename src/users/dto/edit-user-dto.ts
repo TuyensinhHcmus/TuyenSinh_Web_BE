@@ -20,7 +20,7 @@ export class EditUserDto {
 	userSchool11: string;
 	userAddress10: string;
 	userSchool10: string;
-	// userIdentityNumber: string;
+	userIdentityNumber: string;
     // userWardResidence: string;
     // userStreetResidence: string;
 }
