@@ -20,6 +20,7 @@ import { TypeOfTrainingModule } from './typeOfTraining/typeOfTraining.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { TuitionsModule } from './tuitions/tuitions.module';
 import { BenchmarksModule } from './benchmarks/benchmarks.module';
+import { PdfModule } from './generatePdf/generatePdf.module';
 import { TypeProgramsModule } from './typePrograms/typePrograms.module';
 import { DocumentsModule } from './documents/documents.module';
 import { AdmissionProcessModule } from './admissionProcess/admissionProcess.module';
@@ -45,6 +46,7 @@ import { ResultModule } from './result/result.module';
       synchronize: true,
     }),
     ResultModule,
+    PdfModule,
     FacultiesModule,
     NewsAdmissionModule,
     TimelineModule,
