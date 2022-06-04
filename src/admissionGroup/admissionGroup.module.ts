@@ -14,4 +14,4 @@ import { AdmissionGroupController } from './admissionGroup.controller'
   providers: [AdmissionGroupsService],
 })
 
-export class MethodsModule {}
+export class AdmissionGroupModule {}

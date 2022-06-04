@@ -30,6 +30,7 @@ import { AdmissionNotificationsModule } from './admissionNotifications/admission
 import { ResultModule } from './result/result.module';
 import { ImageModule } from './imageData/image.module';
 import { ApplyTempModule } from './applytemp/applytemp.module';
+import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ApplyTempModule } from './applytemp/applytemp.module';
     }),
     ResultModule,
     PdfModule,
+    AdmissionGroupModule,
     FacultiesModule,
     NewsAdmissionModule,
     TimelineModule,
