@@ -58,13 +58,15 @@ export class NewsAdmissionService {
 
   async searchNews(perPage: number, sortCondition: string, page: number, keyword: string, typeOfTraining: string) {
 
+    // console.log('type oftraining', typeOfTraining);
+    
     const condition = sortCondition === "DESC" ? -1 : 1;
 
     const [news, newsTotal] = await Promise.all([
       this.newsRepo.find({
         where: {
           newsTitle: Like(`%${keyword}%`),
-          newsTypeOfTrainingID: typeOfTraining || ""
+          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like(`%`) : typeOfTraining
         },
         take: perPage,
         order: {
@@ -72,7 +74,12 @@ export class NewsAdmissionService {
         },
         skip: (page - 1) * perPage
       }),
-      this.newsRepo.count({})
+      this.newsRepo.count({
+        where: {
+          newsTitle: Like(`%${keyword}%`),
+          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like(`%`) : typeOfTraining
+        }
+      })
     ])
 
     // console.log("typeOfTraining", typeOfTraining,news );
