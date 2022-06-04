@@ -5,8 +5,7 @@ import { Repository, Like } from 'typeorm';
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
-
-
+var slug = require('slug')
 
 @Injectable()
 export class NewsAdmissionService {
@@ -16,7 +15,7 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-    const { title, content, dateCreate, creator, state, slug, typeOfTrainingID } = addNewsAdmissionDto;
+    const { title, content, dateCreate, creator, state, typeOfTrainingID } = addNewsAdmissionDto;
 
     const news = this.newsRepo.create({
       newsTitle: title,
@@ -24,7 +23,7 @@ export class NewsAdmissionService {
       newsDateCreate: dateCreate,
       newsCreator: creator,
       newsState: state,
-      newsSlug: slug,
+      newsSlug: slug(title)+ "-" + (new Date()).getTime(),
       newsTypeOfTrainingID: typeOfTrainingID
     });
 
@@ -58,7 +57,7 @@ export class NewsAdmissionService {
 
   async searchNews(perPage: number, sortCondition: string, page: number, keyword: string, typeOfTraining: string) {
 
-    // console.log('type oftraining', typeOfTraining);
+    // console.log('type oftraining', typeOfTraining, typeof typeOfTraining);
     
     const condition = sortCondition === "DESC" ? -1 : 1;
 
@@ -66,7 +65,7 @@ export class NewsAdmissionService {
       this.newsRepo.find({
         where: {
           newsTitle: Like(`%${keyword}%`),
-          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like(`%`) : typeOfTraining
+          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining
         },
         take: perPage,
         order: {
@@ -77,7 +76,7 @@ export class NewsAdmissionService {
       this.newsRepo.count({
         where: {
           newsTitle: Like(`%${keyword}%`),
-          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like(`%`) : typeOfTraining
+          newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining
         }
       })
     ])

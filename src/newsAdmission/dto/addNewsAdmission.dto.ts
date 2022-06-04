@@ -18,8 +18,5 @@ export class AddNewsAdmissionDto {
     state: string;
 
     @IsNotEmpty()
-    slug: string;
-
-    @IsNotEmpty()
     typeOfTrainingID: string;
 }
