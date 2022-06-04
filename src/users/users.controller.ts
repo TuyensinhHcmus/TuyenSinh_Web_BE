@@ -98,4 +98,28 @@ export class UsersController {
     const users = await this.usersService.getUsersByAmount(perPage, page);
     return users;
   }
+
+  @UseGuards(AtGuard)
+  @Post('/postToken')
+  async postToken(
+    @Req() req,
+    @Body('deviceToken') deviceToken: string
+  ) {
+    const userId = req.user.userId;
+    const res = await this.usersService.updateDeviceToken(userId, deviceToken);
+    return res;
+  }
+
+  @UseGuards(AtGuard)
+  @Delete('/deleteToken')
+  async deleteToken(
+    @Req() req,
+  ) {
+    const userId = req.user.userId;
+
+    // Thay thế device token bằng chuỗi rỗng
+    const res = await this.usersService.updateDeviceToken(userId, '');
+
+    return res;
+  }
 }  

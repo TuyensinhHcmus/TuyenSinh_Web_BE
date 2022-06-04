@@ -59,4 +59,10 @@ export class news {
         length: 4,
     })
     newsTypeOfTrainingID: string
+
+    @Column({
+        type: 'char',
+        length: 15,
+    })
+    newsTypeOfProgram: string
 }

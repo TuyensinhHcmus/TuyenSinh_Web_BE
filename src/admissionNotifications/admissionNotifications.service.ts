@@ -119,4 +119,18 @@ export class AdmissionNotificationsService {
   async testStop() {
     this.cronJob.stop();
   }
+
+  async changeStateNotification(notifyId: number) {
+    const notification = await this.findNotificationById(notifyId);
+    try {
+      notification.notificationState = "Đã xem";
+      await this.notificationModel.update({ notificationId: notifyId }, notification);
+
+      return {
+        message: "Đã thay đổi trạng thái của thông báo thành công."
+      }
+    } catch (error) {
+      
+    }
+  }
 }

@@ -213,4 +213,15 @@ export class UsersService {
 
     return user;
   }
+
+  async updateDeviceToken(userId: string, deviceToken: string)
+  {
+    const user = await this.findUserById(userId);
+
+    user.currentTokenDevice = deviceToken;
+
+    await this.userModel.update({ userId: userId }, user);
+
+    return user;
+  }
 }
