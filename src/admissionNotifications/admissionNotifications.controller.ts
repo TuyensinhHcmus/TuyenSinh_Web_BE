@@ -74,6 +74,6 @@ export class AdmissionNotificationsController {
 
     @Get('/testSendToDirectDevice')
     testSendToDirectDevice() {
-        this.admissionNotificationsService.sendToDirectDevice('','','','','');
+        this.admissionNotificationsService.sendToDirectDevice('','','','','e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX');
     }
 }

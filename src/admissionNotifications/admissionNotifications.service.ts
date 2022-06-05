@@ -8,7 +8,8 @@ import { notification } from "./admissionNotification.entity";
 import { AddNotificationDto } from "./dto/add-notification.dto";
 import * as firebase from "firebase-admin";
 import { UsersService } from "src/users/users.service";
-var serviceAccount = require("./serviceAccountKey.json")
+//var serviceAccount = require("D:/HỌC TẬP/NĂM 4/HK2/Đồ án tốt nghiệp/TuyenSinh_Web_BE/src/admissionNotifications/serviceAccountKey.json");
+var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
@@ -185,13 +186,16 @@ async sendTopicMessage(body: any, title: any, screen: any, id: any, topic: any) 
   })
   // Find in db where tokenDevices current in listUserId
   let tokenDevices;
-
   tokenDevices = [];
 
   const listUser = await this.userService.getUsers();
   listUser.forEach(user =>{
-    tokenDevices.push(user.currentTokenDevice);
+    if(user.currentTokenDevice !== ''){
+      tokenDevices.push(user.currentTokenDevice);
+    }
   });
+
+  console.log(tokenDevices);
 
   // Set up message
   let DATA = {
