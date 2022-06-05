@@ -71,4 +71,20 @@ export class method {
         type: 'text',
     })
     methodObject: string
+
+    @Column({
+        type: 'int',
+        unsigned: true
+    })
+    methodLimitAspiration: number
+
+    @Column({
+        type: 'timestamp',
+    })
+    methodStartEdit: Timestamp
+
+    @Column({
+        type: 'timestamp',
+    })
+    methodEndEdit: Timestamp
 }

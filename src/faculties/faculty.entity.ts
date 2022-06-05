@@ -36,4 +36,10 @@ export class faculty {
     )
     facultyIntroduction: string
 
+    @Column(
+        {
+            type: 'text'
+        }
+    )
+    facultyLogo: string
 }

@@ -50,4 +50,12 @@ export class program {
         }
     )
     programTypeOfTrainingID: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 10
+        }
+    )
+    programFormId: string
 }
