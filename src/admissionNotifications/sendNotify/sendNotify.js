@@ -6,7 +6,6 @@ admin.initializeApp({
 });
 var db = admin.firestore();
 
-
 async function sendToDirectDevice(body, title, screen, id, tokenDevice) {
     // Set up message
     var DATA = {
@@ -46,7 +45,7 @@ async function sendTopicMessage(body, title, screen, id, topic) {
     })
     // Find in db where tokenDevices current in listUserId
     var tokenDevices = [];
-
+    
 
     // Set up message
     var DATA = {

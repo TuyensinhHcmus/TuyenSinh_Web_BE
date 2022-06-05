@@ -12,12 +12,11 @@ import {
 import { AtGuard } from 'src/common/guards';
 import { ApplyTempService } from './applytemp.service';
 
-
+@UseGuards(AtGuard)
 @Controller('applytemp')
 export class ApplyTempController {
     constructor(private readonly applyTempService: ApplyTempService) { }
 
-    @UseGuards(AtGuard)
     @Post('apply')
     async applytemp(
         @Body('applyTempMajorId') applyTempMajorId: string,
@@ -27,7 +26,7 @@ export class ApplyTempController {
         return await this.applyTempService.applytemp(applyTempUserId, applyTempMajorId, applyTempTotalScore);
     }
 
-    @UseGuards(AtGuard)
+
     @Post('update')
     async update(
         @Body('applyTempId') applyTempId: string,
@@ -41,6 +40,7 @@ export class ApplyTempController {
     @Get('getList')
     async getList(
         @Req() req): Promise<any> {
-        return await this.applyTempService.getList();
+        const applyTempUserId = req.user.userId;
+        return await this.applyTempService.getList(applyTempUserId);
     }
 }

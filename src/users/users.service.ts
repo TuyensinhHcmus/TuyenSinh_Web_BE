@@ -86,7 +86,7 @@ export class UsersService {
   }
 
   // Get user
-  async getUsers() {
+  public async getUsers() {
     const users = await this.userModel.find({});
     const response = users.map(i => {
       let {userPassword ,...other} =  i;

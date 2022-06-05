@@ -88,7 +88,7 @@ export class ApplyTempService {
 
   async getRankUser(applyTempUserId: string, data: Array<applytemp>) {
     // Tìm tất cả data của user
-    const userData = await this.applyTempRepo.find({applyTempUserId: applyTempUserId});
+    const userData = await this.applyTempRepo.find({ applyTempUserId: applyTempUserId });
     // const userData = data.filter(obj => {
     //   if (obj.applyTempUserId === applyTempUserId) {
     //     return obj;
@@ -111,7 +111,6 @@ export class ApplyTempService {
 
       res.push(await this.getRankUserByMajorId(userData[i].applyTempId, dataFilered));
     }
-
 
     return res;
   }
@@ -187,12 +186,20 @@ export class ApplyTempService {
     // ]
 
     // Find rank of user in database
-    const result = await this.getRankUser(applyTempUserId, data);
+    const res = await this.getRankUser(applyTempUserId, data);
+
+    let result;
+    res.forEach(applyTempObj => {
+      if (applyTempObj.applyTempMajorId === applyTempMajorId) {
+        result = applyTempObj;
+      }
+    })
+
 
     return result;
   }
 
-  async getList() {
+  async getList(applyTempUserId: string) {
     // Data all
     let data = await this.applyTempRepo.find({});
     // let data = [
@@ -258,26 +265,26 @@ export class ApplyTempService {
     //   }
     // ]
 
-    let dataFileredByUser = [];
-    data.forEach(value => {
-      dataFileredByUser.push(value.applyTempUserId);
-    })
+    // let dataFileredByUser = [];
+    // data.forEach(value => {
+    //   dataFileredByUser.push(value.applyTempUserId);
+    // })
 
-    dataFileredByUser = Array.from(new Set(dataFileredByUser));
+    // dataFileredByUser = Array.from(new Set(dataFileredByUser));
 
     //console.log(dataFileredByUser)
 
     // Find rank of user in database
     let result = [];
     let res = []
-    for (let i = 0; i < dataFileredByUser.length; i++) {
-      //console.log(dataFileredByUser[i])
-      res = await this.getRankUser(dataFileredByUser[i], data);
-      //console.log(res);
-      for (let j = 0; j < res.length; j++) {
-        result.push(res[j]);
-      }
+
+    //console.log(dataFileredByUser[i])
+    res = await this.getRankUser(applyTempUserId, data);
+    //console.log(res);
+    for (let j = 0; j < res.length; j++) {
+      result.push(res[j]);
     }
+
     //const result = await this.getRankUser(applyTempUserId, data);
 
     return result;
@@ -290,7 +297,7 @@ export class ApplyTempService {
     applyTemp.applyTempMajorId = applyTempMajorId;
     applyTemp.applyTempTotalScore = applyTempTotalScore;
 
-    await this.applyTempRepo.update({applyTempId: applyTempId}, applyTemp);
+    await this.applyTempRepo.update({ applyTempId: applyTempId }, applyTemp);
 
     // Data all
     let data = await this.applyTempRepo.find({});
@@ -358,7 +365,14 @@ export class ApplyTempService {
     // ]
 
     // Find rank of user in database
-    const result = await this.getRankUser(applyTempUserId, data);
+    const res = await this.getRankUser(applyTempUserId, data);
+
+    let result;
+    res.forEach(applyTempObj => {
+      if (applyTempObj.applyTempMajorId === applyTempMajorId) {
+        result = applyTempObj;
+      }
+    })
 
     return result;
   }

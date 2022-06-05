@@ -6,14 +6,19 @@ import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
 import { notification } from "./admissionNotification.entity";
 import { AddNotificationDto } from "./dto/add-notification.dto";
-
+import * as firebase from "firebase-admin";
+import { UsersService } from "src/users/users.service";
+var serviceAccount = require("./serviceAccountKey.json")
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
+  private defaultApp: any;
+  private db: any;
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
-    private mailService: MailService
+    private mailService: MailService,
+    private userService: UsersService,
   ) {
     this.cronJob = new CronJob('*/10 * * * * *', async () => {
       try {
@@ -26,6 +31,12 @@ export class AdmissionNotificationsService {
         console.error(e);
       }
     });
+
+    this.defaultApp = firebase.initializeApp({
+      credential: firebase.credential.cert(serviceAccount)
+    });
+
+    this.db = firebase.firestore();
   }
 
   async insertAdmissionNotification(notificationInformation: AddNotificationDto) {
@@ -130,7 +141,81 @@ export class AdmissionNotificationsService {
         message: "Đã thay đổi trạng thái của thông báo thành công."
       }
     } catch (error) {
-      
+
     }
   }
+
+
+  async sendToDirectDevice(body: any, title: any, screen: any, id: any, tokenDevice: any) {
+    // Set up message
+    var DATA = {
+      notification: {
+        body: body,
+        title: title,
+      },
+      data: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+        sound: "default",
+        status: "done",
+        id: id,
+        screen: screen,
+      },
+      token: tokenDevice // Here is device token need to send
+    };
+
+    // Send message
+    firebase.messaging().send(DATA)
+      .then((response) => {
+        console.log('Success sent message: ' + response);
+      })
+      .catch((err) => {
+        console.log('Error sending message: ' + err);
+      });
+
+  }
+
+async sendTopicMessage(body: any, title: any, screen: any, id: any, topic: any) {
+  var listUserId = [];
+  await this.db.collection('topics').get().then((value) => {
+    value.docs.forEach((element) => {
+      if (element.id == topic) {
+        listUserId = element.data().keys.toList();
+      }
+    })
+  })
+  // Find in db where tokenDevices current in listUserId
+  let tokenDevices;
+
+  tokenDevices = [];
+
+  const listUser = await this.userService.getUsers();
+  listUser.forEach(user =>{
+    tokenDevices.push(user.currentTokenDevice);
+  });
+
+  // Set up message
+  let DATA = {
+    notification: {
+      body: body,
+      title: title,
+    },
+    data: {
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
+      sound: "default",
+      status: "done",
+      id: id,
+      screen: screen,
+    },
+    token: tokenDevices // Here is devices token need to send
+  };
+
+  // Send message
+  firebase.messaging().send(DATA)
+    .then((response) => {
+      console.log('Success sent message: ' + response);
+    })
+    .catch((err) => {
+      console.log('Error sending message: ' + err);
+    });
+}
 }

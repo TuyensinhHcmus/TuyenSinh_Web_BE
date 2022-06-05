@@ -66,4 +66,14 @@ export class AdmissionNotificationsController {
         const notifications = this.admissionNotificationsService.changeStateNotification(notifyId)
         return notifications
     }
+
+    @Get('/testSendTopicMessage')
+    testSendTopicMessage() {
+        this.admissionNotificationsService.sendTopicMessage('','','','','');
+    }
+
+    @Get('/testSendToDirectDevice')
+    testSendToDirectDevice() {
+        this.admissionNotificationsService.sendToDirectDevice('','','','','');
+    }
 }
