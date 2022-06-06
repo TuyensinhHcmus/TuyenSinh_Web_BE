@@ -5,28 +5,43 @@ import * as Mail from 'nodemailer/lib/mailer';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { createTransport } from 'nodemailer';
+import * as firebase from "firebase-admin";
+import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
 // import fs from 'fs-extra';
 // import path from 'path';
 const fs = require('fs-extra');
 const pdf = require('html-pdf');
+var Readable = require('stream').Readable
 
-interface dataTuiHoSO {
-  name: String,
-  phone: String,
-  address: String,
-  address2: String,
-  birthday: String,
-  birthplace: String,
-  gender: String,
-  code: String,
-  email: String,
-}
 
 @Injectable()
 export class PdfService {
+  constructor(
+    private serviceDb: AdmissionNotificationsService
+  ) {
+
+
+  }
+
+  async getPDF(fileName: string) {
+    let db = this.serviceDb.getDb();
+    let ref = db.collection('streams').doc(fileName);
+    let dataStream = await ref.get();
+
+    console.log("data", dataStream.data());
+
+    var s = new Readable();
+    s.push(dataStream.data().value);
+    s.push(null);
+
+    return s;
+
+  }
+
   async generatePdf() {
     let name = './tuihoso' + (new Date().getTime()).toString() + '.pdf'
 
+    let db = this.serviceDb.getDb();
 
     let file = await fs
       .readFile('./src/generatePdf/templatePdf/Tui_Hs.html', 'utf8')
@@ -54,27 +69,8 @@ export class PdfService {
         });
 
         const options = {
-          // tuihs - khong border
           width: '635px',
           height: '820px',
-
-          // so yeu ly lich
-          // width: '600px',
-          // height: '800px',
-          // border: {
-          //   top: '40px',
-          //   right: '20px',
-          //   bottom: '50px',
-          //   left: '20px',
-          // },
-
-          // phieu dky
-          // width: '635px',
-          // height: '820px',
-          // border: {
-          //   top: '40px',
-          //   bottom: '60px',
-          // },
         };
 
         // pdf.create(strHtml, options).toFile('./pdfname.pdf', (err, res) => {
@@ -90,24 +86,46 @@ export class PdfService {
         // } )
         // return temp
 
-        const streamValue = async () => {
-          const value = await new Promise(r => {
-            pdf.create(strHtml, options).toStream((a, stream) => {
+        //tra file truc tiep
+        // const streamValue = async () => {
+        //   const value = await new Promise(r => {
+        //     pdf.create(strHtml, options).toStream((a, stream) => {
 
-              r(stream);
-            })
+        //       r(stream);
+        //     })
+        //   })
+        //   return value
+        // }
+
+        // let result = await streamValue()
+
+        let streamToString = async (stream) => {
+          const chunks = [];
+          return new Promise((resolve, reject) => {
+            stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
+            stream.on('error', (err) => reject(err));
+            stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
           })
-          return value
         }
 
-        let result = await streamValue()
+        // return result
+        let filename = 'tuihoso' + (new Date().getTime())
 
-        // console.log('result', result);
-        
+        pdf.create(strHtml, options).toStream(async (t, stream) => {
+          console.log('stream', stream);
 
-        return result
-        
+          let ref = await db.collection('streams');
 
+          let stringData = await streamToString(stream)
+          await ref.doc(filename).set({
+            value: stringData
+          });
+          // const snapshot = await ref.where('capital', '==', true).get();
+
+
+        })
+
+        return filename
 
         // pdf.create(strHtml, options).toStream(function(err, stream){
         //   stream.pipe(fs.createWriteStream(name));
@@ -116,4 +134,5 @@ export class PdfService {
 
     return file
   }
+
 }

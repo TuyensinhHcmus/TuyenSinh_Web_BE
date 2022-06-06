@@ -13,17 +13,17 @@ import { PdfService } from './generatePdf.service';
     //   return file;
     // }
 
-    // @Get('/tuihoso')
-    // async genTuiHoSo()  {
-    //   const file = await this.pdfService.generatePdf();
-    //   return file;
-    // }
+    @Get('/tuihoso')
+    async saveFirebase()  {
+      const data = await this.pdfService.generatePdf();
+      return data
+    }
 
 
     //v1
-    @Get('/tuihoso')
+    @Get('/getpdf')
     async genTuiHoSo(@Response({ passthrough: true }) res)  {
-      const file = await this.pdfService.generatePdf();
+      const file = await this.pdfService.getPDF('tuihoso1654450566184');
       // const file = createReadStream(join(process.cwd(), 'pdfname.pdf'));
       res.set({
         'Content-Type': 'application/pdf',

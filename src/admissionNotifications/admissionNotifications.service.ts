@@ -40,6 +40,10 @@ export class AdmissionNotificationsService {
     this.db = firebase.firestore();
   }
 
+  getDb() {
+    return this.db;
+  }
+
   async insertAdmissionNotification(notificationInformation: AddNotificationDto) {
     let notificationTimestamp = new Date();
 
