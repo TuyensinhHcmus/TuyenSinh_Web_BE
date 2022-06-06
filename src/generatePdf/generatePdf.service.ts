@@ -44,7 +44,7 @@ export class PdfService {
     let db = this.serviceDb.getDb();
 
     let file = await fs
-      .readFile('./src/generatePdf/templatePdf/Tui_Hs.html', 'utf8')
+      .readFile('./src/generatePdf/templatePdf/Phieu_dky.html', 'utf8')
       .then(async (res) => {
         let strHtml = res?.slice(0);
 
@@ -60,11 +60,31 @@ export class PdfService {
           email: 'datnguyen25082000@gmail.com',
         };
 
-        Object.keys(data).forEach(function (key) {
+        const dataPhieuDangKy = {
+          graduatedYear: "2022",
+          gpa12: "9",
+          area: "1",
+          class12: "Hung Vuong",
+          province12: "Binh Thuan",
+          district: "Binh Thuan",
+          name: "Phung Quoc Luong",
+          ethnic: "Kinh",
+          cmnd: "261508456",
+          birthday: "25/03/2000",
+          birthplace: "Binh Thuan",
+          address: "Tan Ha, Duc Linh, Binh Thuan",
+          phone: "0375006715",
+          email: "quocluong2503@gmail.com",
+          code: "abcdefgh",
+          national: "Viet nam",
+          province: "Binh Thuan"
+        }
+
+        Object.keys(dataPhieuDangKy).forEach(function (key) {
           const temp = `[pdf__${key}]`;
 
           if (strHtml?.includes(temp)) {
-            strHtml = strHtml.replace(temp, data[key]);
+            strHtml = strHtml.replace(temp, dataPhieuDangKy[key]);
           }
         });
 
