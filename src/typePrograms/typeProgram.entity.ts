@@ -22,4 +22,10 @@ export class typeProgram {
     })
     typeProgramTypeOfTrainingID: string
 
+    @Column({
+        type: 'varchar',
+        length: 10,
+    })
+    typeProgramFormId: string
+
 }
