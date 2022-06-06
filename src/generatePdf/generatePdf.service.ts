@@ -73,19 +73,6 @@ export class PdfService {
           height: '820px',
         };
 
-        // pdf.create(strHtml, options).toFile('./pdfname.pdf', (err, res) => {
-        //   fs.writeFile('fileName.pdf', res);
-        // });
-
-        // let temp = pdf.create(strHtml, options)
-        // return temp
-        // let temp = pdf.create(strHtml, options).toStream( (a, b)=> {
-        //   console.log("ádfgádfà",a ,b);
-        //   return b;
-
-        // } )
-        // return temp
-
         //tra file truc tiep
         // const streamValue = async () => {
         //   const value = await new Promise(r => {
@@ -97,28 +84,17 @@ export class PdfService {
         //   return value
         // }
 
-        // let result = await streamValue()
-
-        let streamToString = async (stream) => {
-          const chunks = [];
-          return new Promise((resolve, reject) => {
-            stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-            stream.on('error', (err) => reject(err));
-            stream.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-          })
-        }
 
         // return result
         let filename = 'tuihoso' + (new Date().getTime())
 
-        pdf.create(strHtml, options).toStream(async (t, stream) => {
-          console.log('stream', stream);
+        pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
+          console.log('buffer', buffer);
 
           let ref = await db.collection('streams');
 
-          let stringData = await streamToString(stream)
           await ref.doc(filename).set({
-            value: stringData
+            value: buffer
           });
           // const snapshot = await ref.where('capital', '==', true).get();
 

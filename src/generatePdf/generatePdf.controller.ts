@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Response, StreamableFile } from '@nestjs/common';
+import { Controller, Get, Param, Res, Response, StreamableFile } from '@nestjs/common';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { PdfService } from './generatePdf.service';
@@ -21,9 +21,9 @@ import { PdfService } from './generatePdf.service';
 
 
     //v1
-    @Get('/getpdf')
-    async genTuiHoSo(@Response({ passthrough: true }) res)  {
-      const file = await this.pdfService.getPDF('tuihoso1654450566184');
+    @Get('/getpdf/:id')
+    async genTuiHoSo(@Response({ passthrough: true }) res, @Param('id') filename:string)  {
+      const file = await this.pdfService.getPDF(filename);
       // const file = createReadStream(join(process.cwd(), 'pdfname.pdf'));
       res.set({
         'Content-Type': 'application/pdf',
