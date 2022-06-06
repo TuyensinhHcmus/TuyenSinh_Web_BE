@@ -209,4 +209,20 @@ export class cvapplyinformation {
         }
     )
     cvaiVietnameseCertificateLevel: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 50,
+        }
+    )
+    cvaiEmail: string
+
+    @Column(
+        {
+            type: 'char',
+            length: 12,
+        }
+    )
+    cvaiPhone: string
 }

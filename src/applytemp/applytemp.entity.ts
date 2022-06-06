@@ -24,6 +24,36 @@ export class applytemp {
 
     @Column({
         type: 'float',
+        unsigned: true
     })
     applyTempTotalScore: number
+
+    @Column({
+        type: 'float',
+        unsigned: true
+    })
+    applyTempScore1: number
+
+    @Column({
+        type: 'float',
+        unsigned: true
+    })
+    applyTempScore2: number
+
+    @Column({
+        type: 'float',
+        unsigned: true
+    })
+    applyTempScore3: number
+
+    @Column({
+        type: 'char',
+        length: 5
+    })
+    applyTempGroupId: string
+
+    @Column({
+        type: 'datetime',
+    })
+    applyTempTime: string
 }
