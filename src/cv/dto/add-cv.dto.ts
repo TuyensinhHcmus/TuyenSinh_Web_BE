@@ -3,13 +3,17 @@ import { IsArray, IsDate, IsDateString, IsNotEmpty, IsNumber, IsString, Validate
 import { SaveCVAIDto } from "src/cvapplyinformation/dto/save-cvai.dto";
 import { CvInterface } from "./cv.interface";
 
-export class AddCVDto extends PartialType(SaveCVAIDto){
+export class AddCVDto extends PartialType(SaveCVAIDto) {
     @IsNotEmpty()
     method: string
 
     @IsArray()
-    @ValidateNested({each: true})
+    @ValidateNested({ each: true })
     listAspiration: [CvInterface]
+
+    cvaiEmail: string
+
+    cvaiPhone: string
 
     //@IsString()
     fileUrl: string
@@ -21,10 +25,10 @@ export class AddCVDto extends PartialType(SaveCVAIDto){
     userGender: string
 
     //@IsString()
-    userPhone: string
+    //userPhone: string
 
     //@IsString()
-    userEmail: string
+    //userEmail: string
 
     //@IsString()
     userEthnicity: string
@@ -37,7 +41,7 @@ export class AddCVDto extends PartialType(SaveCVAIDto){
 
     //@IsString()
     userBirthplace: string
-    
+
     //@IsString()
     userContactAddress: string
 

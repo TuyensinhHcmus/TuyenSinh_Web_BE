@@ -80,7 +80,8 @@ export class ApplyTempService {
       "applyTempUserId": applyTempUserId,
       "applyTempMajorId": applyTempMajorId,
       "applyTempTotalScore": applyTempTotalScore,
-      "rank": rank
+      "rank": rank,
+      "total": dataSorted.length
     }
 
     return res;

@@ -23,6 +23,7 @@ import { user } from 'src/users/users.entity';
 import { userInfo } from 'os';
 import { UpdateCVAIDto } from 'src/cvapplyinformation/dto/update-cvai.dto';
 import { UpdateStatusCVDto } from './dto/update-status.dto';
+import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 
 @Injectable()
 export class CvsService {
@@ -60,10 +61,13 @@ export class CvsService {
   async insertCv(addCVDto: AddCVDto, userId: string) {
     try {
       const { method, listAspiration, fileUrl,
+        //cvaiPhone,
+        //cvaiEmail,
+
         userName,
         userGender,
-        userPhone,
-        userEmail,
+        //userPhone,
+        //userEmail,
         userEthnicity,
         userNationality,
         userBirthday,
@@ -125,8 +129,8 @@ export class CvsService {
       const userInfo = new EditUserDto();
       userInfo.userName = userName;
       userInfo.userGender = userGender;
-      userInfo.userPhone = userPhone;
-      userInfo.userEmail = userEmail;
+      //userInfo.userPhone = userPhone;
+      //userInfo.userEmail = userEmail;
       userInfo.userEthnicity = userEthnicity;
       userInfo.userNationality = userNationality;
       userInfo.userBirthday = userBirthday;
@@ -199,7 +203,9 @@ export class CvsService {
         'method.methodName',
         'aspiration.aspirationId',
         'major.majorName',
+        'major.majorId',
         'typeProgram.typeProgramName',
+        'typeProgram.typeProgramId',
         'cv.cvFile',
 
       ])
@@ -207,59 +213,66 @@ export class CvsService {
 
     const cvs = await this.cvsRepo.createQueryBuilder('cv')
       .where('cv.cvUserId = :cvUserId', { cvUserId: userId })
-      .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
-      .leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
+      //.leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
+      //.leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
       .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+      .leftJoinAndMapMany('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'method.methodTypeOfTrainingID = typeoftraining.typeOfTrainingId')
       .select([
         'cv.cvId',
-        'method.methodName',
         'cv.cvFile',
         'cv.cvState',
+        
+        'method.methodName',
+        'method.methodId',
 
-        'user.userName',
-        'user.userGender',
-        'user.userPhone',
-        'user.userEmail',
-        'user.userEthnicity',
-        'user.userNationality',
-        'user.userBirthday',
-        'user.userBirthplace',
-        'user.userContactAddress',
-        'user.userProvinceResidence',
-        'user.userDistrictResidence',
-        'user.userAddress12',
-        'user.userSchool12',
-        'user.userAddress11',
-        'user.userSchool11',
-        'user.userAddress10',
-        'user.userSchool10',
+        'typeoftraining.typeOfTrainingId',
+        'typeoftraining.typeOfTrainingName',
+        
 
-        'cvai.cvaiGraduateUniversity',
-        'cvai.cvaiUniversityGPA',
-        'cvai.cvaiUniversityGraduateYear',
-        'cvai.cvaiGraduateCollege',
-        'cvai.cvaiCollegeGPA',
-        'cvai.cvaiCollegeGraduateYear',
-        'cvai.cvaiPriorityArea',
-        'cvai.cvaiGPA12',
-        'cvai.cvaiGPA11',
-        'cvai.cvaiGPA10',
-        'cvai.cvaiHighSchoolGraduateYear',
-        'cvai.cvaiCapacity12',
-        'cvai.cvaiConduct12',
-        'cvai.cvaiCapacity11',
-        'cvai.cvaiConduct11',
-        'cvai.cvaiCapacity10',
-        'cvai.cvaiConduct10',
-        'cvai.cvaiProvincialExcellentSubject',
-        'cvai.cvaiProvincialExcellentYear',
-        'cvai.cvaiProvincialExcellentAward',
-        'cvai.cvaiIeltsCertificateScore',
-        'cvai.cvaiIeltsCertificateExpiration',
-        'cvai.cvaiToeflCertificateScore',
-        'cvai.cvaiToeflCertificateExpiration',
-        'cvai.cvaiHaveVietnameseCertificate',
-        'cvai.cvaiVietnameseCertificateLevel'
+        // 'user.userName',
+        // 'user.userGender',
+        // 'user.userPhone',
+        // 'user.userEmail',
+        // 'user.userEthnicity',
+        // 'user.userNationality',
+        // 'user.userBirthday',
+        // 'user.userBirthplace',
+        // 'user.userContactAddress',
+        // 'user.userProvinceResidence',
+        // 'user.userDistrictResidence',
+        // 'user.userAddress12',
+        // 'user.userSchool12',
+        // 'user.userAddress11',
+        // 'user.userSchool11',
+        // 'user.userAddress10',
+        // 'user.userSchool10',
+
+        // 'cvai.cvaiGraduateUniversity',
+        // 'cvai.cvaiUniversityGPA',
+        // 'cvai.cvaiUniversityGraduateYear',
+        // 'cvai.cvaiGraduateCollege',
+        // 'cvai.cvaiCollegeGPA',
+        // 'cvai.cvaiCollegeGraduateYear',
+        // 'cvai.cvaiPriorityArea',
+        // 'cvai.cvaiGPA12',
+        // 'cvai.cvaiGPA11',
+        // 'cvai.cvaiGPA10',
+        // 'cvai.cvaiHighSchoolGraduateYear',
+        // 'cvai.cvaiCapacity12',
+        // 'cvai.cvaiConduct12',
+        // 'cvai.cvaiCapacity11',
+        // 'cvai.cvaiConduct11',
+        // 'cvai.cvaiCapacity10',
+        // 'cvai.cvaiConduct10',
+        // 'cvai.cvaiProvincialExcellentSubject',
+        // 'cvai.cvaiProvincialExcellentYear',
+        // 'cvai.cvaiProvincialExcellentAward',
+        // 'cvai.cvaiIeltsCertificateScore',
+        // 'cvai.cvaiIeltsCertificateExpiration',
+        // 'cvai.cvaiToeflCertificateScore',
+        // 'cvai.cvaiToeflCertificateExpiration',
+        // 'cvai.cvaiHaveVietnameseCertificate',
+        // 'cvai.cvaiVietnameseCertificateLevel'
       ])
       .getRawMany()
 
@@ -267,53 +280,62 @@ export class CvsService {
     let result = cvs.map(cv => {
       return {
         cvId: cv.cv_cvId,
-        method: cv.method_methodName,
         fileUrl: cv.cv_cvFile,
         cvState: cv.cv_cvState,
+        method: {
+          methodName: cv.method_methodName,
+          methodId: cv.method_methodId
+        },
 
-        userName: cv.user_userName,
-        userGender: cv.user_userGender,
-        userPhone: cv.user_userPhone,
-        userEmail: cv.user_userEmail,
-        userEthnicity: cv.user_userEthnicity,
-        userNationality: cv.user_userNationality,
-        userBirthday: cv.user_userBirthday,
-        userBirthplace: cv.user_userBirthplace,
-        userContactAddress: cv.user_userContactAddress,
-        userProvinceResidence: cv.user_userProvinceResidence,
-        userDistrictResidence: cv.user_userDistrictResidence,
-        userAddress12: cv.user_userAddress12,
-        userSchool12: cv.user_userSchool12,
-        userAddress11: cv.user_userAddress11,
-        userSchool11: cv.user_userSchool11,
-        userAddress10: cv.user_userAddress10,
+        typeOfTraining: {
+          typeOfTrainingName: cv.typeoftraining_typeOfTrainingName,
+          typeoftrainingId: cv.typeoftraining_typeOfTrainingId
+        },
 
-        cvaiGraduateUniversity: cv.cvai_cvaiGraduateUniversity,
-        cvaiUniversityGPA: cv.cvai_cvaiUniversityGPA,
-        cvaiUniversityGraduateYear: cv.cvai_cvaiUniversityGraduateYear,
-        cvaiGraduateCollege: cv.cvai_cvaiGraduateCollege,
-        cvaiCollegeGPA: cv.cvai_cvaiCollegeGPA,
-        cvaiCollegeGraduateYear: cv.cvai_cvaiCollegeGraduateYear,
-        cvaiPriorityArea: cv.cvai_cvaiPriorityArea,
-        cvaiGPA12: cv.cvai_cvaiGPA12,
-        cvaiGPA11: cv.cvai_cvaiGPA11,
-        cvaiGPA10: cv.cvai_cvaiGPA10,
-        cvaiHighSchoolGraduateYear: cv.cvai_cvaiHighSchoolGraduateYear,
-        cvaiCapacity12: cv.cvai_cvaiCapacity12,
-        cvaiConduct12: cv.cvai_cvaiConduct12,
-        cvaiCapacity11: cv.cvai_cvaiCapacity11,
-        cvaiConduct11: cv.cvai_cvaiConduct11,
-        cvaiCapacity10: cv.cvai_cvaiCapacity10,
-        cvaiConduct10: cv.cvai_cvaiConduct10,
-        cvaiProvincialExcellentSubject: cv.cvai_cvaiProvincialExcellentSubject,
-        cvaiProvincialExcellentYear: cv.cvai_cvaiProvincialExcellentYear,
-        cvaiProvincialExcellentAward: cv.cvai_cvaiProvincialExcellentAward,
-        cvaiIeltsCertificateScore: cv.cvai_cvaiIeltsCertificateScore,
-        cvaiIeltsCertificateExpiration: cv.cvai_cvaiIeltsCertificateExpiration,
-        cvaiToeflCertificateScore: cv.cvai_cvaiToeflCertificateScore,
-        cvaiToeflCertificateExpiration: cv.cvai_cvaiToeflCertificateExpiration,
-        cvaiHaveVietnameseCertificate: cv.cvai_cvaiHaveVietnameseCertificate,
-        cvaiVietnameseCertificateLevel: cv.cvai_cvaiVietnameseCertificateLevel,
+
+        // userName: cv.user_userName,
+        // userGender: cv.user_userGender,
+        // userPhone: cv.user_userPhone,
+        // userEmail: cv.user_userEmail,
+        // userEthnicity: cv.user_userEthnicity,
+        // userNationality: cv.user_userNationality,
+        // userBirthday: cv.user_userBirthday,
+        // userBirthplace: cv.user_userBirthplace,
+        // userContactAddress: cv.user_userContactAddress,
+        // userProvinceResidence: cv.user_userProvinceResidence,
+        // userDistrictResidence: cv.user_userDistrictResidence,
+        // userAddress12: cv.user_userAddress12,
+        // userSchool12: cv.user_userSchool12,
+        // userAddress11: cv.user_userAddress11,
+        // userSchool11: cv.user_userSchool11,
+        // userAddress10: cv.user_userAddress10,
+
+        // cvaiGraduateUniversity: cv.cvai_cvaiGraduateUniversity,
+        // cvaiUniversityGPA: cv.cvai_cvaiUniversityGPA,
+        // cvaiUniversityGraduateYear: cv.cvai_cvaiUniversityGraduateYear,
+        // cvaiGraduateCollege: cv.cvai_cvaiGraduateCollege,
+        // cvaiCollegeGPA: cv.cvai_cvaiCollegeGPA,
+        // cvaiCollegeGraduateYear: cv.cvai_cvaiCollegeGraduateYear,
+        // cvaiPriorityArea: cv.cvai_cvaiPriorityArea,
+        // cvaiGPA12: cv.cvai_cvaiGPA12,
+        // cvaiGPA11: cv.cvai_cvaiGPA11,
+        // cvaiGPA10: cv.cvai_cvaiGPA10,
+        // cvaiHighSchoolGraduateYear: cv.cvai_cvaiHighSchoolGraduateYear,
+        // cvaiCapacity12: cv.cvai_cvaiCapacity12,
+        // cvaiConduct12: cv.cvai_cvaiConduct12,
+        // cvaiCapacity11: cv.cvai_cvaiCapacity11,
+        // cvaiConduct11: cv.cvai_cvaiConduct11,
+        // cvaiCapacity10: cv.cvai_cvaiCapacity10,
+        // cvaiConduct10: cv.cvai_cvaiConduct10,
+        // cvaiProvincialExcellentSubject: cv.cvai_cvaiProvincialExcellentSubject,
+        // cvaiProvincialExcellentYear: cv.cvai_cvaiProvincialExcellentYear,
+        // cvaiProvincialExcellentAward: cv.cvai_cvaiProvincialExcellentAward,
+        // cvaiIeltsCertificateScore: cv.cvai_cvaiIeltsCertificateScore,
+        // cvaiIeltsCertificateExpiration: cv.cvai_cvaiIeltsCertificateExpiration,
+        // cvaiToeflCertificateScore: cv.cvai_cvaiToeflCertificateScore,
+        // cvaiToeflCertificateExpiration: cv.cvai_cvaiToeflCertificateExpiration,
+        // cvaiHaveVietnameseCertificate: cv.cvai_cvaiHaveVietnameseCertificate,
+        // cvaiVietnameseCertificateLevel: cv.cvai_cvaiVietnameseCertificateLevel,
 
         listAspiration: []
       }
@@ -324,8 +346,14 @@ export class CvsService {
         if (cv.cv_cvId === cvId.cvId) {
           result[index].listAspiration.push({
             aspirationId: cv.aspiration_aspirationId,
-            typeProgram: cv.typeProgram_typeProgramName,
-            major: cv.major_majorName
+            typeProgram: {
+              typeProgramName: cv.typeProgram_typeProgramName,
+              typeProgramId: cv.typeProgram_typeProgramId
+            },
+            major: {
+              majorName: cv.major_majorName,
+              majorId: cv.major_majorId,
+            }
           })
         }
       })
@@ -504,8 +532,8 @@ export class CvsService {
       const { cvId, method, listAspiration, fileUrl,
         userName,
         userGender,
-        userPhone,
-        userEmail,
+        //userPhone,
+        //userEmail,
         userEthnicity,
         userNationality,
         userBirthday,
@@ -566,8 +594,8 @@ export class CvsService {
       const userInfo = new EditUserDto();
       userInfo.userName = userName;
       userInfo.userGender = userGender;
-      userInfo.userPhone = userPhone;
-      userInfo.userEmail = userEmail;
+      //userInfo.userPhone = userPhone;
+      //userInfo.userEmail = userEmail;
       userInfo.userEthnicity = userEthnicity;
       userInfo.userNationality = userNationality;
       userInfo.userBirthday = userBirthday;
@@ -643,15 +671,15 @@ export class CvsService {
 
       // Find listAspiration
       const listAspiration = await createQueryBuilder('cv')
-      .where('cv.cvId = :cvId', { cvId: cvId })
-      .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
-      .select([
-        'cv.cvId',
-        'aspiration.aspirationId',
-      ])
-      .getRawMany();
+        .where('cv.cvId = :cvId', { cvId: cvId })
+        .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+        .select([
+          'cv.cvId',
+          'aspiration.aspirationId',
+        ])
+        .getRawMany();
 
-      
+
       // Delete list aspiration of cv 
       for (let i = 0; i < listAspiration.length; i++) {
         // Delete aspiration of cv 
@@ -662,7 +690,7 @@ export class CvsService {
       await this.cvaiSerivce.deleteCvai(cvId);
 
       // Delete cv
-      await this.cvsRepo.delete({cvId: cvId});
+      await this.cvsRepo.delete({ cvId: cvId });
 
 
       return {
@@ -704,19 +732,19 @@ export class CvsService {
   //     return contact;
   //   }
 
-    private async findCV(cvId: number): Promise<cv> {
-      let cv;
+  private async findCV(cvId: number): Promise<cv> {
+    let cv;
 
-      try {
-        cv = await this.cvsRepo.findOne({cvId: cvId});
-      } catch (error) {
-        throw new NotFoundException('Could not find CV.');
-      }
-
-      if (!cv) {
-        throw new NotFoundException('Could not find CV');
-      }
-
-      return cv;
+    try {
+      cv = await this.cvsRepo.findOne({ cvId: cvId });
+    } catch (error) {
+      throw new NotFoundException('Could not find CV.');
     }
+
+    if (!cv) {
+      throw new NotFoundException('Could not find CV');
+    }
+
+    return cv;
+  }
 }
