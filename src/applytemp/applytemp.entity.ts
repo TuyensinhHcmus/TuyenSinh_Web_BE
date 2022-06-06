@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 
 @Entity("applytemp")
 export class applytemp {
@@ -53,7 +53,7 @@ export class applytemp {
     applyTempGroupId: string
 
     @Column({
-        type: 'datetime',
+        type: 'timestamp',
     })
-    applyTempTime: string
+    applyTempTime: Timestamp
 }
