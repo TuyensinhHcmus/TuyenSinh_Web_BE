@@ -32,6 +32,25 @@ export class AdmissionGroupsService {
     return admissionGroups;
   }
 
+  async getAdmissionGroupMapMajor(): Promise<any[]> {
+    // console.log("majorId", majorId);
+    
+
+    const admissionGroups = await this.admissionsGroupRepo.createQueryBuilder('admissionsgroup')
+    .leftJoinAndMapOne('admissionsgroup.admissionGroupMapMajor', admissionsgroupmajor, 'admissionsgroupmajor', 'admissionsgroup.agId = admissionsgroupmajor.agId')
+    .select([
+          "admissionsgroup.agId",
+          "admissionsgroup.agFirstSubject",
+          "admissionsgroup.agSecondSubject",
+          "admissionsgroup.agThirdSubject",
+
+          "admissionsgroupmajor.majorId",
+        ],)
+    .getMany()
+
+    return admissionGroups;
+  }
+
   async getAll(): Promise<admissionsgroup[]> {
     // console.log("majorId", majorId);
     

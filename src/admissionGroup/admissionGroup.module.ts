@@ -12,6 +12,7 @@ import { AdmissionGroupController } from './admissionGroup.controller'
   ],
   controllers: [AdmissionGroupController],
   providers: [AdmissionGroupsService],
+  exports:[AdmissionGroupsService]
 })
 
 export class AdmissionGroupModule {}
