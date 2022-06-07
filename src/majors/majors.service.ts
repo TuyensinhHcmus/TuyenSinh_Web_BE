@@ -115,7 +115,7 @@ export class MajorsService {
 
     
 
-    console.log('listAdmissionGroup', listAdmissionGroup);
+    // console.log('listAdmissionGroup', listAdmissionGroup);
     
 
     const majors = await this.majorRepo.createQueryBuilder('major')
@@ -143,7 +143,7 @@ export class MajorsService {
     // console.log(methodContainListMajor)
 
     let temp = majors.map( item => {
-      let admissionGroups = listAdmissionGroup.filter( adg => adg.admissionGroupMapMajor.majorId === item.majorId)
+      let admissionGroups = listAdmissionGroup.filter( adg => adg.majorId === item.majorId)
       return {...item, admissionGroups}
     })
     

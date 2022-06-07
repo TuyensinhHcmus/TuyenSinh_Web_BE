@@ -9,6 +9,7 @@ import { major } from 'src/majors/major.entity';
 export class AdmissionGroupsService {
   constructor(
     @InjectRepository(admissionsgroup) private readonly admissionsGroupRepo: Repository<admissionsgroup>,
+    @InjectRepository(admissionsgroupmajor) private readonly admissionsGroupMajorRepo: Repository<admissionsgroupmajor>,
   ) {}
 
   async getAdmissionGroupByMajor(majorId: string): Promise<admissionsgroup[]> {
@@ -34,21 +35,20 @@ export class AdmissionGroupsService {
 
   async getAdmissionGroupMapMajor(): Promise<any[]> {
     // console.log("majorId", majorId);
-    
+    let adgs = await this.admissionsGroupRepo.find({});
 
-    const admissionGroups = await this.admissionsGroupRepo.createQueryBuilder('admissionsgroup')
-    .leftJoinAndMapOne('admissionsgroup.admissionGroupMapMajor', admissionsgroupmajor, 'admissionsgroupmajor', 'admissionsgroup.agId = admissionsgroupmajor.agId')
-    .select([
-          "admissionsgroup.agId",
-          "admissionsgroup.agFirstSubject",
-          "admissionsgroup.agSecondSubject",
-          "admissionsgroup.agThirdSubject",
+    let listMap = await this.admissionsGroupMajorRepo.find({})
 
-          "admissionsgroupmajor.majorId",
-        ],)
-    .getMany()
+    let temp = listMap.map( item => {
+      let admissionGroup = adgs.filter( i=> i.agId === item.agId)[0]
+      return {
+        ...item,
+        ...admissionGroup
+      }
+      
+    })
 
-    return admissionGroups;
+    return temp;
   }
 
   async getAll(): Promise<admissionsgroup[]> {
