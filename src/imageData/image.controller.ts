@@ -34,6 +34,16 @@ export class ImageController {
         return image;
     }
 
+    // [GET] /image/getImageByType
+    @Get('getImageByType')
+    async getImageByType(
+        @Query('imageType') imageType: string
+    ): Promise<imageData[]> {
+        const image = await this.imageService.getImageByType(imageType);
+        return image;
+    }
+
+
     // [Post] /image/addImage
     @Post('addImage')
     async addImage(

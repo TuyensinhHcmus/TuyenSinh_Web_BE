@@ -24,6 +24,11 @@ export class ImageService {
         return image;
     }
 
+    async getImageByType(imageType: string): Promise<imageData[]> {
+        const image = await this.imageRepo.find({ imageType: imageType });
+        return image;
+    }
+
     async addImage(addImageDto: AddImageDto): Promise<any> {
         try {
             console.log(addImageDto);
@@ -31,21 +36,24 @@ export class ImageService {
                 imageTypeOfTrainingId,
                 imageType,
                 imageStartDate,
-                imageEndDate } = addImageDto;
+                imageEndDate,
+                imageFacultyId } = addImageDto;
 
             const image = await this.imageRepo.create({
                 imagePath: imagePath,
                 imageTypeOfTrainingId: imageTypeOfTrainingId,
                 imageType: imageType,
                 imageStartDate: imageStartDate,
-                imageEndDate: imageEndDate
+                imageEndDate: imageEndDate,
+                imageFacultyId: imageFacultyId
             })
 
             const result = await this.imageRepo.save(image);
-            
+
             return {
                 message: "Đã thêm ảnh thành công.",
-                imageId: result.imageId
+                imageId: result.imageId,
+                imageFacultyId: result.imageFacultyId
             };
         } catch (error) {
             throw new NotImplementedException("Không thể thêm ảnh!");
@@ -88,7 +96,9 @@ export class ImageService {
             await this.imageRepo.update({ imageId: imageId }, image);
 
             return {
-                message: "Đã cập nhật ảnh thành công."
+                message: "Đã cập nhật ảnh thành công.",
+                imageId: image.imageId,
+                imageFacultyId: image.imageFacultyId
             };
         } catch (error) {
             throw new NotImplementedException("Không thể cập nhật ảnh!");

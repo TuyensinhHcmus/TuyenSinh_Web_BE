@@ -78,4 +78,10 @@ export class SaveCVAIDto {
 
     @IsString()
     cvaiVietnameseCertificateLevel: string
+
+    @IsString()
+    cvaiEmail: string
+
+    @IsString()
+    cvaiPhone: string
 }

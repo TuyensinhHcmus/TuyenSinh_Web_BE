@@ -11,4 +11,6 @@ export class AddImageDto {
     imageStartDate: Timestamp;
 
     imageEndDate: Timestamp;
+
+    imageFacultyId: number;
 }
