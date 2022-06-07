@@ -12,6 +12,9 @@ export class AdmissionGroupsService {
   ) {}
 
   async getAdmissionGroupByMajor(majorId: string): Promise<admissionsgroup[]> {
+    // console.log("majorId", majorId);
+    
+
     const admissionGroups = await this.admissionsGroupRepo.createQueryBuilder('admissionsgroup')
     .leftJoinAndMapOne('admissionsgroup.admissionGroupMapMajor', admissionsgroupmajor, 'admissionsgroupmajor', 'admissionsgroup.agId = admissionsgroupmajor.agId')
     .select([
@@ -23,9 +26,17 @@ export class AdmissionGroupsService {
           "admissionsgroupmajor.agId",
           "admissionsgroupmajor.majorId",
         ],)
-    .where('admissionsgroupmajor.majorId = :majorId', { major })
+    .where('admissionsgroupmajor.majorId = :majorId', { majorId })
     .getMany()
 
+    return admissionGroups;
+  }
+
+  async getAll(): Promise<admissionsgroup[]> {
+    // console.log("majorId", majorId);
+    
+
+    const admissionGroups = await this.admissionsGroupRepo.find({})
     return admissionGroups;
   }
 
