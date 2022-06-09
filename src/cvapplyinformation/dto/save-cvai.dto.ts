@@ -7,7 +7,7 @@ export class SaveCVAIDto {
     @IsNumber()
     cvaiUniversityGPA: number
 
-    @IsString()
+    @IsNumber()
     cvaiUniversityGraduateYear: number
 
     @IsString()

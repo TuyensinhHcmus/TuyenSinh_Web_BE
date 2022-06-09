@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { applytemp } from './applytemp.entity';
+import { AddApplyTempDto } from './dto/add-applytemp.dto';
+import { UpdateApplyTempDto } from './dto/update-applytemp.dto';
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -42,7 +44,16 @@ export class ApplyTempService {
     }
   }
 
-  async insertTemp(applyTempUserId: string, applyTempMajorId: string, applyTempTotalScore: number) {
+  async insertTemp(applyTempUserId: string, addApplyTempDto: AddApplyTempDto) {
+    const {
+      applyTempMajorId,
+      applyTempTotalScore,
+      applyTempMajorName,
+      applyTempScore1,
+      applyTempScore2,
+      applyTempScore3,
+      applyTempGroupId,
+    } = addApplyTempDto;
     // Kiểm tra user đã nộp với MajorId lần nào chưa
     await this.checkInfor(applyTempUserId, applyTempMajorId);
 
@@ -50,7 +61,14 @@ export class ApplyTempService {
       applyTempId: uuidv4(),
       applyTempUserId: applyTempUserId,
       applyTempMajorId: applyTempMajorId,
-      applyTempTotalScore: applyTempTotalScore
+      applyTempTotalScore: applyTempTotalScore,
+
+      //applyTempMajorName: applyTempMajorName,
+      applyTempScore1: applyTempScore1,
+      applyTempScore2: applyTempScore2,
+      applyTempScore3: applyTempScore3,
+      applyTempGroupId: applyTempGroupId,
+      applyTempTime: new Date()
     });
 
     const result = await this.applyTempRepo.save(newApplyTemp);
@@ -62,16 +80,30 @@ export class ApplyTempService {
       return a.applyTempTotalScore - b.applyTempTotalScore;
     });
 
-    let rank, applyTempTotalScore = -1;
-    let applyTempUserId, applyTempMajorId = "";
-
+    let rank, applyTempTotalScore, applyTempScore1, applyTempScore2, applyTempScore3 = -1;
+    let applyTempUserId, applyTempMajorId, applyTempGroupId = "";
+    let applyTempTime;
 
     dataSorted.forEach((value, key) => {
       if (value.applyTempId === applyTempId) {
-        applyTempUserId = value.applyTempUserId,
-          applyTempMajorId = value.applyTempMajorId,
-          applyTempTotalScore = value.applyTempTotalScore
+        applyTempUserId = value.applyTempUserId;
+        applyTempMajorId = value.applyTempMajorId;
+        applyTempTotalScore = value.applyTempTotalScore;
+
+        applyTempScore1 = value.applyTempScore1;
+        applyTempScore2 = value.applyTempScore2;
+        applyTempScore3 = value.applyTempScore3;
+        applyTempGroupId = value.applyTempGroupId;
+        applyTempTime = value.applyTempTime;
+
         rank = key + 1;
+        for(let i = key - 1; i >= 0; i--)
+        {
+          if(dataSorted[i].applyTempTotalScore === dataSorted[key].applyTempTotalScore)
+          {
+            rank = i + 1;
+          }
+        }
       }
     })
 
@@ -80,6 +112,13 @@ export class ApplyTempService {
       "applyTempUserId": applyTempUserId,
       "applyTempMajorId": applyTempMajorId,
       "applyTempTotalScore": applyTempTotalScore,
+
+      "applyTempScore1": applyTempScore1,
+      "applyTempScore2": applyTempScore2,
+      "applyTempScore3": applyTempScore3,
+      "applyTempGroupId": applyTempGroupId,
+      "applyTempTime": applyTempTime,
+
       "rank": rank,
       "total": dataSorted.length
     }
@@ -116,10 +155,12 @@ export class ApplyTempService {
     return res;
   }
 
-  async applytemp(applyTempUserId: string, applyTempMajorId: string, applyTempTotalScore: number) {
+  async applytemp(applyTempUserId: string, addApplyTempDto: AddApplyTempDto) {
+    const { applyTempMajorId, applyTempTotalScore } = addApplyTempDto;
+
 
     // Insert into database
-    await this.insertTemp(applyTempUserId, applyTempMajorId, applyTempTotalScore);
+    await this.insertTemp(applyTempUserId, addApplyTempDto);
 
     // Data all
     let data = await this.applyTempRepo.find({});
@@ -291,12 +332,28 @@ export class ApplyTempService {
     return result;
   }
 
-  async updateApplyTemp(applyTempUserId: string, applyTempId: string, applyTempMajorId: string, applyTempTotalScore: number) {
+  async updateApplyTemp(applyTempUserId: string, updateApplyTempDto: UpdateApplyTempDto) {
+    const {
+      applyTempId,
+      applyTempMajorId,
+      applyTempTotalScore,
+
+      applyTempScore1,
+      applyTempScore2,
+      applyTempScore3,
+      applyTempGroupId,
+    } = updateApplyTempDto;
+
     // Find apply temp by applyTempId
     const applyTemp = await this.findApplyTemp(applyTempId);
     // Update apply temp
     applyTemp.applyTempMajorId = applyTempMajorId;
     applyTemp.applyTempTotalScore = applyTempTotalScore;
+
+    applyTemp.applyTempScore1 = applyTempScore1;
+    applyTemp.applyTempScore2 = applyTempScore2;
+    applyTemp.applyTempScore3 = applyTempScore3;
+    applyTemp.applyTempGroupId = applyTempGroupId;
 
     await this.applyTempRepo.update({ applyTempId: applyTempId }, applyTemp);
 
@@ -376,5 +433,21 @@ export class ApplyTempService {
     })
 
     return result;
+  }
+
+  async deleteApplyTemp(applyTempId: string)
+  {
+    try {
+      await this.findApplyTemp(applyTempId);
+
+      await this.applyTempRepo.delete({applyTempId: applyTempId});
+      
+      return {
+        messaage: "Đã xóa thành công"
+      }
+    } catch (error) {
+      throw new NotImplementedException("Không thể xóa apply temp này");
+    }
+   
   }
 }

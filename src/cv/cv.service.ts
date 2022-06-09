@@ -230,8 +230,8 @@ export class CvsService {
 
         'user.userName',
         'user.userGender',
-        'user.userPhone',
-        'user.userEmail',
+        // 'user.userPhone',
+        // 'user.userEmail',
         'user.userEthnicity',
         'user.userNationality',
         'user.userBirthday',
@@ -271,7 +271,9 @@ export class CvsService {
         'cvai.cvaiToeflCertificateScore',
         'cvai.cvaiToeflCertificateExpiration',
         'cvai.cvaiHaveVietnameseCertificate',
-        'cvai.cvaiVietnameseCertificateLevel'
+        'cvai.cvaiVietnameseCertificateLevel',
+        'cvai.cvaiPhone',
+        'cvai.cvaiEmail'
       ])
       .getRawMany()
 
@@ -294,8 +296,8 @@ export class CvsService {
 
         userName: cv.user_userName,
         userGender: cv.user_userGender,
-        userPhone: cv.user_userPhone,
-        userEmail: cv.user_userEmail,
+        // userPhone: cv.user_userPhone,
+        // userEmail: cv.user_userEmail,
         userEthnicity: cv.user_userEthnicity,
         userNationality: cv.user_userNationality,
         userBirthday: cv.user_userBirthday,
@@ -335,6 +337,8 @@ export class CvsService {
         cvaiToeflCertificateExpiration: cv.cvai_cvaiToeflCertificateExpiration,
         cvaiHaveVietnameseCertificate: cv.cvai_cvaiHaveVietnameseCertificate,
         cvaiVietnameseCertificateLevel: cv.cvai_cvaiVietnameseCertificateLevel,
+        cvaiPhone: cv.cvai_cvaiPhone,
+        cvaiEmail: cv.cvai_cvaiEmail,
 
         listAspiration: []
       }
