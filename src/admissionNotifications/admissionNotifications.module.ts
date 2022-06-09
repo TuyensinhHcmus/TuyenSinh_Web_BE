@@ -15,7 +15,8 @@ import { UsersModule } from "src/users/users.module";
         UsersModule
     ],
     controllers:[AdmissionNotificationsController],
-    providers: [AdmissionNotificationsService]
+    providers: [AdmissionNotificationsService],
+    exports: [AdmissionNotificationsService]
 })
 export class AdmissionNotificationsModule{
     

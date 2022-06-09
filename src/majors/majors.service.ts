@@ -8,6 +8,8 @@ import { major, majormethod } from './major.entity';
 import { faculty } from 'src/faculties/faculty.entity';
 import { method } from 'src/methods/method.entity';
 import { typeProgram } from 'src/typePrograms/typeProgram.entity';
+import { AdmissionGroupsService } from 'src/admissionGroup/admissionGroup.service';
+
 
 @Injectable()
 export class MajorsService {
@@ -18,6 +20,7 @@ export class MajorsService {
     @InjectRepository(method)
     private readonly methodRepo: Repository<method>,
 
+    private admissionService: AdmissionGroupsService
   ) { }
 
   async insertMajor(addMajorDto: AddMajorDto): Promise<major> {
@@ -108,6 +111,12 @@ export class MajorsService {
     //     methodId: methodId
     //   }
     // })
+    const listAdmissionGroup = await this.admissionService.getAdmissionGroupMapMajor();
+
+    
+
+    // console.log('listAdmissionGroup', listAdmissionGroup);
+    
 
     const majors = await this.majorRepo.createQueryBuilder('major')
     .leftJoinAndMapOne( 'major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
@@ -132,8 +141,13 @@ export class MajorsService {
     .getMany()
 
     // console.log(methodContainListMajor)
+
+    let temp = majors.map( item => {
+      let admissionGroups = listAdmissionGroup.filter( adg => adg.majorId === item.majorId)
+      return {...item, admissionGroups}
+    })
     
-    return majors;
+    return temp;
   }
 
   async updateMajor(id: string, updateMajorDto: UpdateMajorDto): Promise<major> {

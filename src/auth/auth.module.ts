@@ -24,8 +24,7 @@ import { UnVerifyUsersModule } from 'src/unverifyuser/unverifyuser.module';
         expiresIn: 3600,
       },
     }),
-    MailModule,
-    PdfModule,
+    MailModule
   ],
   providers: [
     AuthService,

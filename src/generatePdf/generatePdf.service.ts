@@ -5,31 +5,46 @@ import * as Mail from 'nodemailer/lib/mailer';
 import { createReadStream } from 'fs';
 import { join } from 'path';
 import { createTransport } from 'nodemailer';
+import * as firebase from "firebase-admin";
+import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
 // import fs from 'fs-extra';
 // import path from 'path';
 const fs = require('fs-extra');
 const pdf = require('html-pdf');
+var Readable = require('stream').Readable
 
-interface dataTuiHoSO {
-  name: String,
-  phone: String,
-  address: String,
-  address2: String,
-  birthday: String,
-  birthplace: String,
-  gender: String,
-  code: String,
-  email: String,
-}
 
 @Injectable()
 export class PdfService {
+  constructor(
+    private serviceDb: AdmissionNotificationsService
+  ) {
+
+
+  }
+
+  async getPDF(fileName: string) {
+    let db = this.serviceDb.getDb();
+    let ref = db.collection('streams').doc(fileName);
+    let dataStream = await ref.get();
+
+    console.log("data", dataStream.data());
+
+    var s = new Readable();
+    s.push(dataStream.data().value);
+    s.push(null);
+
+    return s;
+
+  }
+
   async generatePdf() {
     let name = './tuihoso' + (new Date().getTime()).toString() + '.pdf'
 
+    let db = this.serviceDb.getDb();
 
     let file = await fs
-      .readFile('./src/generatePdf/templatePdf/Tui_Hs.html', 'utf8')
+      .readFile('./src/generatePdf/templatePdf/Phieu_dky.html', 'utf8')
       .then(async (res) => {
         let strHtml = res?.slice(0);
 
@@ -45,69 +60,68 @@ export class PdfService {
           email: 'datnguyen25082000@gmail.com',
         };
 
-        Object.keys(data).forEach(function (key) {
+        const dataPhieuDangKy = {
+          graduatedYear: "2022",
+          gpa12: "9",
+          area: "1",
+          class12: "Hung Vuong",
+          province12: "Binh Thuan",
+          district: "Binh Thuan",
+          name: "Phung Quoc Luong",
+          ethnic: "Kinh",
+          cmnd: "261508456",
+          birthday: "25/03/2000",
+          birthplace: "Binh Thuan",
+          address: "Tan Ha, Duc Linh, Binh Thuan",
+          phone: "0375006715",
+          email: "quocluong2503@gmail.com",
+          code: "abcdefgh",
+          national: "Viet nam",
+          province: "Binh Thuan"
+        }
+
+        Object.keys(dataPhieuDangKy).forEach(function (key) {
           const temp = `[pdf__${key}]`;
 
           if (strHtml?.includes(temp)) {
-            strHtml = strHtml.replace(temp, data[key]);
+            strHtml = strHtml.replace(temp, dataPhieuDangKy[key]);
           }
         });
 
         const options = {
-          // tuihs - khong border
           width: '635px',
           height: '820px',
-
-          // so yeu ly lich
-          // width: '600px',
-          // height: '800px',
-          // border: {
-          //   top: '40px',
-          //   right: '20px',
-          //   bottom: '50px',
-          //   left: '20px',
-          // },
-
-          // phieu dky
-          // width: '635px',
-          // height: '820px',
-          // border: {
-          //   top: '40px',
-          //   bottom: '60px',
-          // },
         };
 
-        // pdf.create(strHtml, options).toFile('./pdfname.pdf', (err, res) => {
-        //   fs.writeFile('fileName.pdf', res);
-        // });
+        //tra file truc tiep
+        // const streamValue = async () => {
+        //   const value = await new Promise(r => {
+        //     pdf.create(strHtml, options).toStream((a, stream) => {
 
-        // let temp = pdf.create(strHtml, options)
-        // return temp
-        // let temp = pdf.create(strHtml, options).toStream( (a, b)=> {
-        //   console.log("ádfgádfà",a ,b);
-        //   return b;
+        //       r(stream);
+        //     })
+        //   })
+        //   return value
+        // }
 
-        // } )
-        // return temp
 
-        const streamValue = async () => {
-          const value = await new Promise(r => {
-            pdf.create(strHtml, options).toStream((a, stream) => {
+        // return result
+        let filename = 'tuihoso' + (new Date().getTime())
 
-              r(stream);
-            })
-          })
-          return value
-        }
+        pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
+          console.log('buffer', buffer);
 
-        let result = await streamValue()
+          let ref = await db.collection('streams');
 
-        // console.log('result', result);
-        
+          await ref.doc(filename).set({
+            value: buffer
+          });
+          // const snapshot = await ref.where('capital', '==', true).get();
 
-        return result
-        
 
+        })
+
+        return filename
 
         // pdf.create(strHtml, options).toStream(function(err, stream){
         //   stream.pipe(fs.createWriteStream(name));
@@ -116,4 +130,5 @@ export class PdfService {
 
     return file
   }
+
 }

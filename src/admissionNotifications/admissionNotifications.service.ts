@@ -10,11 +10,14 @@ import * as firebase from "firebase-admin";
 import { UsersService } from "src/users/users.service";
 //var serviceAccount = require("D:/HỌC TẬP/NĂM 4/HK2/Đồ án tốt nghiệp/TuyenSinh_Web_BE/src/admissionNotifications/serviceAccountKey.json");
 var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
+
+import { getStorage } from "firebase-admin/storage"
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
   private defaultApp: any;
   private db: any;
+  private bucket  : any;
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
@@ -34,10 +37,22 @@ export class AdmissionNotificationsService {
     });
 
     this.defaultApp = firebase.initializeApp({
-      credential: firebase.credential.cert(serviceAccount)
+      credential: firebase.credential.cert(serviceAccount),
+      storageBucket: 'gs://hcmus-admission.appspot.com'
     });
 
     this.db = firebase.firestore();
+
+    this.bucket  = getStorage().bucket();
+
+  }
+
+  getDb() {
+    return this.db;
+  }
+
+  getBucket () {
+    return this.bucket ;
   }
 
   async insertAdmissionNotification(notificationInformation: AddNotificationDto) {
