@@ -27,5 +27,4 @@ export class typeProgram {
         length: 10,
     })
     typeProgramFormId: string
-
 }
