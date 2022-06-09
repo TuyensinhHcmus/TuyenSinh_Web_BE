@@ -1,6 +1,9 @@
 import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { admissionsgroup } from 'src/admissionGroup/admissionGroup.entity';
+import { major } from 'src/majors/major.entity';
+import { typeProgram } from 'src/typePrograms/typeProgram.entity';
+import { createQueryBuilder, Repository } from 'typeorm';
 import { applytemp } from './applytemp.entity';
 import { AddApplyTempDto } from './dto/add-applytemp.dto';
 import { UpdateApplyTempDto } from './dto/update-applytemp.dto';
@@ -97,15 +100,31 @@ export class ApplyTempService {
         applyTempTime = value.applyTempTime;
 
         rank = key + 1;
-        for(let i = key - 1; i >= 0; i--)
-        {
-          if(dataSorted[i].applyTempTotalScore === dataSorted[key].applyTempTotalScore)
-          {
+        for (let i = key - 1; i >= 0; i--) {
+          if (dataSorted[i].applyTempTotalScore === dataSorted[key].applyTempTotalScore) {
             rank = i + 1;
           }
         }
       }
     })
+
+    // Kết bảng major và admissionsgroup
+    let listApplyTemp = await createQueryBuilder('applytemp')
+      .where('applytemp.applyTempId = :applyTempId', { applyTempId: applyTempId })
+      .leftJoinAndMapMany('applytemp.applyTempMajorId', major, 'major', 'major.majorId = applytemp.applyTempMajorId')
+      .leftJoinAndMapMany('applytemp.applyTempGroupId', admissionsgroup, 'ag', 'ag.agId = applytemp.applyTempGroupId')
+      .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'tp', 'tp.typeProgramId = major.majorTypeProgram')
+      .select([
+        'tp.typeProgramName',
+        'major.majorName',
+
+        'ag.agFirstSubject',
+        'ag.agSecondSubject',
+        'ag.agThirdSubject',
+      ])
+      .getRawMany();
+
+    console.log(listApplyTemp);
 
     const res = {
       "applyTempId": applyTempId,
@@ -118,6 +137,12 @@ export class ApplyTempService {
       "applyTempScore3": applyTempScore3,
       "applyTempGroupId": applyTempGroupId,
       "applyTempTime": applyTempTime,
+
+      "applyTempTypeProgramName": listApplyTemp[0].tp_typeProgramName,
+      "applyTempMajorName": listApplyTemp[0].major_majorName,
+      "applyTempSubject1": listApplyTemp[0].ag_agFirstSubject,
+      "applyTempSubject2": listApplyTemp[0].ag_agSecondSubject,
+      "applyTempSubject3": listApplyTemp[0].ag_agThirdSubject,
 
       "rank": rank,
       "total": dataSorted.length
@@ -435,19 +460,18 @@ export class ApplyTempService {
     return result;
   }
 
-  async deleteApplyTemp(applyTempId: string)
-  {
+  async deleteApplyTemp(applyTempId: string) {
     try {
       await this.findApplyTemp(applyTempId);
 
-      await this.applyTempRepo.delete({applyTempId: applyTempId});
-      
+      await this.applyTempRepo.delete({ applyTempId: applyTempId });
+
       return {
         messaage: "Đã xóa thành công"
       }
     } catch (error) {
       throw new NotImplementedException("Không thể xóa apply temp này");
     }
-   
+
   }
 }
