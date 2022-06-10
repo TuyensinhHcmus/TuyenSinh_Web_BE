@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Req,
+  NotImplementedException,
 } from '@nestjs/common';
 import { AtGuard } from 'src/common/guards';
 import ChangePasswordDto from './dto/change-password.dto';
@@ -122,4 +123,34 @@ export class UsersController {
 
     return res;
   }
+
+  // @UseGuards(AtGuard)
+  // @Post('/addUserByAdmin')
+  // async addUserByAdmin(
+  //   @Req() req,
+  //   @Body('userName') userName: string,
+  //   @Body('userEmail') userEmail: string,
+  //   @Body('userRole') userRole: string,
+  //   @Body('userPassword') userPassword: string,
+  // ) {
+  //   const role = req.user.userRole;
+  //   let res;
+  //   const hashedPassword = await this.usersService.hashPassword(userPassword);
+  //   if (role !== 'admin') {
+  //     throw new NotImplementedException("Quyền này chỉ dành cho quản trị viên")
+  //   }
+  //   else {
+  //     res = await this.usersService.addUserByAdmin(
+  //       userName,
+  //       userEmail,
+  //       hashedPassword,
+  //       userRole);
+  //   }
+  //   // res = await this.usersService.addUserByAdmin(
+  //   //   userName,
+  //   //   userEmail,
+  //   //   hashedPassword,
+  //   //   userRole);
+  //   return res;
+  // }
 }  

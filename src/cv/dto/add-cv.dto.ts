@@ -71,7 +71,7 @@ export class AddCVDto extends PartialType(SaveCVAIDto) {
 
     userIdentityNumber: string
 
-    // userWardResidence: string
+    userWardResidence: string
 
-    // userStreetResidence: string
+    userStreetResidence: string
 }

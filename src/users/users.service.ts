@@ -37,13 +37,13 @@ export class UsersService {
 
   //banUser
   async banUser(userId: string, isBlock: boolean) {
-    const res = await this.userModel.update({userId: userId}, {userIsBlock: isBlock});
+    const res = await this.userModel.update({ userId: userId }, { userIsBlock: isBlock });
     return res;
   }
 
   //banUser
   async getUserById(userId: string) {
-    const res = await this.userModel.findOne({userId: userId});
+    const res = await this.userModel.findOne({ userId: userId });
     return res;
   }
 
@@ -51,33 +51,33 @@ export class UsersService {
   async editUserById(userId: string, userInfor: EditUserDto) {
     let obj = {}
     for (const [key, value] of Object.entries(userInfor)) {
-      if( value !== null && value !== "" ){
+      if (value !== null && value !== "") {
         obj[`${key}`] = value
       }
     }
-    const res = await this.userModel.update({userId: userId}, obj);
+    const res = await this.userModel.update({ userId: userId }, obj);
     return res;
   }
 
   // Add user
   async insertUser(
-      userName: string, 
-      userEmail: string, 
-      userPasswordHash: string, 
-      userPhone: string, 
-      userContactAddress: string,
-      userSecret: string 
-    ) {
+    userName: string,
+    userEmail: string,
+    userPasswordHash: string,
+    userPhone: string,
+    userContactAddress: string,
+    userSecret: string
+  ) {
 
     const newUser = await this.userModel.create({
       userId: uuidv4(),
       userName: userName,
       userEmail: userEmail,
       userPassword: userPasswordHash,
-      userType: userEmail ? 'email': 'phone',
+      userType: userEmail ? 'email' : 'phone',
       userRole: 'user',
       userSecret: userSecret,
-      userPhone: userPhone,
+      userPhone: userPhone ? userPhone: uuidv4(),
       userContactAddress: userContactAddress
     });
 
@@ -89,7 +89,7 @@ export class UsersService {
   public async getUsers() {
     const users = await this.userModel.find({});
     const response = users.map(i => {
-      let {userPassword ,...other} =  i;
+      let { userPassword, ...other } = i;
       return other
     })
     return response;
@@ -101,15 +101,13 @@ export class UsersService {
   }
 
   async checkExistUser(userEmail: string, userPhone: string) {
-    const user = await this.userModel.findOne({userEmail: userEmail});
-    const user1 = await this.userModel.findOne({userPhone: userPhone});
+    const user = await this.userModel.findOne({ userEmail: userEmail });
+    const user1 = await this.userModel.findOne({ userPhone: userPhone });
     let result = undefined;
-    if(user !== undefined)
-    {
+    if (user !== undefined) {
       result = user;
     }
-    else if(user1 !== undefined)
-    {
+    else if (user1 !== undefined) {
       result = user1;
     }
     return result;
@@ -128,23 +126,22 @@ export class UsersService {
   }
 
   // Change password
-  async changePassword(changePasswordDto: ChangePasswordDto, userId: string){
-    const {oldPassword, newPassword} = changePasswordDto;
+  async changePassword(changePasswordDto: ChangePasswordDto, userId: string) {
+    const { oldPassword, newPassword } = changePasswordDto;
 
     // Check oldPassword is true in database
-    let user = await this.userModel.findOne({userId: userId});
+    let user = await this.userModel.findOne({ userId: userId });
     const password = user.userPassword;
     const isPassword = await this.comparePassword(oldPassword, password);
 
     // Update password
-    if(isPassword)
-    {
+    if (isPassword) {
       // Hash password
       const hashPassword = await this.hashPassword(newPassword);
 
       // Change password
       user.userPassword = hashPassword;
-      await this.userModel.update({userId: userId}, user);
+      await this.userModel.update({ userId: userId }, user);
 
       return {
         message: "Đã cập nhật thành công!"
@@ -214,8 +211,7 @@ export class UsersService {
     return user;
   }
 
-  async updateDeviceToken(userId: string, deviceToken: string)
-  {
+  async updateDeviceToken(userId: string, deviceToken: string) {
     const user = await this.findUserById(userId);
 
     user.currentTokenDevice = deviceToken;
@@ -224,4 +220,32 @@ export class UsersService {
 
     return user;
   }
+
+  // Add user by admin
+  // async addUserByAdmin(
+  //   userName: string,
+  //   userEmail: string,
+  //   userPasswordHash: string,
+  //   userRole: string,
+  //   //userContactAddress: string,
+  //   //userSecret: string
+  // ) {
+  //   try {
+  //     const newUser = await this.userModel.create({
+  //       userId: uuidv4(),
+  //       userName: userName,
+  //       userEmail: userEmail,
+  //       userPassword: userPasswordHash,
+  //       userType: userEmail ? 'email' : 'phone',
+  //       userRole: userRole,
+  //       //userSecret: userSecret,
+  //       userPhone: uuidv4(),
+  //       //userContactAddress: userContactAddress
+  //     });
+  //     const result = await this.userModel.save(newUser);
+  //     return result;
+  //   } catch (error) {
+  //     throw new HttpException('User with that email or number phone already exists', HttpStatus.BAD_REQUEST);
+  //   }
+  // }
 }

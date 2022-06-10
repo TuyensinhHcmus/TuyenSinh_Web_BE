@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, LessThan, Repository } from 'typeorm';
 
@@ -79,8 +79,8 @@ export class CvsService {
         userAddress10,
         userSchool10,
         userIdentityNumber,
-        // userWardResidence,
-        // userStreetResidence,
+        userWardResidence,
+        userStreetResidence,
         ...data } = addCVDto;
       // Save cv into cv database
       const { cvId } = await this.addCv(method, userId, fileUrl);
@@ -144,8 +144,8 @@ export class CvsService {
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
       userInfo.userIdentityNumber = userIdentityNumber;
-      // userInfo.userWardResidence = userWardResidence;
-      // userInfo.userStreetResidence = userStreetResidence;
+      userInfo.userWardResidence = userWardResidence;
+      userInfo.userStreetResidence = userStreetResidence;
 
       await this.userService.editUserById(userId, userInfo);
 
@@ -198,15 +198,24 @@ export class CvsService {
       .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
       .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
       .select([
+        // CV
         'cv.cvId',
-        'method.methodName',
-        'aspiration.aspirationId',
-        'major.majorName',
-        'major.majorId',
-        'typeProgram.typeProgramName',
-        'typeProgram.typeProgramId',
         'cv.cvFile',
 
+        // Method
+        'method.methodName',
+
+        // Aspiration
+        'aspiration.aspirationId',
+
+        // Major
+        'major.majorName',
+        'major.majorId',
+
+        // TypeProgram
+        'typeProgram.typeProgramName',
+        'typeProgram.typeProgramId',
+  
       ])
       .getRawMany();
 
@@ -245,6 +254,8 @@ export class CvsService {
         'user.userSchool11',
         'user.userAddress10',
         'user.userSchool10',
+        'user.userStreetResidence',
+        'user.userWardResidence',
 
         'cvai.cvaiGraduateUniversity',
         'cvai.cvaiUniversityGPA',
@@ -310,6 +321,8 @@ export class CvsService {
         userAddress11: cv.user_userAddress11,
         userSchool11: cv.user_userSchool11,
         userAddress10: cv.user_userAddress10,
+        userStreetResidence: cv.user_userStreetResidence,
+        userWardResidence: cv.user_userWardResidence,
 
         cvaiGraduateUniversity: cv.cvai_cvaiGraduateUniversity,
         cvaiUniversityGPA: cv.cvai_cvaiUniversityGPA,
@@ -550,6 +563,8 @@ export class CvsService {
         userSchool11,
         userAddress10,
         userSchool10,
+        userWardResidence,
+        userStreetResidence,
         ...data } = updateCVData;
 
       // Find cv by cvId
@@ -590,6 +605,8 @@ export class CvsService {
       cvaiData.cvaiToeflCertificateExpiration = data.cvaiToeflCertificateExpiration;
       cvaiData.cvaiHaveVietnameseCertificate = data.cvaiHaveVietnameseCertificate;
       cvaiData.cvaiVietnameseCertificateLevel = data.cvaiVietnameseCertificateLevel;
+      cvaiData.cvaiEmail = data.cvaiEmail;
+      cvaiData.cvaiPhone = data.cvaiPhone;
 
       await this.cvaiSerivce.updateApplyInformationCV(cvaiData);
 
@@ -612,6 +629,8 @@ export class CvsService {
       userInfo.userSchool11 = userSchool11;
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
+      userInfo.userWardResidence = userWardResidence;
+      userInfo.userStreetResidence = userStreetResidence;
 
       await this.userService.editUserById(userId, userInfo);
 
@@ -639,12 +658,14 @@ export class CvsService {
   async updateCVsStatusByFile(listUpdateStatusCVDto: Array<UpdateStatusCVDto>) {
     try {
       for (let i = 0; i < listUpdateStatusCVDto.length; i++) {
-        const { cvId, cvState, listAspiration } = listUpdateStatusCVDto[i];
+        const { cvId, cvState,cvComment, cvStatusPay, listAspiration } = listUpdateStatusCVDto[i];
 
         // Find cv by cvId
-        let cv = await this.cvsRepo.findOne({ cvId: cvId });
-
+        let cv = await this.findCV(cvId);
+        console.log("hello")
         cv.cvState = cvState;
+        cv.cvComment = cvComment;
+        cv.cvStatusPay = cvStatusPay;
 
         // Update cv
         await this.cvsRepo.update({ cvId: cvId }, cv);
@@ -663,7 +684,7 @@ export class CvsService {
         message: "Đã cập nhật thành công !"
       };
     } catch (error) {
-      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new NotImplementedException('Something went wrong');
     }
   }
 
@@ -737,15 +758,14 @@ export class CvsService {
 
   private async findCV(cvId: number): Promise<cv> {
     let cv;
-
     try {
       cv = await this.cvsRepo.findOne({ cvId: cvId });
     } catch (error) {
-      throw new NotFoundException('Could not find CV.');
+      throw new NotFoundException('Could not find CV ' + cvId);
     }
 
     if (!cv) {
-      throw new NotFoundException('Could not find CV');
+      throw new NotFoundException('Could not find CV ' + cvId);
     }
 
     return cv;
