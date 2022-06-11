@@ -52,7 +52,7 @@ export class ApplyTempService {
           })
 
         if (isCheckDuplicate) {
-          throw new NotImplementedException("Bạn đã apply vào ngành này rồi")
+          throw new NotImplementedException("Bạn đã ứng tuyển vào ngành này rồi")
         }
       }
     }
@@ -66,7 +66,7 @@ export class ApplyTempService {
       //console.log(res);
 
       if (res) {
-        throw new NotImplementedException("Bạn đã apply vào ngành này rồi")
+        throw new NotImplementedException("Bạn đã ứng tuyển vào ngành này rồi")
       }
     }
 

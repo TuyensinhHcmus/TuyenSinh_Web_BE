@@ -740,7 +740,7 @@ export class CvsService {
     })
 
     if (isDuplicate) {
-      throw new NotImplementedException("Bạn đã apply bằng phương thức này rồi")
+      throw new NotImplementedException("Bạn đã ứng tuyển bằng phương thức này rồi")
     }
 
   }
