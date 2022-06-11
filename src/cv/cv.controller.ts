@@ -103,7 +103,26 @@ export class CvsController {
     return await this.cvsService.deleteCv(cvId);
   }
 
+  @UseGuards(AtGuard)
+  @Post('applyOneCV')
+  async applyOneCV(
+    @Body('cvId') cvId: number,
+    //@Req() req
+    ) {
 
+    //const userId = req.user.userId;
+
+    return await this.cvsService.applyOneCV(cvId);
+  }
+
+  @UseGuards(AtGuard)
+  @Post('updateStatusCV')
+  async updateStatusCV(
+    @Body() updateStatusCVDto: UpdateStatusCVDto,
+    @Req() req) {
+
+    return await this.cvsService.updateStatusCV(updateStatusCVDto);
+  }
 
 
   // // [GET] /contacts/:id

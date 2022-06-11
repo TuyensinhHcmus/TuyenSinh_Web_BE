@@ -222,30 +222,30 @@ export class UsersService {
   }
 
   // Add user by admin
-  // async addUserByAdmin(
-  //   userName: string,
-  //   userEmail: string,
-  //   userPasswordHash: string,
-  //   userRole: string,
-  //   //userContactAddress: string,
-  //   //userSecret: string
-  // ) {
-  //   try {
-  //     const newUser = await this.userModel.create({
-  //       userId: uuidv4(),
-  //       userName: userName,
-  //       userEmail: userEmail,
-  //       userPassword: userPasswordHash,
-  //       userType: userEmail ? 'email' : 'phone',
-  //       userRole: userRole,
-  //       //userSecret: userSecret,
-  //       userPhone: uuidv4(),
-  //       //userContactAddress: userContactAddress
-  //     });
-  //     const result = await this.userModel.save(newUser);
-  //     return result;
-  //   } catch (error) {
-  //     throw new HttpException('User with that email or number phone already exists', HttpStatus.BAD_REQUEST);
-  //   }
-  // }
+  async addUserByAdmin(
+    userName: string,
+    userEmail: string,
+    userPasswordHash: string,
+    userRole: string,
+    //userContactAddress: string,
+    //userSecret: string
+  ) {
+    try {
+      const newUser = await this.userModel.create({
+        userId: uuidv4(),
+        userName: userName,
+        userEmail: userEmail,
+        userPassword: userPasswordHash,
+        userType: userEmail ? 'email' : 'phone',
+        userRole: userRole,
+        //userSecret: userSecret,
+        userPhone: uuidv4(),
+        //userContactAddress: userContactAddress
+      });
+      const result = await this.userModel.save(newUser);
+      return result;
+    } catch (error) {
+      throw new HttpException('User with that email or number phone already exists', HttpStatus.BAD_REQUEST);
+    }
+  }
 }

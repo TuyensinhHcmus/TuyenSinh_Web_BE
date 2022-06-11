@@ -215,7 +215,7 @@ export class CvsService {
         // TypeProgram
         'typeProgram.typeProgramName',
         'typeProgram.typeProgramId',
-  
+
       ])
       .getRawMany();
 
@@ -229,13 +229,13 @@ export class CvsService {
         'cv.cvId',
         'cv.cvFile',
         'cv.cvState',
-        
+
         'method.methodName',
         'method.methodId',
 
         'typeoftraining.typeOfTrainingId',
         'typeoftraining.typeOfTrainingName',
-        
+
 
         'user.userName',
         'user.userGender',
@@ -568,10 +568,11 @@ export class CvsService {
         ...data } = updateCVData;
 
       // Find cv by cvId
-      let cv = await this.cvsRepo.findOne({ cvId: cvId });
+      let cv = await this.findCV(cvId);
 
-      cv.cvMethodId = method;
-      cv.cvFile = fileUrl;
+      cv.cvMethodId = method ? method : cv.cvMethodId;
+      cv.cvFile = fileUrl ? fileUrl : cv.cvFile;
+
 
       // Update cv
       await this.cvsRepo.update({ cvId: cvId }, cv);
@@ -658,11 +659,11 @@ export class CvsService {
   async updateCVsStatusByFile(listUpdateStatusCVDto: Array<UpdateStatusCVDto>) {
     try {
       for (let i = 0; i < listUpdateStatusCVDto.length; i++) {
-        const { cvId, cvState,cvComment, cvStatusPay, listAspiration } = listUpdateStatusCVDto[i];
+        const { cvId, cvState, cvComment, cvStatusPay, listAspiration } = listUpdateStatusCVDto[i];
 
         // Find cv by cvId
         let cv = await this.findCV(cvId);
-        console.log("hello")
+        //console.log("hello")
         cv.cvState = cvState;
         cv.cvComment = cvComment;
         cv.cvStatusPay = cvStatusPay;
@@ -725,36 +726,84 @@ export class CvsService {
     }
   }
 
-  //   async deleteContact(contactId: string): Promise<void> {
-  //     try {
-  //       await this.contactsRepo.delete({contactId: parseInt(contactId)})
-  //     } catch (err) {
-  //       throw new NotFoundException('Could not delete contact.', err);
-  //     }
-  //   }
+  async checkMethodInCV(cvUserId: string, cvMethodId: string) {
+    const listCV = await this.cvsRepo.find({
+      cvState: "Đã nộp",
+      cvMethodId: cvMethodId
+    })
 
-  //   async getSingleContact(contactId: string): Promise<contact> {
-  //     const contact = await this.findContact(contactId);
-  //     return contact;
-  //   }
+    let isDuplicate = false;
+    listCV.forEach(cv => {
+      if (cv.cvUserId === cvUserId) {
+        isDuplicate = true;
+      }
+    })
 
-  //   async updateContact(id: string, updateContactDto: UpdateContactDto): Promise<contact> {
+    if (isDuplicate) {
+      throw new NotImplementedException("Bạn đã apply bằng phương thức này rồi")
+    }
 
-  //     const { department, room, address, phone, email, page } = updateContactDto;
+  }
 
-  //     const contact = await this.findContact(id);
+  async applyOneCV(cvId: number) {
+    // Find cv 
+    const cv = await this.findCV(cvId);
 
-  //     contact.contactDepartment = department;
-  //     contact.contactRoom = room;
-  //     contact.contactAddress = address;
-  //     contact.contactPhone = phone;
-  //     contact.contactEmail = email;
-  //     contact.contactPage = page;
+    // Kiểm tra xem trong danh sách cv đã nộp có cv nào có method giống không
+    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId);
 
-  //     await this.contactsRepo.update({contactId: parseInt(id)}, contact);
+    try {
+      // Update state của cv
+      cv.cvState = "Đã nộp";
+      await this.cvsRepo.update({ cvId: cvId }, cv)
 
-  //     return contact;
-  //   }
+      return {
+        message: "Đã cập nhật trạng thái của cv thành công!",
+        cvId: cvId
+      }
+    } catch (error) {
+      throw new NotFoundException('Không thể cập nhật trạng thái đã nộp của ' + cvId);
+    }
+  }
+
+  async updateStatusCV(updateStatusCVDto: UpdateStatusCVDto) {
+    try {
+
+      const {
+        cvId,
+        cvState,
+        cvComment,
+        cvStatusPay,
+        listAspiration
+      } = updateStatusCVDto;
+
+      // Find cv by cvId
+      let cv = await this.findCV(cvId);
+      //console.log("hello")
+      cv.cvState = cvState;
+      cv.cvComment = cvComment;
+      cv.cvStatusPay = cvStatusPay;
+
+      // Update cv
+      await this.cvsRepo.update({ cvId: cvId }, cv);
+
+      // Update list aspiration
+      for (let i = 0; i < listAspiration.length; i++) {
+
+        // Save aspiration into aspiration database
+        let aspiration = new UpdateAspirationDto();
+        aspiration.aspirationState = listAspiration[i].aspirationState;
+
+        await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+      }
+
+      return {
+        message: "Đã cập nhật thành công !"
+      };
+    } catch (error) {
+      throw new NotImplementedException('Something went wrong');
+    }
+  }
 
   private async findCV(cvId: number): Promise<cv> {
     let cv;
