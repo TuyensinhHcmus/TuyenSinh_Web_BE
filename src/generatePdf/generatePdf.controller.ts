@@ -13,11 +13,11 @@ import { PdfService } from './generatePdf.service';
     //   return file;
     // }
 
-    @Get('/tuihoso')
-    async saveFirebase()  {
-      const data = await this.pdfService.generatePdf();
-      return data
-    }
+    // @Get('/tuihoso')
+    // async saveFirebase()  {
+    //   const data = await this.pdfService.generatePdf();
+    //   return data
+    // }
 
 
     //v1

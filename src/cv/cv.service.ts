@@ -24,6 +24,7 @@ import { userInfo } from 'os';
 import { UpdateCVAIDto } from 'src/cvapplyinformation/dto/update-cvai.dto';
 import { UpdateStatusCVDto } from './dto/update-status.dto';
 import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
+import { PdfService } from 'src/generatePdf/generatePdf.service';
 
 @Injectable()
 export class CvsService {
@@ -33,6 +34,7 @@ export class CvsService {
     private readonly aspirationService: AspirationService,
     private readonly cvaiSerivce: CvaisService,
     private readonly userService: UsersService,
+    private readonly pdfService: PdfService
   ) { }
 
   async addCv(cvMethodId: string, cvUserId: string, cvFile: string): Promise<cv> {
@@ -760,11 +762,133 @@ export class CvsService {
     try {
       // Update state của cv
       cv.cvState = "Đã nộp";
-      await this.cvsRepo.update({ cvId: cvId }, cv)
+      let res = await this.cvsRepo.update({ cvId: cvId }, cv)
 
-      return {
-        message: "Đã cập nhật trạng thái của cv thành công!",
-        cvId: cvId
+      if (res.affected > 0) {
+
+        const detail = await createQueryBuilder('cv')
+          .where('cv.cvId = :id', { id: cvId })
+          .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
+          .leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
+          .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+          .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
+          .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+          // .leftJoinAndMapMany('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'method.methodTypeOfTrainingID = typeoftraining.typeOfTrainingId')
+          .select([
+            'cv.cvId',
+            'method.methodName',
+            'cv.cvFile',
+            'cv.cvState',
+
+            'user.userName',
+            'user.userGender',
+            'user.userPhone',
+            'user.userEmail',
+            'user.userEthnicity',
+            'user.userNationality',
+            'user.userBirthday',
+            'user.userBirthplace',
+            'user.userContactAddress',
+            'user.userProvinceResidence',
+            'user.userDistrictResidence',
+            'user.userAddress12',
+            'user.userSchool12',
+            'user.userAddress11',
+            'user.userSchool11',
+            'user.userAddress10',
+            'user.userSchool10',
+
+            'cvai.cvaiGraduateUniversity',
+            'cvai.cvaiUniversityGPA',
+            'cvai.cvaiUniversityGraduateYear',
+            'cvai.cvaiGraduateCollege',
+            'cvai.cvaiCollegeGPA',
+            'cvai.cvaiCollegeGraduateYear',
+            'cvai.cvaiPriorityArea',
+            'cvai.cvaiGPA12',
+            'cvai.cvaiGPA11',
+            'cvai.cvaiGPA10',
+            'cvai.cvaiHighSchoolGraduateYear',
+            'cvai.cvaiCapacity12',
+            'cvai.cvaiConduct12',
+            'cvai.cvaiCapacity11',
+            'cvai.cvaiConduct11',
+            'cvai.cvaiCapacity10',
+            'cvai.cvaiConduct10',
+            'cvai.cvaiProvincialExcellentSubject',
+            'cvai.cvaiProvincialExcellentYear',
+            'cvai.cvaiProvincialExcellentAward',
+            'cvai.cvaiIeltsCertificateScore',
+            'cvai.cvaiIeltsCertificateExpiration',
+            'cvai.cvaiToeflCertificateScore',
+            'cvai.cvaiToeflCertificateExpiration',
+            'cvai.cvaiHaveVietnameseCertificate',
+            'cvai.cvaiVietnameseCertificateLevel',
+
+            'major.majorName',
+            'major.majorId',
+          ])
+          .getRawMany()
+
+        console.log("cvDetail", detail[0],"cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
+        let obj = {}
+        if (cv.cvMethodId === "DT" && detail.length > 0) {
+
+          obj['graduatedYear'] = detail[0]['cvai_cvaiUniversityGraduateYear'],
+          obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
+          //   gpa12: "9",
+          obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
+          //   area: "1",
+          obj['class12'] = detail[0]['user_userSchool12'],
+          //   class12: "Hung Vuong",
+          obj['province12'] = detail[0]['user_userAddress12'],
+          //   province12: "Binh Thuan",
+          obj['district'] = detail[0]['user_userDistrictResidence'],
+          //   district: "Binh Thuan",
+          obj['name'] = detail[0]['user_userName'],
+          //   name: "Phung Quoc Luong Test",
+          obj['ethnic'] = detail[0]['user_userEthnicity'],
+          //   ethnic: "Kinh",
+          //   cmnd: "261508456",
+          obj['birthday'] = detail[0]['user_userEthnicity'],
+          //   birthday: "25/03/2000",
+          obj['birthplace'] = detail[0]['user_userBirthplace'],
+          //   birthplace: "Binh Thuan",
+          obj['address'] = detail[0]['user_userContactAddress'],
+          //   address: "Tan Ha, Duc Linh, Binh Thuan",
+          obj['phone'] = detail[0]['user_userPhone'],
+          //   phone: "0375006715",
+          obj['email'] = detail[0]['user_userEmail'],
+          //   email: "quocluong2503@gmail.com",
+          // obj['code'] = detail[0]['userEmail'],
+          //   code: "abcdefgh",
+          obj['national'] = detail[0]['user_userNationality'],
+          //   national: "Viet nam",
+          obj['province'] = detail[0]['user_userProvinceResidence'],
+          //   province: "Binh Thuan"
+          // }
+          await this.pdfService.generatePdf(cvId, obj, "DT")
+        }
+        if (cv.cvMethodId === "XT" && detail.length > 0) {
+
+          obj['majorName'] = detail[0]['major_majorName'],
+          obj['userBirthday'] = detail[0]['user_userBirthday'],
+          obj['userGender'] = detail[0]['user_userGender'],
+          obj['cmnd'] = '00000000000000',
+          obj['userAddress'] = detail[0]['user_userContactAddress'],
+          obj['cvaiPhone'] = detail[0]['user_userPhone'],
+          obj['cvaiEmail'] = detail[0]['user_userEmail'],
+          obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
+
+          await this.pdfService.generatePdf(cvId, obj, "XT")
+        }
+
+
+        return {
+          message: "Đã cập nhật trạng thái của cv thành công!",
+          cvId: cvId,
+          detail: detail
+        }
       }
     } catch (error) {
       throw new NotFoundException('Không thể cập nhật trạng thái đã nộp của ' + cvId);

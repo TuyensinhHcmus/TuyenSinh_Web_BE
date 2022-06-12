@@ -10,6 +10,7 @@ import { PdfService } from './generatePdf.service';
     AdmissionNotificationsModule
   ],
   controllers: [GenPdfController],
-  providers: [PdfService]
+  providers: [PdfService],
+  exports: [PdfService]
 })
 export class PdfModule {}
