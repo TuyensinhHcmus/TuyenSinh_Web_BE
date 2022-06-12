@@ -2,6 +2,7 @@ import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Que
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
+import { UpdateNewsDto } from './dto/upadteNewAdmission.dto';
 import { news } from './newsAdmission.entity';
 import { NewsAdmissionService } from './newsAdmission.service';
 
@@ -19,6 +20,11 @@ export class NewsAdmissionController {
     return await this.newsAdmissionService.updateStatus(id, status);
   }
 
+  @Post('update')
+  async updateNews(@Body('newsId') id: number, @Body() updateNews: UpdateNewsDto) {
+    return await this.newsAdmissionService.updateNews(id, updateNews);
+  }
+
   @Get('getlist')
   async getAllNewsAdmission(): Promise<news[]> {
     return await this.newsAdmissionService.getListNews();
@@ -31,8 +37,9 @@ export class NewsAdmissionController {
     @Query('page') page: number,
     @Query('perPage') perPage: number,
     @Query('typeOfTraining') typeOfTraining: string,
+    @Query('typeOfProgram') typeOfProgram: string,
   ): Promise<any> {
-    const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword, typeOfTraining);
+    const { newsTotal, news } = await this.newsAdmissionService.searchNews(perPage, sortBy, page, keyword, typeOfTraining, typeOfProgram);
     return { newsTotal, news };
   }
 
