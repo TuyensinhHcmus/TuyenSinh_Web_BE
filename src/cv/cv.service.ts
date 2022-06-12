@@ -635,17 +635,22 @@ export class CvsService {
 
       await this.userService.editUserById(userId, userInfo);
 
-      // Update list aspiration
+      // Delete old list aspiration
+      const oldListAspiration = await this.aspirationService.findAspirationByCVid(cvId)
+      for (let i = 0; i < oldListAspiration.length; i++) {
+
+        // Delete aspiration in aspiration database
+        await this.aspirationService.deleteAspiration(oldListAspiration[i].aspirationId);
+      }
+
+      // Insert list aspiration into aspiration database
       for (let i = 0; i < listAspiration.length; i++) {
 
         // Save aspiration into aspiration database
-        let aspiration = new UpdateAspirationDto();
-        aspiration.aspirationMajor = listAspiration[i].major;
-        aspiration.aspirationCvId = cvId;
-        aspiration.aspirationState = "";
-
-        let updateAspiration = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+        await this.addAspiration(cvId, listAspiration[i].typeProgram, listAspiration[i].major);
       }
+
+
 
       return {
         cvId: cvId,
