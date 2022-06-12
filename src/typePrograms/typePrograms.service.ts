@@ -27,7 +27,7 @@ export class TypeProgramsService {
   async addTypeProgram(infor: TypeProgramDto): Promise<typeProgram> {
 
     let isExist = await this.typeProgramsRepo.find({ typeProgramId: infor.typeProgramId })
-    console.log("isaga", isExist);
+    // console.log("isaga", isExist);
     
 
     if (isExist.length> 0) {
