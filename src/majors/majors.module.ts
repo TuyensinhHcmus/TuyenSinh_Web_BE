@@ -15,6 +15,7 @@ import { AdmissionGroupModule } from 'src/admissionGroup/admissionGroup.module';
   ],
   controllers: [MajorsController],
   providers: [MajorsService],
+  exports: [MajorsService]
 })
 
 export class MajorsModule {}

@@ -103,6 +103,7 @@ export class CvsController {
     return await this.cvsService.deleteCv(cvId);
   }
 
+  // Đổi trạng thái của CV sang đã nộp
   @UseGuards(AtGuard)
   @Post('applyOneCV')
   async applyOneCV(
@@ -115,6 +116,7 @@ export class CvsController {
     return await this.cvsService.applyOneCV(cvId);
   }
 
+  // Đổi trạng thái của CV và aspiration sang trúng tuyển/không trúng tuyển
   @UseGuards(AtGuard)
   @Post('updateStatusCV')
   async updateStatusCV(

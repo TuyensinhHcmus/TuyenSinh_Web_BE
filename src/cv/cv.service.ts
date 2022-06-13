@@ -25,6 +25,9 @@ import { UpdateCVAIDto } from 'src/cvapplyinformation/dto/update-cvai.dto';
 import { UpdateStatusCVDto } from './dto/update-status.dto';
 import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 import { PdfService } from 'src/generatePdf/generatePdf.service';
+import { MailService } from 'src/mail/mail.service';
+import { MajorsService } from 'src/majors/majors.service';
+
 
 @Injectable()
 export class CvsService {
@@ -34,7 +37,9 @@ export class CvsService {
     private readonly aspirationService: AspirationService,
     private readonly cvaiSerivce: CvaisService,
     private readonly userService: UsersService,
-    private readonly pdfService: PdfService
+    private readonly pdfService: PdfService,
+    private readonly mailService: MailService,
+    private readonly majorService: MajorsService
   ) { }
 
   async addCv(cvMethodId: string, cvUserId: string, cvFile: string): Promise<cv> {
@@ -830,58 +835,62 @@ export class CvsService {
           ])
           .getRawMany()
 
-        console.log("cvDetail", detail[0],"cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
+        console.log("cvDetail", detail[0], "cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
         let obj = {}
         if (cv.cvMethodId === "DT" && detail.length > 0) {
 
           obj['graduatedYear'] = detail[0]['cvai_cvaiUniversityGraduateYear'],
-          obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
-          //   gpa12: "9",
-          obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
-          //   area: "1",
-          obj['class12'] = detail[0]['user_userSchool12'],
-          //   class12: "Hung Vuong",
-          obj['province12'] = detail[0]['user_userAddress12'],
-          //   province12: "Binh Thuan",
-          obj['district'] = detail[0]['user_userDistrictResidence'],
-          //   district: "Binh Thuan",
-          obj['name'] = detail[0]['user_userName'],
-          //   name: "Phung Quoc Luong Test",
-          obj['ethnic'] = detail[0]['user_userEthnicity'],
-          //   ethnic: "Kinh",
-          //   cmnd: "261508456",
-          obj['birthday'] = detail[0]['user_userEthnicity'],
-          //   birthday: "25/03/2000",
-          obj['birthplace'] = detail[0]['user_userBirthplace'],
-          //   birthplace: "Binh Thuan",
-          obj['address'] = detail[0]['user_userContactAddress'],
-          //   address: "Tan Ha, Duc Linh, Binh Thuan",
-          obj['phone'] = detail[0]['user_userPhone'],
-          //   phone: "0375006715",
-          obj['email'] = detail[0]['user_userEmail'],
-          //   email: "quocluong2503@gmail.com",
-          // obj['code'] = detail[0]['userEmail'],
-          //   code: "abcdefgh",
-          obj['national'] = detail[0]['user_userNationality'],
-          //   national: "Viet nam",
-          obj['province'] = detail[0]['user_userProvinceResidence'],
-          //   province: "Binh Thuan"
-          // }
-          await this.pdfService.generatePdf(cvId, obj, "DT")
+            obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
+            //   gpa12: "9",
+            obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
+            //   area: "1",
+            obj['class12'] = detail[0]['user_userSchool12'],
+            //   class12: "Hung Vuong",
+            obj['province12'] = detail[0]['user_userAddress12'],
+            //   province12: "Binh Thuan",
+            obj['district'] = detail[0]['user_userDistrictResidence'],
+            //   district: "Binh Thuan",
+            obj['name'] = detail[0]['user_userName'],
+            //   name: "Phung Quoc Luong Test",
+            obj['ethnic'] = detail[0]['user_userEthnicity'],
+            //   ethnic: "Kinh",
+            //   cmnd: "261508456",
+            obj['birthday'] = detail[0]['user_userEthnicity'],
+            //   birthday: "25/03/2000",
+            obj['birthplace'] = detail[0]['user_userBirthplace'],
+            //   birthplace: "Binh Thuan",
+            obj['address'] = detail[0]['user_userContactAddress'],
+            //   address: "Tan Ha, Duc Linh, Binh Thuan",
+            obj['phone'] = detail[0]['user_userPhone'],
+            //   phone: "0375006715",
+            obj['email'] = detail[0]['user_userEmail'],
+            //   email: "quocluong2503@gmail.com",
+            // obj['code'] = detail[0]['userEmail'],
+            //   code: "abcdefgh",
+            obj['national'] = detail[0]['user_userNationality'],
+            //   national: "Viet nam",
+            obj['province'] = detail[0]['user_userProvinceResidence'],
+            //   province: "Binh Thuan"
+            // }
+            await this.pdfService.generatePdf(cvId, obj, "DT")
         }
         if (cv.cvMethodId === "XT" && detail.length > 0) {
 
           obj['majorName'] = detail[0]['major_majorName'],
-          obj['userBirthday'] = detail[0]['user_userBirthday'],
-          obj['userGender'] = detail[0]['user_userGender'],
-          obj['cmnd'] = '00000000000000',
-          obj['userAddress'] = detail[0]['user_userContactAddress'],
-          obj['cvaiPhone'] = detail[0]['user_userPhone'],
-          obj['cvaiEmail'] = detail[0]['user_userEmail'],
-          obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
+            obj['userBirthday'] = detail[0]['user_userBirthday'],
+            obj['userGender'] = detail[0]['user_userGender'],
+            obj['cmnd'] = '00000000000000',
+            obj['userAddress'] = detail[0]['user_userContactAddress'],
+            obj['cvaiPhone'] = detail[0]['user_userPhone'],
+            obj['cvaiEmail'] = detail[0]['user_userEmail'],
+            obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
 
-          await this.pdfService.generatePdf(cvId, obj, "XT")
+            await this.pdfService.generatePdf(cvId, obj, "XT")
         }
+
+        // Gửi mail báo đã nộp thành công
+        const message = "<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã nộp hồ sơ thành công vào trường. Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>"
+        await this.mailService.notifyUser(detail[0]['user_userEmail'], "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG", message)
 
 
         return {
@@ -891,7 +900,7 @@ export class CvsService {
         }
       }
     } catch (error) {
-      throw new NotFoundException('Không thể cập nhật trạng thái đã nộp của ' + cvId);
+      throw new NotFoundException('Không thể cập nhật trạng thái đã nộp của cv có mã ' + cvId);
     }
   }
 
@@ -917,13 +926,30 @@ export class CvsService {
       await this.cvsRepo.update({ cvId: cvId }, cv);
 
       // Update list aspiration
+      let majorId;
       for (let i = 0; i < listAspiration.length; i++) {
 
         // Save aspiration into aspiration database
         let aspiration = new UpdateAspirationDto();
         aspiration.aspirationState = listAspiration[i].aspirationState;
 
-        await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+        const aspirationUpdated = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+
+        if (listAspiration[i].aspirationState === "Trúng tuyển") {
+          majorId = aspirationUpdated.aspirationMajor;
+        }
+      }
+
+      // Tìm tên major
+      const majorName = await (await this.majorService.getSingleMajor(majorId)).majorName;
+
+      if (cvState === "Trúng tuyển") {
+        // Gửi mail báo trúng tuyển
+        const content = "Chúc mừng bạn đã trúng tuyển vào ngành <b>" + majorName + "</b> của Trường Đại học Khoa học Tự nhiên";
+        const cvai = await this.cvaiSerivce.findCvai(cv.cvId);
+        const message = "<div ><div ><p ></p></div><p>Chào bạn,</p><p>" + content + "</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>"
+        await this.mailService.notifyUser(cvai.cvaiEmail, "THÔNG BÁO TRÚNG TUYỂN", message)
+
       }
 
       return {
