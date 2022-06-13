@@ -33,18 +33,43 @@ export class ApplyTempService {
     return applyTemp;
   }
 
-  async checkInfor(applyTempUserId: string, applyTempMajorId: string) {
-    const res = await this.applyTempRepo.findOne(
-      {
-        applyTempUserId: applyTempUserId,
-        applyTempMajorId: applyTempMajorId
-      })
+  async checkInfor(applyTempUserId: string, applyTempMajorId: string, applyTempId: string) {
+    if (applyTempId !== '') {
+      // Find apply temp
+      const applyTemp = await this.findApplyTemp(applyTempId);
 
-    //console.log(res);
+      // Check majorId is changed
+      let isChangeMajorId = false;
+      if (applyTemp.applyTempMajorId !== applyTempMajorId) {
+        isChangeMajorId = true;
+      }
 
-    if (res) {
-      throw new NotImplementedException("Bạn đã apply vào ngành này rồi")
+      // Check this change major id can duplicate
+      if (isChangeMajorId) {
+        const isCheckDuplicate = await this.applyTempRepo.findOne(
+          {
+            applyTempMajorId: applyTempMajorId
+          })
+
+        if (isCheckDuplicate) {
+          throw new NotImplementedException("Bạn đã ứng tuyển vào ngành này rồi")
+        }
+      }
     }
+    else {
+      const res = await this.applyTempRepo.findOne(
+        {
+          applyTempUserId: applyTempUserId,
+          applyTempMajorId: applyTempMajorId
+        })
+
+      //console.log(res);
+
+      if (res) {
+        throw new NotImplementedException("Bạn đã ứng tuyển vào ngành này rồi")
+      }
+    }
+
   }
 
   async insertTemp(applyTempUserId: string, addApplyTempDto: AddApplyTempDto) {
@@ -58,7 +83,7 @@ export class ApplyTempService {
       applyTempGroupId,
     } = addApplyTempDto;
     // Kiểm tra user đã nộp với MajorId lần nào chưa
-    await this.checkInfor(applyTempUserId, applyTempMajorId);
+    await this.checkInfor(applyTempUserId, applyTempMajorId, '');
 
     const newApplyTemp = await this.applyTempRepo.create({
       applyTempId: uuidv4(),
@@ -371,6 +396,10 @@ export class ApplyTempService {
 
     // Find apply temp by applyTempId
     const applyTemp = await this.findApplyTemp(applyTempId);
+
+    // Check exist 
+    await this.checkInfor(applyTemp.applyTempUserId, applyTempMajorId, applyTempId);
+
     // Update apply temp
     applyTemp.applyTempMajorId = applyTempMajorId;
     applyTemp.applyTempTotalScore = applyTempTotalScore;

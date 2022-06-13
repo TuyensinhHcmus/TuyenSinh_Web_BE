@@ -225,4 +225,28 @@ export class cvapplyinformation {
         }
     )
     cvaiPhone: string
+
+    // @Column(
+    //     {
+    //         type: 'varchar',
+    //         length: 50,
+    //     }
+    // )
+    // cvaiState: string
+
+    // @Column(
+    //     {
+    //         type: 'varchar',
+    //         length: 50,
+    //     }
+    // )
+    // cvaiStatusPayment: string
+    
+    // @Column(
+    //     {
+    //         type: 'varchar',
+    //         length: 300,
+    //     }
+    // )
+    // cvaiComment: string
 }

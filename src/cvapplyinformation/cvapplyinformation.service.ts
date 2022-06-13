@@ -34,4 +34,8 @@ export class CvaisService {
 
     await this.cvaisRepo.delete({ cvaiId: cvId });
   }
+
+  async findCvai(cvId: number) {
+    return await this.cvaisRepo.findOne({ cvaiId: cvId });
+  }
 }

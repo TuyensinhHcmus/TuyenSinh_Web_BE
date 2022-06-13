@@ -13,6 +13,7 @@ export class method {
         type: 'char',
         length: 5,
         primary: true,
+        unique: true,
     })
     methodId: string
 

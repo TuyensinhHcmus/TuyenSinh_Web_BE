@@ -1,18 +1,11 @@
-import { IsNotEmpty } from 'class-validator'
-import { Timestamp } from 'typeorm';
+import { IsNotEmpty } from 'class-validator';
 
-export class AddNewsAdmissionDto {
+export class UpdateNewsDto {
     @IsNotEmpty()
     title: string;
 
     @IsNotEmpty()
     content: string;
-
-    @IsNotEmpty()
-    dateCreate: Timestamp;
-
-    @IsNotEmpty()
-    creator: string;
 
     @IsNotEmpty()
     state: string;

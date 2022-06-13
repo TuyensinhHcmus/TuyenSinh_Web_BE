@@ -16,4 +16,8 @@ export class UpdateStatusCVDto {
     @IsNotEmpty()
     @IsString()
     cvState: string
+
+    cvStatusPay: string
+
+    cvComment: string
 }

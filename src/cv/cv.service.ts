@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, LessThan, Repository } from 'typeorm';
 
@@ -24,6 +24,10 @@ import { userInfo } from 'os';
 import { UpdateCVAIDto } from 'src/cvapplyinformation/dto/update-cvai.dto';
 import { UpdateStatusCVDto } from './dto/update-status.dto';
 import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
+import { PdfService } from 'src/generatePdf/generatePdf.service';
+import { MailService } from 'src/mail/mail.service';
+import { MajorsService } from 'src/majors/majors.service';
+
 
 @Injectable()
 export class CvsService {
@@ -33,6 +37,9 @@ export class CvsService {
     private readonly aspirationService: AspirationService,
     private readonly cvaiSerivce: CvaisService,
     private readonly userService: UsersService,
+    private readonly pdfService: PdfService,
+    private readonly mailService: MailService,
+    private readonly majorService: MajorsService
   ) { }
 
   async addCv(cvMethodId: string, cvUserId: string, cvFile: string): Promise<cv> {
@@ -79,8 +86,8 @@ export class CvsService {
         userAddress10,
         userSchool10,
         userIdentityNumber,
-        // userWardResidence,
-        // userStreetResidence,
+        userWardResidence,
+        userStreetResidence,
         ...data } = addCVDto;
       // Save cv into cv database
       const { cvId } = await this.addCv(method, userId, fileUrl);
@@ -144,8 +151,8 @@ export class CvsService {
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
       userInfo.userIdentityNumber = userIdentityNumber;
-      // userInfo.userWardResidence = userWardResidence;
-      // userInfo.userStreetResidence = userStreetResidence;
+      userInfo.userWardResidence = userWardResidence;
+      userInfo.userStreetResidence = userStreetResidence;
 
       await this.userService.editUserById(userId, userInfo);
 
@@ -198,14 +205,23 @@ export class CvsService {
       .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
       .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
       .select([
+        // CV
         'cv.cvId',
+        'cv.cvFile',
+
+        // Method
         'method.methodName',
+
+        // Aspiration
         'aspiration.aspirationId',
+
+        // Major
         'major.majorName',
         'major.majorId',
+
+        // TypeProgram
         'typeProgram.typeProgramName',
         'typeProgram.typeProgramId',
-        'cv.cvFile',
 
       ])
       .getRawMany();
@@ -220,13 +236,13 @@ export class CvsService {
         'cv.cvId',
         'cv.cvFile',
         'cv.cvState',
-        
+
         'method.methodName',
         'method.methodId',
 
         'typeoftraining.typeOfTrainingId',
         'typeoftraining.typeOfTrainingName',
-        
+
 
         'user.userName',
         'user.userGender',
@@ -245,6 +261,8 @@ export class CvsService {
         'user.userSchool11',
         'user.userAddress10',
         'user.userSchool10',
+        'user.userStreetResidence',
+        'user.userWardResidence',
 
         'cvai.cvaiGraduateUniversity',
         'cvai.cvaiUniversityGPA',
@@ -310,6 +328,8 @@ export class CvsService {
         userAddress11: cv.user_userAddress11,
         userSchool11: cv.user_userSchool11,
         userAddress10: cv.user_userAddress10,
+        userStreetResidence: cv.user_userStreetResidence,
+        userWardResidence: cv.user_userWardResidence,
 
         cvaiGraduateUniversity: cv.cvai_cvaiGraduateUniversity,
         cvaiUniversityGPA: cv.cvai_cvaiUniversityGPA,
@@ -550,13 +570,16 @@ export class CvsService {
         userSchool11,
         userAddress10,
         userSchool10,
+        userWardResidence,
+        userStreetResidence,
         ...data } = updateCVData;
 
       // Find cv by cvId
-      let cv = await this.cvsRepo.findOne({ cvId: cvId });
+      let cv = await this.findCV(cvId);
 
-      cv.cvMethodId = method;
-      cv.cvFile = fileUrl;
+      cv.cvMethodId = method ? method : cv.cvMethodId;
+      cv.cvFile = fileUrl ? fileUrl : cv.cvFile;
+
 
       // Update cv
       await this.cvsRepo.update({ cvId: cvId }, cv);
@@ -590,6 +613,8 @@ export class CvsService {
       cvaiData.cvaiToeflCertificateExpiration = data.cvaiToeflCertificateExpiration;
       cvaiData.cvaiHaveVietnameseCertificate = data.cvaiHaveVietnameseCertificate;
       cvaiData.cvaiVietnameseCertificateLevel = data.cvaiVietnameseCertificateLevel;
+      cvaiData.cvaiEmail = data.cvaiEmail;
+      cvaiData.cvaiPhone = data.cvaiPhone;
 
       await this.cvaiSerivce.updateApplyInformationCV(cvaiData);
 
@@ -612,20 +637,27 @@ export class CvsService {
       userInfo.userSchool11 = userSchool11;
       userInfo.userAddress10 = userAddress10;
       userInfo.userSchool10 = userSchool10;
+      userInfo.userWardResidence = userWardResidence;
+      userInfo.userStreetResidence = userStreetResidence;
 
       await this.userService.editUserById(userId, userInfo);
 
-      // Update list aspiration
+      // Delete old list aspiration
+      const oldListAspiration = await this.aspirationService.findAspirationByCVid(cvId)
+      for (let i = 0; i < oldListAspiration.length; i++) {
+
+        // Delete aspiration in aspiration database
+        await this.aspirationService.deleteAspiration(oldListAspiration[i].aspirationId);
+      }
+
+      // Insert list aspiration into aspiration database
       for (let i = 0; i < listAspiration.length; i++) {
 
         // Save aspiration into aspiration database
-        let aspiration = new UpdateAspirationDto();
-        aspiration.aspirationMajor = listAspiration[i].major;
-        aspiration.aspirationCvId = cvId;
-        aspiration.aspirationState = "";
-
-        let updateAspiration = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+        await this.addAspiration(cvId, listAspiration[i].typeProgram, listAspiration[i].major);
       }
+
+
 
       return {
         cvId: cvId,
@@ -639,12 +671,14 @@ export class CvsService {
   async updateCVsStatusByFile(listUpdateStatusCVDto: Array<UpdateStatusCVDto>) {
     try {
       for (let i = 0; i < listUpdateStatusCVDto.length; i++) {
-        const { cvId, cvState, listAspiration } = listUpdateStatusCVDto[i];
+        const { cvId, cvState, cvComment, cvStatusPay, listAspiration } = listUpdateStatusCVDto[i];
 
         // Find cv by cvId
-        let cv = await this.cvsRepo.findOne({ cvId: cvId });
-
+        let cv = await this.findCV(cvId);
+        //console.log("hello")
         cv.cvState = cvState;
+        cv.cvComment = cvComment;
+        cv.cvStatusPay = cvStatusPay;
 
         // Update cv
         await this.cvsRepo.update({ cvId: cvId }, cv);
@@ -663,7 +697,7 @@ export class CvsService {
         message: "Đã cập nhật thành công !"
       };
     } catch (error) {
-      throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new NotImplementedException('Something went wrong');
     }
   }
 
@@ -704,48 +738,238 @@ export class CvsService {
     }
   }
 
-  //   async deleteContact(contactId: string): Promise<void> {
-  //     try {
-  //       await this.contactsRepo.delete({contactId: parseInt(contactId)})
-  //     } catch (err) {
-  //       throw new NotFoundException('Could not delete contact.', err);
-  //     }
-  //   }
+  async checkMethodInCV(cvUserId: string, cvMethodId: string) {
+    const listCV = await this.cvsRepo.find({
+      cvState: "Đã nộp",
+      cvMethodId: cvMethodId
+    })
 
-  //   async getSingleContact(contactId: string): Promise<contact> {
-  //     const contact = await this.findContact(contactId);
-  //     return contact;
-  //   }
+    let isDuplicate = false;
+    listCV.forEach(cv => {
+      if (cv.cvUserId === cvUserId) {
+        isDuplicate = true;
+      }
+    })
 
-  //   async updateContact(id: string, updateContactDto: UpdateContactDto): Promise<contact> {
+    if (isDuplicate) {
+      throw new NotImplementedException("Bạn đã ứng tuyển bằng phương thức này rồi")
+    }
 
-  //     const { department, room, address, phone, email, page } = updateContactDto;
+  }
 
-  //     const contact = await this.findContact(id);
+  async applyOneCV(cvId: number) {
+    // Find cv 
+    const cv = await this.findCV(cvId);
 
-  //     contact.contactDepartment = department;
-  //     contact.contactRoom = room;
-  //     contact.contactAddress = address;
-  //     contact.contactPhone = phone;
-  //     contact.contactEmail = email;
-  //     contact.contactPage = page;
+    // Kiểm tra xem trong danh sách cv đã nộp có cv nào có method giống không
+    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId);
 
-  //     await this.contactsRepo.update({contactId: parseInt(id)}, contact);
+    try {
+      // Update state của cv
+      cv.cvState = "Đã nộp";
+      let res = await this.cvsRepo.update({ cvId: cvId }, cv)
 
-  //     return contact;
-  //   }
+      if (res.affected > 0) {
+
+        const detail = await createQueryBuilder('cv')
+          .where('cv.cvId = :id', { id: cvId })
+          .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
+          .leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
+          .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+          .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
+          .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+          // .leftJoinAndMapMany('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'method.methodTypeOfTrainingID = typeoftraining.typeOfTrainingId')
+          .select([
+            'cv.cvId',
+            'method.methodName',
+            'cv.cvFile',
+            'cv.cvState',
+
+            'user.userName',
+            'user.userGender',
+            'user.userPhone',
+            'user.userEmail',
+            'user.userEthnicity',
+            'user.userNationality',
+            'user.userBirthday',
+            'user.userBirthplace',
+            'user.userContactAddress',
+            'user.userProvinceResidence',
+            'user.userDistrictResidence',
+            'user.userAddress12',
+            'user.userSchool12',
+            'user.userAddress11',
+            'user.userSchool11',
+            'user.userAddress10',
+            'user.userSchool10',
+
+            'cvai.cvaiGraduateUniversity',
+            'cvai.cvaiUniversityGPA',
+            'cvai.cvaiUniversityGraduateYear',
+            'cvai.cvaiGraduateCollege',
+            'cvai.cvaiCollegeGPA',
+            'cvai.cvaiCollegeGraduateYear',
+            'cvai.cvaiPriorityArea',
+            'cvai.cvaiGPA12',
+            'cvai.cvaiGPA11',
+            'cvai.cvaiGPA10',
+            'cvai.cvaiHighSchoolGraduateYear',
+            'cvai.cvaiCapacity12',
+            'cvai.cvaiConduct12',
+            'cvai.cvaiCapacity11',
+            'cvai.cvaiConduct11',
+            'cvai.cvaiCapacity10',
+            'cvai.cvaiConduct10',
+            'cvai.cvaiProvincialExcellentSubject',
+            'cvai.cvaiProvincialExcellentYear',
+            'cvai.cvaiProvincialExcellentAward',
+            'cvai.cvaiIeltsCertificateScore',
+            'cvai.cvaiIeltsCertificateExpiration',
+            'cvai.cvaiToeflCertificateScore',
+            'cvai.cvaiToeflCertificateExpiration',
+            'cvai.cvaiHaveVietnameseCertificate',
+            'cvai.cvaiVietnameseCertificateLevel',
+
+            'major.majorName',
+            'major.majorId',
+          ])
+          .getRawMany()
+
+        console.log("cvDetail", detail[0], "cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
+        let obj = {}
+        if (cv.cvMethodId === "DT" && detail.length > 0) {
+
+          obj['graduatedYear'] = detail[0]['cvai_cvaiUniversityGraduateYear'],
+            obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
+            //   gpa12: "9",
+            obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
+            //   area: "1",
+            obj['class12'] = detail[0]['user_userSchool12'],
+            //   class12: "Hung Vuong",
+            obj['province12'] = detail[0]['user_userAddress12'],
+            //   province12: "Binh Thuan",
+            obj['district'] = detail[0]['user_userDistrictResidence'],
+            //   district: "Binh Thuan",
+            obj['name'] = detail[0]['user_userName'],
+            //   name: "Phung Quoc Luong Test",
+            obj['ethnic'] = detail[0]['user_userEthnicity'],
+            //   ethnic: "Kinh",
+            //   cmnd: "261508456",
+            obj['birthday'] = detail[0]['user_userEthnicity'],
+            //   birthday: "25/03/2000",
+            obj['birthplace'] = detail[0]['user_userBirthplace'],
+            //   birthplace: "Binh Thuan",
+            obj['address'] = detail[0]['user_userContactAddress'],
+            //   address: "Tan Ha, Duc Linh, Binh Thuan",
+            obj['phone'] = detail[0]['user_userPhone'],
+            //   phone: "0375006715",
+            obj['email'] = detail[0]['user_userEmail'],
+            //   email: "quocluong2503@gmail.com",
+            // obj['code'] = detail[0]['userEmail'],
+            //   code: "abcdefgh",
+            obj['national'] = detail[0]['user_userNationality'],
+            //   national: "Viet nam",
+            obj['province'] = detail[0]['user_userProvinceResidence'],
+            //   province: "Binh Thuan"
+            // }
+            await this.pdfService.generatePdf(cvId, obj, "DT")
+        }
+        if (cv.cvMethodId === "XT" && detail.length > 0) {
+
+          obj['majorName'] = detail[0]['major_majorName'],
+            obj['userBirthday'] = detail[0]['user_userBirthday'],
+            obj['userGender'] = detail[0]['user_userGender'],
+            obj['cmnd'] = '00000000000000',
+            obj['userAddress'] = detail[0]['user_userContactAddress'],
+            obj['cvaiPhone'] = detail[0]['user_userPhone'],
+            obj['cvaiEmail'] = detail[0]['user_userEmail'],
+            obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
+
+            await this.pdfService.generatePdf(cvId, obj, "XT")
+        }
+
+        // Gửi mail báo đã nộp thành công
+        const message = "<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã nộp hồ sơ thành công vào trường. Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>"
+        await this.mailService.notifyUser(detail[0]['user_userEmail'], "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG", message)
+
+
+        return {
+          message: "Đã cập nhật trạng thái của cv thành công!",
+          cvId: cvId,
+          detail: detail
+        }
+      }
+    } catch (error) {
+      throw new NotFoundException('Không thể cập nhật trạng thái đã nộp của cv có mã ' + cvId);
+    }
+  }
+
+  async updateStatusCV(updateStatusCVDto: UpdateStatusCVDto) {
+    try {
+
+      const {
+        cvId,
+        cvState,
+        cvComment,
+        cvStatusPay,
+        listAspiration
+      } = updateStatusCVDto;
+
+      // Find cv by cvId
+      let cv = await this.findCV(cvId);
+      //console.log("hello")
+      cv.cvState = cvState;
+      cv.cvComment = cvComment;
+      cv.cvStatusPay = cvStatusPay;
+
+      // Update cv
+      await this.cvsRepo.update({ cvId: cvId }, cv);
+
+      // Update list aspiration
+      let majorId;
+      for (let i = 0; i < listAspiration.length; i++) {
+
+        // Save aspiration into aspiration database
+        let aspiration = new UpdateAspirationDto();
+        aspiration.aspirationState = listAspiration[i].aspirationState;
+
+        const aspirationUpdated = await this.aspirationService.updateAspiration(listAspiration[i].aspirationId, aspiration);
+
+        if (listAspiration[i].aspirationState === "Trúng tuyển") {
+          majorId = aspirationUpdated.aspirationMajor;
+        }
+      }
+
+      // Tìm tên major
+      const majorName = await (await this.majorService.getSingleMajor(majorId)).majorName;
+
+      if (cvState === "Trúng tuyển") {
+        // Gửi mail báo trúng tuyển
+        const content = "Chúc mừng bạn đã trúng tuyển vào ngành <b>" + majorName + "</b> của Trường Đại học Khoa học Tự nhiên";
+        const cvai = await this.cvaiSerivce.findCvai(cv.cvId);
+        const message = "<div ><div ><p ></p></div><p>Chào bạn,</p><p>" + content + "</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>"
+        await this.mailService.notifyUser(cvai.cvaiEmail, "THÔNG BÁO TRÚNG TUYỂN", message)
+
+      }
+
+      return {
+        message: "Đã cập nhật thành công !"
+      };
+    } catch (error) {
+      throw new NotImplementedException('Something went wrong');
+    }
+  }
 
   private async findCV(cvId: number): Promise<cv> {
     let cv;
-
     try {
       cv = await this.cvsRepo.findOne({ cvId: cvId });
     } catch (error) {
-      throw new NotFoundException('Could not find CV.');
+      throw new NotFoundException('Could not find CV ' + cvId);
     }
 
     if (!cv) {
-      throw new NotFoundException('Could not find CV');
+      throw new NotFoundException('Could not find CV ' + cvId);
     }
 
     return cv;

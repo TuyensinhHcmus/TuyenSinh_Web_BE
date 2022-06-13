@@ -27,4 +27,18 @@ export class AddMethodDto {
     @IsNotEmpty()
     typeOfTrainingID: string;
 
+    @IsNotEmpty()
+    target: string;
+
+    @IsNotEmpty()
+    object: string;
+
+    @IsNotEmpty()
+    limitAspiration: number;
+
+    @IsNotEmpty()
+    startEdit: Timestamp;
+
+    @IsNotEmpty()
+    endEdit: Timestamp;
 }

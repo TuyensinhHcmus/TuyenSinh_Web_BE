@@ -103,7 +103,28 @@ export class CvsController {
     return await this.cvsService.deleteCv(cvId);
   }
 
+  // Đổi trạng thái của CV sang đã nộp
+  @UseGuards(AtGuard)
+  @Post('applyOneCV')
+  async applyOneCV(
+    @Body('cvId') cvId: number,
+    //@Req() req
+    ) {
 
+    //const userId = req.user.userId;
+
+    return await this.cvsService.applyOneCV(cvId);
+  }
+
+  // Đổi trạng thái của CV và aspiration sang trúng tuyển/không trúng tuyển
+  @UseGuards(AtGuard)
+  @Post('updateStatusCV')
+  async updateStatusCV(
+    @Body() updateStatusCVDto: UpdateStatusCVDto,
+    @Req() req) {
+
+    return await this.cvsService.updateStatusCV(updateStatusCVDto);
+  }
 
 
   // // [GET] /contacts/:id

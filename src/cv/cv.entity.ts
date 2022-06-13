@@ -52,4 +52,20 @@ export class cv {
         }
     )
     cvState: string
+
+    @Column(
+        {
+            type: 'varchar',
+            length: 50,
+        }
+    )
+    cvStatusPay: string
+    
+    @Column(
+        {
+            type: 'varchar',
+            length: 300,
+        }
+    )
+    cvComment: string
 }

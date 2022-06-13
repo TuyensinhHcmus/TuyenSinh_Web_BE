@@ -55,4 +55,34 @@ export class MailService {
 
         //console.log(res);
     }
+
+    async notifyUser(email: string, subject: string, message: string) {
+        await this.oAuth2Client.refreshAccessToken;
+        const accessToken = await this.oAuth2Client.getAccessToken();
+
+        this.nodemailerTransport = createTransport({
+            host: process.env.MAIL_HOST,
+            secure: false,
+            auth: {
+                type: 'OAuth2',
+                user: process.env.MAIL_USER,
+                clientId: process.env.CLIENT_ID,
+                clientSecret: process.env.CLIENT_SECRET,
+                refreshToken: process.env.REFRESH_TOKEN,
+                accessToken: accessToken,
+            },
+        });
+        
+
+        const res = await this.nodemailerTransport.sendMail({
+            from: process.env.MAIL_USER,
+            to: email,
+            subject: subject,
+
+            //template: 'confirmation',
+            html: message
+        });
+
+        //console.log(res);
+    }
 }

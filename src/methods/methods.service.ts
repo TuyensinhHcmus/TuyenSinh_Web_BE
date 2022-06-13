@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 import { Repository } from 'typeorm';
@@ -12,20 +12,45 @@ import { method } from './method.entity';
 export class MethodsService {
   constructor(
     @InjectRepository(method) private readonly methodRepo: Repository<method>,
-  ) {}
+  ) { }
 
   async insertMethod(addMethodDto: AddMethodDto): Promise<method> {
-    const { methodId, name, content, image, parentId, dateStart, dateEnd, typeOfTrainingID } = addMethodDto;
+    const {
+      methodId,
+      name,
+      content,
+      image,
+      parentId,
+      dateStart,
+      dateEnd,
+      typeOfTrainingID,
+      endEdit,
+      limitAspiration,
+      object,
+      startEdit,
+      target
+    } = addMethodDto;
+
+    let isExist = await this.methodRepo.find({ methodId: methodId })
+
+    if (isExist.length > 0) {
+      throw new HttpException("Method is Existed", 409);
+    }
 
     const method = await this.methodRepo.create({
       methodId: methodId,
       methodName: name,
-      methodContent: content,  
+      methodContent: content,
       methodImage: image,
       methodParentId: parentId,
       methodDateStart: dateStart,
       methodDateEnd: dateEnd,
-      methodTypeOfTrainingID: typeOfTrainingID
+      methodTypeOfTrainingID: typeOfTrainingID,
+      methodEndEdit: endEdit,
+      methodLimitAspiration: limitAspiration,
+      methodObject: object,
+      methodStartEdit: startEdit,
+      methodTarget: target
     });
 
     const result = await this.methodRepo.save(method);
@@ -61,11 +86,30 @@ export class MethodsService {
 
   async updateMethod(id: string, updateMethodDto: UpdateMethodDto): Promise<method> {
 
-    const { methodId, name, content, image, parentId, dateStart, dateEnd, typeOfTrainingID } = updateMethodDto;
+    const {
+      name,
+      content,
+      image,
+      parentId,
+      dateStart,
+      dateEnd,
+      typeOfTrainingID,
+      endEdit,
+      limitAspiration,
+      object,
+      startEdit,
+      target
+    } = updateMethodDto;
 
-    const method = await this.findMethod(id);
+    
+    let isExist = await this.methodRepo.find({ methodId: id })
+    
+    if (isExist.length === 0) {
+      throw new HttpException("Method is not Existed", 404);
+    }
+    
+    const method = isExist[0];
 
-    method.methodId = methodId;
     method.methodName = name;
     method.methodContent = content;
     method.methodImage = image;
@@ -73,9 +117,14 @@ export class MethodsService {
     method.methodDateStart = dateStart;
     method.methodDateEnd = dateEnd;
     method.methodTypeOfTrainingID = typeOfTrainingID;
+    method.methodEndEdit = endEdit;
+    method.methodLimitAspiration = limitAspiration;
+    method.methodObject = object;
+    method.methodStartEdit = startEdit;
+    method.methodTarget = target;
 
-    await this.methodRepo.update({methodId: id}, method);
-    
+    await this.methodRepo.update({ methodId: id }, method);
+
     return method;
   }
 
@@ -83,7 +132,7 @@ export class MethodsService {
     let method;
 
     try {
-      method = await this.methodRepo.findOne({methodId: id});
+      method = await this.methodRepo.findOne({ methodId: id });
     } catch (error) {
       throw new NotFoundException('Could not find method.');
     }
@@ -95,8 +144,7 @@ export class MethodsService {
     return method;
   }
 
-  async getMethodCanApply()
-  {
+  async getMethodCanApply() {
     const methods = await this.methodRepo
       .createQueryBuilder('method')
       .leftJoinAndMapOne('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'typeoftraining.typeOfTrainingId = method.methodTypeOfTrainingID')
@@ -105,8 +153,7 @@ export class MethodsService {
     return methods;
   }
 
-  async getStatusApply(methodId: string): Promise<boolean>
-  {
+  async getStatusApply(methodId: string): Promise<boolean> {
     const method = await this.methodRepo
       .createQueryBuilder('method')
       .where("(method.methodId = :id) and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)", { id: methodId })

@@ -70,11 +70,11 @@ export class AspirationService {
         try {
             aspiration = await this.aspirationRepo.findOne({ aspirationId: id });
         } catch (error) {
-            throw new NotFoundException('Could not find aspiration.');
+            throw new NotFoundException('Không thể tìm thấy nguyện vọng nào.');
         }
 
         if (!aspiration) {
-            throw new NotFoundException('Could not find aspiration.');
+            throw new NotFoundException('Không thể tìm thấy nguyện vọng nào.');
         }
 
         return aspiration;
@@ -85,12 +85,28 @@ export class AspirationService {
             await this.aspirationRepo.delete({aspirationId: aspirationId})
 
             return{
-                message: "Delete aspiration success"
+                message: "Xóa nguyện vọng" + aspirationId + " thành công!"
             }
         } catch (error) {
-            throw new NotImplementedException("Can't delete aspiration");
+            throw new NotImplementedException("Không thể xóa nguyện vọng với mã " + aspirationId);
         }
         
+    }
+
+    async findAspirationByCVid(cvId: number): Promise<aspiration[]> {
+        let listAspiration;
+
+        try {
+            listAspiration = await this.aspirationRepo.find({ aspirationCvId: cvId});
+        } catch (error) {
+            throw new NotFoundException('Không thể tìm thấy nguyện vọng nào với mã hồ sơ này.');
+        }
+
+        if (!aspiration) {
+            throw new NotFoundException('Không thể tìm thấy nguyện vọng nào với mã hồ sơ này.');
+        }
+
+        return listAspiration;
     }
 
 }
