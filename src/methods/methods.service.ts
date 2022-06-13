@@ -28,7 +28,9 @@ export class MethodsService {
       limitAspiration,
       object,
       startEdit,
-      target
+      target,
+      endPayFee,
+      resultTime
     } = addMethodDto;
 
     let isExist = await this.methodRepo.find({ methodId: methodId })
@@ -50,7 +52,9 @@ export class MethodsService {
       methodLimitAspiration: limitAspiration,
       methodObject: object,
       methodStartEdit: startEdit,
-      methodTarget: target
+      methodTarget: target,
+      methodEndPayFee: endPayFee,
+      methodResultTime: resultTime
     });
 
     const result = await this.methodRepo.save(method);
@@ -98,7 +102,9 @@ export class MethodsService {
       limitAspiration,
       object,
       startEdit,
-      target
+      target,
+      endPayFee,
+      resultTime
     } = updateMethodDto;
 
     
@@ -122,6 +128,8 @@ export class MethodsService {
     method.methodObject = object;
     method.methodStartEdit = startEdit;
     method.methodTarget = target;
+    method.methodEndPayFee = endPayFee;
+    method.methodResultTime = resultTime;
 
     await this.methodRepo.update({ methodId: id }, method);
 

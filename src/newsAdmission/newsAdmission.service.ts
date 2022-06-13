@@ -16,7 +16,7 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-    const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram } = addNewsAdmissionDto;
+    const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, image } = addNewsAdmissionDto;
 
     const news = this.newsRepo.create({
       newsTitle: title,
@@ -26,7 +26,8 @@ export class NewsAdmissionService {
       newsState: state,
       newsSlug: slug(title) + "-" + (new Date()).getTime(),
       newsTypeOfTrainingID: typeOfTrainingID,
-      newsTypeOfProgram: typeOfProgram
+      newsTypeOfProgram: typeOfProgram,
+      newsImage: image
     });
 
     const result = await this.newsRepo.save(news);
@@ -34,7 +35,7 @@ export class NewsAdmissionService {
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {
-    const { title, content, state, typeOfTrainingID, typeOfProgram } = updateDto;
+    const { title, content, state, typeOfTrainingID, typeOfProgram, image } = updateDto;
 
     let isExist = await this.newsRepo.find({ newsId: id });
 
@@ -49,6 +50,7 @@ export class NewsAdmissionService {
     news.newsState = state;
     news.newsTypeOfTrainingID = typeOfTrainingID;
     news.newsTypeOfProgram = typeOfProgram;
+    news.newsImage = image;
 
     const result = await this.newsRepo.save(news);
     return result;

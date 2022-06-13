@@ -41,4 +41,10 @@ export class AddMethodDto {
 
     @IsNotEmpty()
     endEdit: Timestamp;
+
+    @IsNotEmpty()
+    endPayFee: Date;
+
+    @IsNotEmpty()
+    resultTime: Date
 }

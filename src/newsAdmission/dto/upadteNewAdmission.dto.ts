@@ -15,4 +15,7 @@ export class UpdateNewsDto {
 
     @IsNotEmpty()
     typeOfProgram: string;
+
+    @IsNotEmpty()
+    image: string
 }

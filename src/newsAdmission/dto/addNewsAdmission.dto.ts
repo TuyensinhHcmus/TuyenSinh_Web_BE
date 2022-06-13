@@ -22,4 +22,7 @@ export class AddNewsAdmissionDto {
 
     @IsNotEmpty()
     typeOfProgram: string;
+
+    @IsNotEmpty()
+    image: string
 }
