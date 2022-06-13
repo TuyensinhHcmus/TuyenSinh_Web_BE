@@ -262,7 +262,7 @@ export class user {
         {
             type: 'varchar',
             length: 20,
-            unique: true
+            //unique: false
         }
     )
     userCandicateId: string
