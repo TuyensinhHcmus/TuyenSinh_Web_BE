@@ -88,4 +88,14 @@ export class method {
         type: 'timestamp',
     })
     methodEndEdit: Timestamp
+
+    @Column({
+        type: 'datetime',
+    })
+    methodEndPayFee: Date
+    
+    @Column({
+        type: 'datetime',
+    })
+    methodResultTime: Date
 }

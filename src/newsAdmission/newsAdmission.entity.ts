@@ -65,4 +65,9 @@ export class news {
         length: 15,
     })
     newsTypeOfProgram: string
+
+    @Column({
+        type: 'text',
+    })
+    newsImage: string    
 }
