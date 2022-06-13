@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
@@ -68,21 +68,24 @@ export class UsersService {
     userContactAddress: string,
     userSecret: string
   ) {
+    try {
+      const newUser = await this.userModel.create({
+        userId: uuidv4(),
+        userName: userName,
+        userEmail: userEmail,
+        userPassword: userPasswordHash,
+        userType: userEmail ? 'email' : 'phone',
+        userRole: 'user',
+        userSecret: userSecret,
+        userPhone: userPhone ? userPhone : uuidv4(),
+        userContactAddress: userContactAddress
+      });
 
-    const newUser = await this.userModel.create({
-      userId: uuidv4(),
-      userName: userName,
-      userEmail: userEmail,
-      userPassword: userPasswordHash,
-      userType: userEmail ? 'email' : 'phone',
-      userRole: 'user',
-      userSecret: userSecret,
-      userPhone: userPhone ? userPhone: uuidv4(),
-      userContactAddress: userContactAddress
-    });
-
-    const result = await this.userModel.save(newUser);
-    return result;
+      const result = await this.userModel.save(newUser);
+      return result;
+    } catch (error) {
+      throw new NotImplementedException("Không thể thêm user vào database do trường email, number phone hoặc userCandidateId bị trùng")
+    }
   }
 
   // Get user

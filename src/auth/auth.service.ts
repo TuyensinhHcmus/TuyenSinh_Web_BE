@@ -130,7 +130,7 @@ export class AuthService {
     }
 
     async verifyOTP(otp: string, userId: string) {
-        try {
+        // try {
             // Get user from unverifyuser database
             let user = await this.unVerifyUsersService.getSingleUser(userId)
 
@@ -176,10 +176,10 @@ export class AuthService {
                 verify: verify(),
                 expire: time_1 - Date.now()
             };
-        }
-        catch (error) {
-            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        // }
+        // catch (error) {
+        //     throw new HttpException('Something went wrong');
+        // }
     }
 
     async refreshOTP(userId: string) {
