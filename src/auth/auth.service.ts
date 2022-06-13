@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotImplementedException } from '@nestjs/common';
 import { MailService } from 'src/mail/mail.service';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
@@ -248,6 +248,11 @@ export class AuthService {
             const tokens = await this.getTokens(user.userId, user.userEmail);
             await this.updateRefreshToken(user.userId, tokens.refreshToken)
             return { 'user': user, 'token': tokens };
+        }
+
+        if(user && comparePassword === false)
+        {
+            throw new NotImplementedException("Mật khẩu đăng nhập không đúng.")
         }
         return null;
     }

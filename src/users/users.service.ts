@@ -185,11 +185,11 @@ export class UsersService {
     try {
       user = await this.userModel.findOne({ userEmail: userEmail });
     } catch (error) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('Không tìm thấy người dùng với email này.');
     }
 
     if (!user) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('Không tìm thấy người dùng với email này.');
     }
 
     return user;
