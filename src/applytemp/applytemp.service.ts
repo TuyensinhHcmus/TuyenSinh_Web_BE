@@ -81,6 +81,8 @@ export class ApplyTempService {
       applyTempScore2,
       applyTempScore3,
       applyTempGroupId,
+      applyTempPriorityArea,
+      applyTempBonusScore
     } = addApplyTempDto;
     // Kiểm tra user đã nộp với MajorId lần nào chưa
     await this.checkInfor(applyTempUserId, applyTempMajorId, '');
@@ -96,7 +98,10 @@ export class ApplyTempService {
       applyTempScore2: applyTempScore2,
       applyTempScore3: applyTempScore3,
       applyTempGroupId: applyTempGroupId,
-      applyTempTime: new Date()
+      applyTempTime: new Date(),
+
+      applyTempBonusScore: applyTempBonusScore,
+      applyTempPriorityArea: applyTempPriorityArea
     });
 
     const result = await this.applyTempRepo.save(newApplyTemp);
@@ -105,12 +110,13 @@ export class ApplyTempService {
 
   async getRankUserByMajorId(applyTempId: string, dataFilered: Array<applytemp>) {
     const dataSorted = dataFilered.sort(function (a, b) {
-      return a.applyTempTotalScore - b.applyTempTotalScore;
+      return (a.applyTempTotalScore + a.applyTempBonusScore) - (b.applyTempTotalScore + b.applyTempBonusScore);
     });
 
     let rank, applyTempTotalScore, applyTempScore1, applyTempScore2, applyTempScore3 = -1;
     let applyTempUserId, applyTempMajorId, applyTempGroupId = "";
     let applyTempTime;
+    let applyTempBonusScore, applyTempPriorityArea;
 
     dataSorted.forEach((value, key) => {
       if (value.applyTempId === applyTempId) {
@@ -124,9 +130,13 @@ export class ApplyTempService {
         applyTempGroupId = value.applyTempGroupId;
         applyTempTime = value.applyTempTime;
 
+        applyTempPriorityArea = value.applyTempPriorityArea;
+        applyTempBonusScore = value.applyTempBonusScore;
+
         rank = key + 1;
         for (let i = key - 1; i >= 0; i--) {
-          if (dataSorted[i].applyTempTotalScore === dataSorted[key].applyTempTotalScore) {
+          if (dataSorted[i].applyTempTotalScore + dataSorted[i].applyTempBonusScore === 
+            dataSorted[key].applyTempTotalScore + dataSorted[key].applyTempBonusScore) {
             rank = i + 1;
           }
         }
@@ -168,6 +178,9 @@ export class ApplyTempService {
       "applyTempSubject1": listApplyTemp[0].ag_agFirstSubject,
       "applyTempSubject2": listApplyTemp[0].ag_agSecondSubject,
       "applyTempSubject3": listApplyTemp[0].ag_agThirdSubject,
+
+      "applyTempPriorityArea": applyTempPriorityArea,
+      "applyTempBonusScore": applyTempBonusScore,
 
       "rank": rank,
       "total": dataSorted.length
@@ -392,6 +405,9 @@ export class ApplyTempService {
       applyTempScore2,
       applyTempScore3,
       applyTempGroupId,
+
+      applyTempBonusScore,
+      applyTempPriorityArea
     } = updateApplyTempDto;
 
     // Find apply temp by applyTempId
@@ -408,6 +424,9 @@ export class ApplyTempService {
     applyTemp.applyTempScore2 = applyTempScore2;
     applyTemp.applyTempScore3 = applyTempScore3;
     applyTemp.applyTempGroupId = applyTempGroupId;
+
+    applyTemp.applyTempBonusScore = applyTempBonusScore;
+    applyTemp.applyTempPriorityArea = applyTempPriorityArea;
 
     await this.applyTempRepo.update({ applyTempId: applyTempId }, applyTemp);
 

@@ -56,4 +56,16 @@ export class applytemp {
         type: 'timestamp',
     })
     applyTempTime: Timestamp
+
+    @Column({
+        type: 'varchar',
+        length: 20
+    })
+    applyTempPriorityArea: string
+
+    @Column({
+        type: 'float',
+        unsigned: true
+    })
+    applyTempBonusScore: number
 }

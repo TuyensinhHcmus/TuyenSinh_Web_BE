@@ -16,4 +16,8 @@ export class AddApplyTempDto {
     applyTempScore3: number;
 
     applyTempGroupId: string;
+
+    applyTempPriorityArea: string;
+
+    applyTempBonusScore: number;
 }
