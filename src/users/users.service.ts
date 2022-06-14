@@ -151,9 +151,10 @@ export class UsersService {
       }
     }
 
-    return {
-      message: "Mật khẩu cũ không đúng!"
-    };
+    throw new NotImplementedException("Mật khẩu cũ không đúng!");
+    // return {
+    //   message: "Mật khẩu cũ không đúng!"
+    // };
   }
 
   // Get user by amount
