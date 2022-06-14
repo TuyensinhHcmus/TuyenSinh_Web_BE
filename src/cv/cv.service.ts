@@ -214,6 +214,7 @@ export class CvsService {
 
         // Aspiration
         'aspiration.aspirationId',
+        'aspiration.aspirationState',
 
         // Major
         'major.majorName',
@@ -236,6 +237,8 @@ export class CvsService {
         'cv.cvId',
         'cv.cvFile',
         'cv.cvState',
+        'cv.cvStatusPay',
+        'cv.cvComment',
 
         'method.methodName',
         'method.methodId',
@@ -301,6 +304,9 @@ export class CvsService {
         cvId: cv.cv_cvId,
         fileUrl: cv.cv_cvFile,
         cvState: cv.cv_cvState,
+        cvStatusPay: cv.cv_cvStatusPay,
+        cvComment: cv.cv_cvComment,
+
         method: {
           methodName: cv.method_methodName,
           methodId: cv.method_methodId
@@ -369,6 +375,7 @@ export class CvsService {
         if (cv.cv_cvId === cvId.cvId) {
           result[index].listAspiration.push({
             aspirationId: cv.aspiration_aspirationId,
+            aspirationState: cv.aspiration_aspirationState,
             typeProgram: {
               typeProgramName: cv.typeProgram_typeProgramName,
               typeProgramId: cv.typeProgram_typeProgramId
