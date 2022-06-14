@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt'
@@ -151,9 +151,11 @@ export class UsersService {
       }
     }
 
-    return {
-      message: "Mật khẩu cũ không đúng!"
-    };
+    throw new BadRequestException("Mật khẩu cũ không đúng!")
+    
+    // return {
+    //   message: "Mật khẩu cũ không đúng!"
+    // };
   }
 
   // Get user by amount
