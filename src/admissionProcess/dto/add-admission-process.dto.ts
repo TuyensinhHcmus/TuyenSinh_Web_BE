@@ -9,4 +9,7 @@ export class AddAdmissionProcessDto {
 
     @IsNotEmpty()
     step: string;
+
+    @IsNotEmpty()
+    typeOfTrainingId: string;
 }

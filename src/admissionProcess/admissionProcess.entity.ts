@@ -30,4 +30,9 @@ export class admissionProcess {
     )
     apStep: number
 
+    @Column({
+        type: 'char',
+        length: 4,
+    })
+    typeOfTrainingId: string
 }

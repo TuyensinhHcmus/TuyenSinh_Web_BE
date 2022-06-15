@@ -14,12 +14,13 @@ export class AdmissionProcessService {
   ) {}
 
   async insertAdmissionProcess(addAdmissionProcessDto: AddAdmissionProcessDto): Promise<admissionProcess> {
-    const { title, content, step } = addAdmissionProcessDto;
+    const { title, content, step, typeOfTrainingId } = addAdmissionProcessDto;
 
     const admissionProcess = await this.admissionProcessRepo.create({
       apTitle: title,
       apContent: content,
-      apStep: parseInt(step)
+      apStep: parseInt(step),
+      typeOfTrainingId: typeOfTrainingId
     })
 
     const result = await this.admissionProcessRepo.save(admissionProcess);
@@ -47,13 +48,14 @@ export class AdmissionProcessService {
 
   async updateAdmissionProcess(id: string, updateAdmissionProcessDto: UpdateAdmissionProcessDto): Promise<admissionProcess> {
 
-    const { title, content, step } = updateAdmissionProcessDto;
+    const { title, content, step, typeOfTrainingId } = updateAdmissionProcessDto;
 
     const admissionProcess = await this.findAdmissionProcess(id);
 
     admissionProcess.apTitle = title;
     admissionProcess.apContent = content;
     admissionProcess.apStep = parseInt(step);
+    admissionProcess.typeOfTrainingId = typeOfTrainingId
 
     await this.admissionProcessRepo.update({apId: parseInt(id)}, admissionProcess);
   
