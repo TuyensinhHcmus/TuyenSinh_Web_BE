@@ -7,17 +7,19 @@ import { Repository } from "typeorm";
 import { notification } from "./admissionNotification.entity";
 import { AddNotificationDto } from "./dto/add-notification.dto";
 import * as firebase from "firebase-admin";
+
+
 import { UsersService } from "src/users/users.service";
 //var serviceAccount = require("D:/HỌC TẬP/NĂM 4/HK2/Đồ án tốt nghiệp/TuyenSinh_Web_BE/src/admissionNotifications/serviceAccountKey.json");
 var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
-
+//../../src/admissionNotifications/serviceAccountKey.json
 import { getStorage } from "firebase-admin/storage"
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
   private defaultApp: any;
   private db: any;
-  private bucket  : any;
+  private bucket: any;
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
@@ -43,7 +45,7 @@ export class AdmissionNotificationsService {
 
     this.db = firebase.firestore();
 
-    this.bucket  = getStorage().bucket();
+    this.bucket = getStorage().bucket();
 
   }
 
@@ -51,9 +53,11 @@ export class AdmissionNotificationsService {
     return this.db;
   }
 
-  getBucket () {
-    return this.bucket ;
+  getBucket() {
+    return this.bucket;
   }
+
+
 
   async insertAdmissionNotification(notificationInformation: AddNotificationDto) {
     let notificationTimestamp = new Date();
@@ -190,51 +194,68 @@ export class AdmissionNotificationsService {
 
   }
 
-async sendTopicMessage(body: any, title: any, screen: any, id: any, topic: any) {
-  var listUserId = [];
-  await this.db.collection('topics').get().then((value) => {
-    value.docs.forEach((element) => {
-      if (element.id == topic) {
-        listUserId = element.data().keys.toList();
+  async sendTopicMessage(body: any, title: any, screen: any, id: any, topic: any) {
+    var listUserId = [];
+    await this.db.collection('topics').get().then((value) => {
+      value.docs.forEach((element) => {
+        if (element.id === topic) {
+          listUserId.push(element.data());
+        }
+      })
+    })
+
+    console.log(listUserId);
+
+    // Find in db where tokenDevices current in listUserId
+    let tokenDevices;
+    tokenDevices = [];
+
+    const listUser = await this.userService.getUsers();
+    listUser.forEach(user => {
+      if (user.currentTokenDevice !== '') {
+        tokenDevices.push(user.currentTokenDevice);
       }
-    })
-  })
-  // Find in db where tokenDevices current in listUserId
-  let tokenDevices;
-  tokenDevices = [];
-
-  const listUser = await this.userService.getUsers();
-  listUser.forEach(user =>{
-    if(user.currentTokenDevice !== ''){
-      tokenDevices.push(user.currentTokenDevice);
-    }
-  });
-
-  console.log(tokenDevices);
-
-  // Set up message
-  let DATA = {
-    notification: {
-      body: body,
-      title: title,
-    },
-    data: {
-      click_action: "FLUTTER_NOTIFICATION_CLICK",
-      sound: "default",
-      status: "done",
-      id: id,
-      screen: screen,
-    },
-    token: tokenDevices // Here is devices token need to send
-  };
-
-  // Send message
-  firebase.messaging().send(DATA)
-    .then((response) => {
-      console.log('Success sent message: ' + response);
-    })
-    .catch((err) => {
-      console.log('Error sending message: ' + err);
     });
-}
+
+    console.log(tokenDevices);
+
+    // Set up message
+    var DATA = {
+      notification: {
+        body: body,
+        title: title,
+      },
+      data: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+        sound: "default",
+        status: "done",
+        id: id,
+        screen: screen,
+      },
+      tokens: tokenDevices // Here is devices token need to send
+    };
+
+
+    // Send message
+    if (tokenDevices.length !== 0) {
+      firebase.messaging().sendMulticast(DATA)
+        .then((response) => {
+          console.log('Success sent message: ' + response);
+        })
+        .catch((err) => {
+          console.log('Error sending message: ' + err);
+        });
+    }
+  }
+
+  // async findAll() {
+  //   const result = [];
+  //   const firestore = new firebase.firestore.Firestore();
+
+  //   (await firestore.collection('topics').get()).docs.map(data => {
+  //     if (data.id == topic) {
+  //       listUserId.push(element.data());
+  //     }
+  //   })
+  // }
 }

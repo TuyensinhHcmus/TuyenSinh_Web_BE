@@ -69,11 +69,11 @@ export class AdmissionNotificationsController {
 
     @Get('/testSendTopicMessage')
     testSendTopicMessage() {
-        this.admissionNotificationsService.sendTopicMessage('','','','','');
+        this.admissionNotificationsService.sendTopicMessage('body', 'Topic', 'scree', '123', '5');
     }
 
     @Get('/testSendToDirectDevice')
     testSendToDirectDevice() {
-        this.admissionNotificationsService.sendToDirectDevice('','','','','e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX');
+        this.admissionNotificationsService.sendToDirectDevice('body', 'Direct', 'screen','123','e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX');
     }
 }
