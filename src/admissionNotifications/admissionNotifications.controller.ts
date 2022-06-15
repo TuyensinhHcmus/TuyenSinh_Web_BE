@@ -74,6 +74,13 @@ export class AdmissionNotificationsController {
 
     @Get('/testSendToDirectDevice')
     testSendToDirectDevice() {
-        this.admissionNotificationsService.sendToDirectDevice('body', 'Direct', 'screen','123','e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX');
+        const tokenHa = 'e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX';
+        const tokenDuc = 'dC9Wu6oySBGSj5UqimxfXA:APA91bGe_LHIdGuT8G43mTeH438W4_CN73YbQLg9R7phUEx1dyzvuhznQoaO1tOXg1ER1yaUTu_CzqAxJNs23lXp7bExIJ-coyccqzqTxN0nxLBsU5V6CIRRLPQ-22Um2qKSOqtcbVag';
+        this.admissionNotificationsService.sendToDirectDevice(
+            'body', 
+            'Direct', 
+            'screen',
+            '123',
+            tokenDuc);
     }
 }

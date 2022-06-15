@@ -109,9 +109,12 @@ export class ApplyTempService {
   }
 
   async getRankUserByMajorId(applyTempId: string, dataFilered: Array<applytemp>) {
+    // Hàm sắp xếp giảm dần
     const dataSorted = dataFilered.sort(function (a, b) {
-      return (a.applyTempTotalScore + a.applyTempBonusScore) - (b.applyTempTotalScore + b.applyTempBonusScore);
+      return  (b.applyTempTotalScore + b.applyTempBonusScore) - (a.applyTempTotalScore + a.applyTempBonusScore);
     });
+
+    // console.log(dataSorted);
 
     let rank, applyTempTotalScore, applyTempScore1, applyTempScore2, applyTempScore3 = -1;
     let applyTempUserId, applyTempMajorId, applyTempGroupId = "";
