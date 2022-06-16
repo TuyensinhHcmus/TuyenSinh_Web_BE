@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, NotImplementedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { admissionsgroup } from 'src/admissionGroup/admissionGroup.entity';
+import { benchmark } from 'src/benchmarks/benchmark.entity';
 import { major } from 'src/majors/major.entity';
 import { typeProgram } from 'src/typePrograms/typeProgram.entity';
 import { createQueryBuilder, Repository } from 'typeorm';
@@ -76,7 +77,6 @@ export class ApplyTempService {
     const {
       applyTempMajorId,
       applyTempTotalScore,
-      applyTempMajorName,
       applyTempScore1,
       applyTempScore2,
       applyTempScore3,
@@ -111,7 +111,7 @@ export class ApplyTempService {
   async getRankUserByMajorId(applyTempId: string, dataFilered: Array<applytemp>) {
     // Hàm sắp xếp giảm dần
     const dataSorted = dataFilered.sort(function (a, b) {
-      return  (b.applyTempTotalScore + b.applyTempBonusScore) - (a.applyTempTotalScore + a.applyTempBonusScore);
+      return (b.applyTempTotalScore + b.applyTempBonusScore) - (a.applyTempTotalScore + a.applyTempBonusScore);
     });
 
     // console.log(dataSorted);
@@ -136,9 +136,10 @@ export class ApplyTempService {
         applyTempPriorityArea = value.applyTempPriorityArea;
         applyTempBonusScore = value.applyTempBonusScore;
 
+
         rank = key + 1;
         for (let i = key - 1; i >= 0; i--) {
-          if (dataSorted[i].applyTempTotalScore + dataSorted[i].applyTempBonusScore === 
+          if (dataSorted[i].applyTempTotalScore + dataSorted[i].applyTempBonusScore ===
             dataSorted[key].applyTempTotalScore + dataSorted[key].applyTempBonusScore) {
             rank = i + 1;
           }
@@ -146,12 +147,13 @@ export class ApplyTempService {
       }
     })
 
-    // Kết bảng major và admissionsgroup
+    // Kết bảng major, admissionsgroup và benchmark
     let listApplyTemp = await createQueryBuilder('applytemp')
       .where('applytemp.applyTempId = :applyTempId', { applyTempId: applyTempId })
       .leftJoinAndMapMany('applytemp.applyTempMajorId', major, 'major', 'major.majorId = applytemp.applyTempMajorId')
       .leftJoinAndMapMany('applytemp.applyTempGroupId', admissionsgroup, 'ag', 'ag.agId = applytemp.applyTempGroupId')
       .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'tp', 'tp.typeProgramId = major.majorTypeProgram')
+      .leftJoinAndMapMany('major.majorId', benchmark, 'bm', 'bm.benchmarkMajorId = major.majorId')
       .select([
         'tp.typeProgramName',
         'major.majorName',
@@ -159,10 +161,30 @@ export class ApplyTempService {
         'ag.agFirstSubject',
         'ag.agSecondSubject',
         'ag.agThirdSubject',
+
+        'bm.benchmarkYear',
+        'bm.benchmarkScore'
       ])
       .getRawMany();
 
     console.log(listApplyTemp);
+
+    // Tìm benchmark
+    let previousYear, currentYear;
+    let previousYearBenchmark, currentYearBenchmark;
+    if(listApplyTemp.length === 2){
+      // So sánh năm 
+      if(listApplyTemp[0].bm_benchmarkYear > listApplyTemp[1].bm_benchmarkYear)
+      {
+        previousYearBenchmark = listApplyTemp[1].bm_benchmarkScore;
+        currentYearBenchmark = listApplyTemp[0].bm_benchmarkScore;
+      }
+      else
+      {
+        previousYearBenchmark = listApplyTemp[0].bm_benchmarkScore;
+        currentYearBenchmark = listApplyTemp[1].bm_benchmarkScore;
+      }
+    }
 
     const res = {
       "applyTempId": applyTempId,
@@ -184,6 +206,9 @@ export class ApplyTempService {
 
       "applyTempPriorityArea": applyTempPriorityArea,
       "applyTempBonusScore": applyTempBonusScore,
+
+      "previousYearBenchmark": previousYearBenchmark,
+      "currentYearBenchmark": currentYearBenchmark,
 
       "rank": rank,
       "total": dataSorted.length
