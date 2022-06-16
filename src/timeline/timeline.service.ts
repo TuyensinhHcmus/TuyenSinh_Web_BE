@@ -38,7 +38,11 @@ export class TimelineService {
   }
 
   async getTimelines() {
-    const timelines = await this.timelineModel.find({});
+    const timelines = await this.timelineModel.find({
+      order: {
+        timelineStart: 'ASC'
+      }
+    });
     return timelines;
   }
 
