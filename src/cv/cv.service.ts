@@ -204,6 +204,8 @@ export class CvsService {
       .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
       .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
       .leftJoinAndMapMany('major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
+      .orderBy("cv.cvId", "ASC")
+      .addOrderBy("aspiration.aspirationId", "ASC")
       .select([
         // CV
         'cv.cvId',
@@ -226,6 +228,8 @@ export class CvsService {
 
       ])
       .getRawMany();
+
+    console.log(listcvs);
 
     const cvs = await this.cvsRepo.createQueryBuilder('cv')
       .where('cv.cvUserId = :cvUserId', { cvUserId: userId })
@@ -746,14 +750,23 @@ export class CvsService {
   }
 
   async checkMethodInCV(cvUserId: string, cvMethodId: string) {
-    const listCV = await this.cvsRepo.find({
-      cvState: "Đã nộp",
-      cvMethodId: cvMethodId
-    })
+    // const listCV = await this.cvsRepo.find({
+    //   where: {
+    //     cvState: "Đã nộp",
+    //     cvMethodId: cvMethodId
+    //   },
+    // })
+    const listCV = await createQueryBuilder("cv")
+    .where("cvState!= :state", {state: "Đã lưu"})
+    .andWhere("cvState!= :state", {state: ""})
+    .andWhere("cv.cvMethodId = :method", {method: cvMethodId})
+    .getRawMany();
+
+    console.log(listCV);
 
     let isDuplicate = false;
     listCV.forEach(cv => {
-      if (cv.cvUserId === cvUserId) {
+      if (cv.cv_cvUserId === cvUserId) {
         isDuplicate = true;
       }
     })
@@ -897,64 +910,64 @@ export class CvsService {
 
         if (cv.cvMethodId === "2A" && detail.length > 0) {
           obj['userName'] = detail[0]['user_userName'],
-          obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-          obj['userSchool10'] = detail[0]['user_userSchool10'],
-          obj['userSchool11'] = detail[0]['user_userSchool11'],
-          obj['userSchool12'] = detail[0]['user_userSchool12'],
-          obj['cvaiProvincialExcellentSubject'] = detail[0]['cvai_cvaiProvincialExcellentSubject'],
-          obj['cvaiProvincialExcellentYear'] = detail[0]['cvai_cvaiProvincialExcellentYear'],
-          obj['cvaiConduct10'] = detail[0]['cvai_cvaiConduct10'],
-          obj['cvaiConduct11'] = detail[0]['cvai_cvaiConduct11'],
-          obj['cvaiConduct12'] = detail[0]['cvai_cvaiConduct12'],
-          obj['cvaiPhone'] = detail[0]['cvai_cvaiPhone'],
-          obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+            obj['userSchool10'] = detail[0]['user_userSchool10'],
+            obj['userSchool11'] = detail[0]['user_userSchool11'],
+            obj['userSchool12'] = detail[0]['user_userSchool12'],
+            obj['cvaiProvincialExcellentSubject'] = detail[0]['cvai_cvaiProvincialExcellentSubject'],
+            obj['cvaiProvincialExcellentYear'] = detail[0]['cvai_cvaiProvincialExcellentYear'],
+            obj['cvaiConduct10'] = detail[0]['cvai_cvaiConduct10'],
+            obj['cvaiConduct11'] = detail[0]['cvai_cvaiConduct11'],
+            obj['cvaiConduct12'] = detail[0]['cvai_cvaiConduct12'],
+            obj['cvaiPhone'] = detail[0]['cvai_cvaiPhone'],
+            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
 
-          await this.pdfService.generatePdf(cvId, obj, "2A")
+            await this.pdfService.generatePdf(cvId, obj, "2A")
         }
 
         if (cv.cvMethodId === "5." && detail.length > 0) {
           obj['userName'] = detail[0]['user_userName'],
-          obj['userBirthday'] = detail[0]['user_userBirthday'],
-          obj['userGender'] = detail[0]['user_userGender'],
-          obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-          obj['userNationality'] = detail[0]['user_userNationality'],
-          obj['userContactAddress'] = detail[0]['user_userContactAddress'],
-          obj['userPhone'] = detail[0]['user_userPhone'],
-          obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
-          obj['userSchool10'] = detail[0]['user_userSchool10'],
-          obj['userSchool11'] = detail[0]['user_userSchool11'],
-          obj['userSchool12'] = detail[0]['user_userSchool12'],
-          obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
-          obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
-          obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
-          obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
-          obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
-          obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+            obj['userBirthday'] = detail[0]['user_userBirthday'],
+            obj['userGender'] = detail[0]['user_userGender'],
+            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+            obj['userNationality'] = detail[0]['user_userNationality'],
+            obj['userContactAddress'] = detail[0]['user_userContactAddress'],
+            obj['userPhone'] = detail[0]['user_userPhone'],
+            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+            obj['userSchool10'] = detail[0]['user_userSchool10'],
+            obj['userSchool11'] = detail[0]['user_userSchool11'],
+            obj['userSchool12'] = detail[0]['user_userSchool12'],
+            obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
+            obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
+            obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
+            obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
+            obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
+            obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
 
-          await this.pdfService.generatePdf(cvId, obj, "5.")
+            await this.pdfService.generatePdf(cvId, obj, "5.")
         }
 
         if (cv.cvMethodId === "6." && detail.length > 0) {
           obj['userName'] = detail[0]['user_userName'],
-          obj['userBirthday'] = detail[0]['user_userBirthday'],
-          obj['userGender'] = detail[0]['user_userGender'],
-          obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-          obj['userNationality'] = detail[0]['user_userNationality'],
-          obj['userContactAddress'] = detail[0]['user_userContactAddress'],
-          obj['userPhone'] = detail[0]['user_userPhone'],
-          obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
-          obj['userSchool10'] = detail[0]['user_userSchool10'],
-          obj['userSchool11'] = detail[0]['user_userSchool11'],
-          obj['userSchool12'] = detail[0]['user_userSchool12'],
-          obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
-          obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
-          obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
-          obj['cvaiGPATotal'] = detail[0]['cvai_cvaiGPATotal'],
-          obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
-          obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
-          obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+            obj['userBirthday'] = detail[0]['user_userBirthday'],
+            obj['userGender'] = detail[0]['user_userGender'],
+            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+            obj['userNationality'] = detail[0]['user_userNationality'],
+            obj['userContactAddress'] = detail[0]['user_userContactAddress'],
+            obj['userPhone'] = detail[0]['user_userPhone'],
+            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+            obj['userSchool10'] = detail[0]['user_userSchool10'],
+            obj['userSchool11'] = detail[0]['user_userSchool11'],
+            obj['userSchool12'] = detail[0]['user_userSchool12'],
+            obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
+            obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
+            obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
+            obj['cvaiGPATotal'] = detail[0]['cvai_cvaiGPATotal'],
+            obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
+            obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
+            obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
 
-          await this.pdfService.generatePdf(cvId, obj, "6.")
+            await this.pdfService.generatePdf(cvId, obj, "6.")
         }
 
         // Gửi mail báo đã nộp thành công
