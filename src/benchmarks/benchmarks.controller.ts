@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Query,
+  Put,
 } from '@nestjs/common';
 import { AddBenchmarkDto } from './dto/add-benchmark.dto';
 import { UpdateBenchmarkDto } from './dto/update-benchmark.dto';
@@ -18,7 +19,7 @@ export class BenchmarksController {
   constructor(private readonly benchmarksService: BenchmarksService) {}
 
   // [GET] /benchmarks
-  @Get()
+  @Get('getall')
   async getAllBenchmarks(): Promise<benchmark[]> {
     const benchmarks = await this.benchmarksService.getBenchmarks();
     return benchmarks;
@@ -33,12 +34,26 @@ export class BenchmarksController {
     return benchmarks;
   }
 
-  // [PATCH] /benchmarks/:id
-  @Patch(':id')
+  //[Post] /benchmarks/add
+  @Post('addBenchmark')
+  async addBenchmark(
+    @Body() addBenchmarkDto: AddBenchmarkDto,
+  ): Promise<benchmark> {
+    return await this.benchmarksService.addBenchmark(addBenchmarkDto);
+  }
+
+  // [Put] /benchmarks/:id
+  @Put('updateBenchmark')
   async updateBenchmark(
-    @Param('id') id: string,
     @Body() updateBenchmarkDto: UpdateBenchmarkDto,
   ): Promise<benchmark> {
-    return await this.benchmarksService.updateBenchmark(id, updateBenchmarkDto);
+    return await this.benchmarksService.updateBenchmark(updateBenchmarkDto);
+  }
+
+  @Delete('deleteBenchmark')
+  async deleteBenchmark(
+    @Body('benchmarkId') benchmarkId: number,
+  ): Promise<any> {
+    return await this.benchmarksService.deleteBenchmark(benchmarkId);
   }
 }

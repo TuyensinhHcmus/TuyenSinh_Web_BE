@@ -1,4 +1,4 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Like } from 'typeorm';
 
@@ -16,22 +16,26 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
-    const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, image } = addNewsAdmissionDto;
+    try {
+      const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, newsImage } = addNewsAdmissionDto;
 
-    const news = this.newsRepo.create({
-      newsTitle: title,
-      newsContent: content,
-      newsDateCreate: dateCreate,
-      newsCreator: creator,
-      newsState: state,
-      newsSlug: slug(title) + "-" + (new Date()).getTime(),
-      newsTypeOfTrainingID: typeOfTrainingID,
-      newsTypeOfProgram: typeOfProgram,
-      newsImage: image
-    });
-
-    const result = await this.newsRepo.save(news);
-    return result;
+      const news = this.newsRepo.create({
+        newsTitle: title,
+        newsContent: content,
+        newsDateCreate: dateCreate,
+        newsCreator: creator,
+        newsState: state,
+        newsSlug: slug(title) + "-" + (new Date()).getTime(),
+        newsTypeOfTrainingID: typeOfTrainingID,
+        newsTypeOfProgram: typeOfProgram,
+        newsImage: newsImage
+      });
+  
+      const result = await this.newsRepo.save(news);
+      return result;
+    } catch (error) {
+      throw new HttpException("Thêm tin tức không thành công",HttpStatus.BAD_REQUEST)
+    }
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {

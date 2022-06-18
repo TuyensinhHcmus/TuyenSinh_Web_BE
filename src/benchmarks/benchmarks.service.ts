@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -11,9 +11,9 @@ export class BenchmarksService {
   constructor(
     @InjectRepository(benchmark)
     private readonly benchmarksRepo: Repository<benchmark>,
-  ) {}
+  ) { }
 
-  async getBenchmarks(): Promise<benchmark []> {
+  async getBenchmarks(): Promise<benchmark[]> {
     const benchmarks = await this.benchmarksRepo.find({});
     return benchmarks;
   }
@@ -27,32 +27,68 @@ export class BenchmarksService {
     return benchmarks;
   }
 
-  async updateBenchmark(id: string, updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
+  async addBenchmark(addBenchmarkDto: AddBenchmarkDto): Promise<benchmark> {
 
-    const { benchmarkMajorId, benchmarkYear, benchmarkScore } = updateBenchmarkDto;
+    const {benchmarkMajorId, benchmarkYear, benchmarkScore } = addBenchmarkDto;
 
-    const benchmark = await this.findBenchmark(id);
+    const benchmark = await this.benchmarksRepo.create({
+      benchmarkMajorId: benchmarkMajorId,
+      benchmarkYear: benchmarkYear,
+      benchmarkScore: benchmarkScore
+    })
+
+    try {
+      await this.benchmarksRepo.save(benchmark);
+      return benchmark;
+    } catch (error) {
+      throw new HttpException("Không thể thêm điểm chuẩn thành công", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async updateBenchmark(updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
+
+    console.log(updateBenchmarkDto);
+    const { benchmarkId, benchmarkMajorId, benchmarkYear, benchmarkScore } = updateBenchmarkDto;
+
+    let benchmark = await this.findBenchmark(benchmarkId);
 
     benchmark.benchmarkMajorId = benchmarkMajorId;
     benchmark.benchmarkYear = benchmarkYear;
     benchmark.benchmarkScore = benchmarkScore;
-   
-    await this.benchmarksRepo.update({benchmarkId: parseInt(id)}, benchmark);
 
-    return benchmark;
+    try {
+      await this.benchmarksRepo.update({ benchmarkId: benchmarkId }, benchmark);
+      return benchmark;
+    } catch (error) {
+      throw new HttpException("Không thể cập nhật điểm chuẩn thành công", HttpStatus.BAD_REQUEST);
+    }
   }
 
-  private async findBenchmark(id: string): Promise<benchmark> {
+  async deleteBenchmark(benchmarkId: number): Promise<any> {
+
+    const benchmark = await this.findBenchmark(benchmarkId);
+
+    try {
+      await this.benchmarksRepo.delete({ benchmarkId: benchmarkId });
+      return {
+        message: "Đã xóa điểm chuẩn với mã " + benchmarkId + " thành công."
+      }
+    } catch (error) {
+      throw new HttpException("Không thể xóa điểm chuẩn thành công", HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async findBenchmark(id: number): Promise<benchmark> {
     let benchmark;
 
     try {
-      benchmark = await this.benchmarksRepo.findOne({benchmarkId: parseInt(id)});
+      benchmark = await this.benchmarksRepo.findOne({ benchmarkId: id });
     } catch (error) {
-      throw new NotFoundException('Could not find benchmark.');
+      throw new NotFoundException('Không tìm thấy điểm chuẩn có mã này.');
     }
 
     if (!benchmark) {
-      throw new NotFoundException('Could not find benchmark.');
+      throw new NotFoundException('Không tìm thấy điểm chuẩn có mã này.');
     }
 
     return benchmark;
