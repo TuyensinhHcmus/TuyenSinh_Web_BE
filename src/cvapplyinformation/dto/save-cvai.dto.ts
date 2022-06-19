@@ -1,87 +1,87 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class SaveCVAIDto {
-    @IsString()
+    //@IsString()
     cvaiGraduateUniversity: string
 
-    @IsNumber()
+    //@IsNumber()
     cvaiUniversityGPA: number
 
-    @IsNumber()
+    //@IsNumber()
     cvaiUniversityGraduateYear: number
 
-    @IsString()
+    //@IsString()
     cvaiGraduateCollege: string
 
-    @IsNumber()
+    //@IsNumber()
     cvaiCollegeGPA: number
 
-    @IsNumber()
+    //@IsNumber()
     cvaiCollegeGraduateYear: number
 
-    @IsString()
+    //@IsString()
     cvaiPriorityArea: string
 
-    @IsNumber()
+    //@IsNumber()
     cvaiGPA12: number
 
-    @IsNumber()
+    //@IsNumber()
     cvaiGPA11: number
 
-    @IsNumber()
+    //@IsNumber()
     cvaiGPA10: number
 
-    @IsNumber()
+    //@IsNumber()
     cvaiHighSchoolGraduateYear: number
 
-    @IsString()
+    //@IsString()
     cvaiCapacity12: string
 
-    @IsString()
+    //@IsString()
     cvaiConduct12: string
 
-    @IsString()
+    //@IsString()
     cvaiCapacity11: string
 
-    @IsString()
+    //@IsString()
     cvaiConduct11: string
 
-    @IsString()
+    //@IsString()
     cvaiCapacity10: string
 
-    @IsString()
+    //@IsString()
     cvaiConduct10: string
 
-    @IsString()
+    //@IsString()
     cvaiProvincialExcellentSubject: string
 
-    @IsNumber()
+    //@IsNumber()
     cvaiProvincialExcellentYear: number
 
-    @IsString()
+    //@IsString()
     cvaiProvincialExcellentAward: string
 
-    @IsNumber()
+    //@IsNumber()
     cvaiIeltsCertificateScore: number
 
-    @IsDateString()
+    //@IsDateString()
     cvaiIeltsCertificateExpiration: Date
 
-    @IsNumber()
+    //@IsNumber()
     cvaiToeflCertificateScore: number
 
-    @IsDateString()
+    //@IsDateString()
     cvaiToeflCertificateExpiration: Date
 
-    @IsNumber()
+    //@IsNumber()
     cvaiHaveVietnameseCertificate: number
 
-    @IsString()
+    //@IsString()
     cvaiVietnameseCertificateLevel: string
 
-    @IsString()
+    //@IsString()
     cvaiEmail: string
 
-    @IsString()
+    //@IsString()
     cvaiPhone: string
 }
