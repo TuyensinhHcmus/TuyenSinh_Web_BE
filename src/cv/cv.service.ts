@@ -199,6 +199,7 @@ export class CvsService {
       }
       if (method === "XT") {
         obj['majorName'] = 'MajorName',
+          obj['userName'] = addCVDto.userName.toString().toLocaleUpperCase(),
           obj['userBirthday'] = addCVDto.userBirthday,
           obj['userGender'] = addCVDto.userGender,
           obj['cmnd'] = addCVDto.userIdentityNumber,
@@ -211,8 +212,10 @@ export class CvsService {
       }
 
       if (method === "2A") {
-        obj['userName'] = addCVDto.userName,
+        obj['userName'] = addCVDto.userName.toString().toLocaleUpperCase(),
           obj['userBirthplace'] = addCVDto.userBirthplace,
+          obj['userNationality'] = addCVDto.userNationality,
+          obj['userEthnicity'] = addCVDto.userEthnicity,
           obj['userSchool10'] = addCVDto.userSchool10,
           obj['userSchool11'] = addCVDto.userSchool11,
           obj['userSchool12'] = addCVDto.userSchool12,
