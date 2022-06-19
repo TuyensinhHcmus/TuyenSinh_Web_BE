@@ -45,7 +45,7 @@ export class CvsService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly majorService: MajorsService,
-  ) {}
+  ) { }
 
   async addCv(
     cvMethodId: string,
@@ -180,103 +180,117 @@ export class CvsService {
       let obj = {}
       if (method === "DT") {
 
-        obj['graduatedYear'] = addCVDto.cvaiUniversityGraduateYear,
-          obj['gpa12'] = addCVDto.cvaiGPA12,
-          obj['area'] = addCVDto.cvaiPriorityArea,
-          obj['class12'] = addCVDto.userSchool12,
-          obj['province12'] = addCVDto.userAddress12,
-          obj['district'] = addCVDto.userDistrictResidence,
-          obj['name'] = addCVDto.userName,
-          obj['ethnic'] = addCVDto.userEthnicity,
-          obj['birthday'] = addCVDto.userEthnicity,
-          obj['birthplace'] = addCVDto.userBirthplace,
-          obj['address'] = addCVDto.userContactAddress,
-          obj['phone'] = addCVDto.cvaiPhone,
-          obj['email'] = addCVDto.cvaiEmail,
-          obj['national'] = addCVDto.userNationality,
-          obj['province'] = addCVDto.userProvinceResidence,
+        console.log("addCVDto", addCVDto);
+        obj['graduatedYear'] = addCVDto.cvaiUniversityGraduateYear !== undefined || addCVDto.cvaiUniversityGraduateYear ? addCVDto.cvaiUniversityGraduateYear : "",
+          obj['gpa12'] = addCVDto.cvaiGPA12 !== undefined || addCVDto.cvaiGPA12 ? addCVDto.cvaiGPA12 : "",
+          obj['area'] = addCVDto.cvaiPriorityArea !== undefined || addCVDto.cvaiPriorityArea ? addCVDto.cvaiPriorityArea : "",
+          obj['class12'] = addCVDto.userSchool12 !== undefined || addCVDto.userSchool12 ? addCVDto.userSchool12 : "",
+          obj['province12'] = addCVDto.userAddress12 !== undefined || addCVDto.userAddress12 ? addCVDto.userAddress12 : "",
+          obj['district'] = addCVDto.userDistrictResidence !== undefined || addCVDto.userDistrictResidence ? addCVDto.userDistrictResidence : "",
+          obj['cmnd'] = addCVDto.userIdentityNumber !== undefined || addCVDto.userIdentityNumber ? addCVDto.userIdentityNumber : "",
+          obj['name'] = addCVDto.userName !== undefined || addCVDto.userName ? addCVDto.userName : "",
+          obj['ethnic'] = addCVDto.userEthnicity !== undefined || addCVDto.userEthnicity ? addCVDto.userEthnicity : "",
+          obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          // obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? 
+          //                   addCVDto.userBirthday.getDay() + "/" + addCVDto.userBirthday.getMonth() + "/" + addCVDto.userBirthday.getFullYear() 
+          //                   : "",
+          obj['birthplace'] = addCVDto.userBirthplace !== undefined || addCVDto.userBirthplace ? addCVDto.userBirthplace : "",
+          obj['address'] = addCVDto.userContactAddress !== undefined || addCVDto.userContactAddress ? addCVDto.userContactAddress : "",
+          obj['phone'] = addCVDto.cvaiPhone !== undefined || addCVDto.cvaiPhone ? addCVDto.cvaiPhone : "",
+          obj['email'] = addCVDto.cvaiEmail !== undefined || addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
+          obj['national'] = addCVDto.userNationality !== undefined || addCVDto.userNationality ? addCVDto.userNationality : "",
+          obj['province'] = addCVDto.userProvinceResidence !== undefined || addCVDto.userProvinceResidence ? addCVDto.userProvinceResidence : "",
+          console.log("obj", obj);
+          
           await this.pdfService.generatePdf(cvId, obj, "DT")
       }
       if (method === "XT") {
-        obj['majorName'] = 'MajorName',
-          obj['userName'] = addCVDto.userName.toString().toLocaleUpperCase(),
-          obj['userBirthday'] = addCVDto.userBirthday,
-          obj['userGender'] = addCVDto.userGender,
-          obj['cmnd'] = addCVDto.userIdentityNumber,
-          obj['userAddress'] = addCVDto.userContactAddress,
-          obj['cvaiPhone'] = addCVDto.cvaiPhone,
-          obj['cvaiEmail'] = addCVDto.cvaiEmail,
-          obj['cvaiGraduateUniversity'] = addCVDto.cvaiGraduateUniversity,
+        obj['majorName'] = '',
+          obj['userName'] = addCVDto.userName !== undefined && addCVDto.userName ? addCVDto.userName.toString().toLocaleUpperCase() : "",
+          obj['userBirthday'] = addCVDto.userBirthday !== undefined && addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          obj['userGender'] = addCVDto.userGender !== undefined && addCVDto.userGender ? addCVDto.userGender : "",
+          obj['cmnd'] = addCVDto.userIdentityNumber !== undefined && addCVDto.userIdentityNumber ? addCVDto.userIdentityNumber : "",
+          obj['userAddress'] = addCVDto.userContactAddress !== undefined && addCVDto.userContactAddress ? addCVDto.userContactAddress : "",
+          obj['cvaiPhone'] = addCVDto.cvaiPhone !== undefined && addCVDto.cvaiPhone ? addCVDto.cvaiPhone : "",
+          obj['cvaiEmail'] = addCVDto.cvaiEmail !== undefined && addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
+          obj['cvaiGraduateUniversity'] = addCVDto.cvaiGraduateUniversity !== undefined && addCVDto.cvaiGraduateUniversity ? addCVDto.cvaiGraduateUniversity : "",
 
           await this.pdfService.generatePdf(cvId, obj, "XT")
       }
 
       if (method === "2A") {
-        obj['userName'] = addCVDto.userName.toString().toLocaleUpperCase(),
-          obj['userBirthplace'] = addCVDto.userBirthplace,
-          obj['userNationality'] = addCVDto.userNationality,
-          obj['userEthnicity'] = addCVDto.userEthnicity,
-          obj['userSchool10'] = addCVDto.userSchool10,
-          obj['userSchool11'] = addCVDto.userSchool11,
-          obj['userSchool12'] = addCVDto.userSchool12,
-          obj['cvaiProvincialExcellentSubject'] = addCVDto.cvaiProvincialExcellentSubject,
-          obj['cvaiProvincialExcellentYear'] = addCVDto.cvaiProvincialExcellentYear,
-          obj['cvaiConduct10'] = addCVDto.cvaiConduct10,
-          obj['cvaiConduct11'] = addCVDto.cvaiConduct11,
-          obj['cvaiConduct12'] = addCVDto.cvaiConduct12,
-          obj['cvaiPhone'] = addCVDto.cvaiPhone,
-          obj['cvaiEmail'] = addCVDto.cvaiEmail,
+        obj['userName'] = addCVDto.userName !== undefined && addCVDto.userName ? addCVDto.userName.toString().toLocaleUpperCase() : "",
+          obj['userBirthplace'] = addCVDto.userBirthplace !== undefined && addCVDto.userBirthplace ? addCVDto.userBirthplace : "",
+          obj['userNationality'] = addCVDto.userNationality !== undefined && addCVDto.userNationality ? addCVDto.userNationality : "",
+          obj['userEthnicity'] = addCVDto.userEthnicity !== undefined && addCVDto.userEthnicity ? addCVDto.userEthnicity : "",
+          obj['userSchool10'] = addCVDto.userSchool10 !== undefined && addCVDto.userSchool10 ? addCVDto.userSchool10 : "",
+          obj['userSchool11'] = addCVDto.userSchool11 !== undefined && addCVDto.userSchool11 ? addCVDto.userSchool11 : "",
+          obj['userSchool12'] = addCVDto.userSchool12 !== undefined && addCVDto.userSchool12 ? addCVDto.userSchool12 : "",
+          obj['cvaiProvincialExcellentSubject'] = addCVDto.cvaiProvincialExcellentSubject !== undefined && addCVDto.cvaiProvincialExcellentSubject ? addCVDto.cvaiProvincialExcellentSubject : "",
+          obj['cvaiProvincialExcellentYear'] = addCVDto.cvaiProvincialExcellentYear !== undefined && addCVDto.cvaiProvincialExcellentYear ? addCVDto.cvaiProvincialExcellentYear : "",
+          obj['cvaiConduct10'] = addCVDto.cvaiConduct10 !== undefined && addCVDto.cvaiConduct10 ? addCVDto.cvaiConduct10 : "",
+          obj['cvaiConduct11'] = addCVDto.cvaiConduct11 !== undefined && addCVDto.cvaiConduct11 ? addCVDto.cvaiConduct11 : "",
+          obj['cvaiConduct12'] = addCVDto.cvaiConduct12 !== undefined && addCVDto.cvaiConduct12 ? addCVDto.cvaiConduct12 : "",
+          obj['cvaiPhone'] = addCVDto.cvaiPhone !== undefined && addCVDto.cvaiPhone ? addCVDto.cvaiPhone : "",
+          obj['cvaiEmail'] = addCVDto.cvaiEmail !== undefined && addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
+          obj['cvaiProvincialExcellentAward'] = addCVDto.cvaiProvincialExcellentAward !== undefined && addCVDto.cvaiProvincialExcellentAward ? addCVDto.cvaiProvincialExcellentAward : "",
+          obj['majorId1'] = "",
+          obj['majorId2'] = "",
+          obj['majorId3'] = "",
+          obj['majorName1'] = "",
+          obj['majorName2'] = "",
+          obj['majorName3'] = "",
 
           await this.pdfService.generatePdf(cvId, obj, "2A")
       }
 
       if (method === "5.") {
-        obj['userName'] = addCVDto.userName,
-          obj['userBirthday'] = addCVDto.userBirthday,
-          obj['userGender'] = addCVDto.userGender,
-          obj['userBirthplace'] = addCVDto.userBirthplace,
-          obj['userNationality'] = addCVDto.userNationality,
-          obj['userContactAddress'] = addCVDto.userContactAddress,
-          obj['userPhone'] = addCVDto.cvaiPhone,
-          obj['cvaiEmail'] = addCVDto.cvaiEmail,
-          obj['userSchool10'] = addCVDto.userSchool10,
-          obj['userSchool11'] = addCVDto.userSchool11,
-          obj['userSchool12'] = addCVDto.userSchool12,
-          obj['cvaiGPA10'] = addCVDto.cvaiGPA10,
-          obj['cvaiGPA11'] = addCVDto.cvaiGPA11,
-          obj['cvaiGPA12'] = addCVDto.cvaiGPA12,
-          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore,
-          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore,
-          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel,
+        obj['userName'] = addCVDto.userName !== undefined && addCVDto.userName ? addCVDto.userName : "",
+          obj['userBirthday'] = addCVDto.userBirthday !== undefined && addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          obj['userGender'] = addCVDto.userGender !== undefined && addCVDto.userGender ? addCVDto.userGender : "",
+          obj['userBirthplace'] = addCVDto.userBirthplace !== undefined && addCVDto.userBirthplace ? addCVDto.userBirthplace : "",
+          obj['userNationality'] = addCVDto.userNationality !== undefined && addCVDto.userNationality ? addCVDto.userNationality : "",
+          obj['userContactAddress'] = addCVDto.userContactAddress !== undefined && addCVDto.userContactAddress ? addCVDto.userContactAddress : "",
+          obj['userPhone'] = addCVDto.cvaiPhone !== undefined && addCVDto.cvaiPhone ? addCVDto.cvaiPhone : "",
+          obj['cvaiEmail'] = addCVDto.cvaiEmail !== undefined && addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
+          obj['userSchool10'] = addCVDto.userSchool10 !== undefined && addCVDto.userSchool10 ? addCVDto.userSchool10 : "",
+          obj['userSchool11'] = addCVDto.userSchool11 !== undefined && addCVDto.userSchool11 ? addCVDto.userSchool11 : "",
+          obj['userSchool12'] = addCVDto.userSchool12 !== undefined && addCVDto.userSchool12 ? addCVDto.userSchool12 : "",
+          obj['cvaiGPA10'] = addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10 ? addCVDto.cvaiGPA10 : "",
+          obj['cvaiGPA11'] = addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11 ? addCVDto.cvaiGPA11 : "",
+          obj['cvaiGPA12'] = addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12 ? addCVDto.cvaiGPA12 : "",
+          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore !== undefined && addCVDto.cvaiIeltsCertificateScore ? addCVDto.cvaiIeltsCertificateScore : "",
+          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore !== undefined && addCVDto.cvaiToeflCertificateScore ? addCVDto.cvaiToeflCertificateScore : "",
+          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel !== undefined && addCVDto.cvaiVietnameseCertificateLevel ? addCVDto.cvaiVietnameseCertificateLevel : "",
 
           await this.pdfService.generatePdf(cvId, obj, "5.")
       }
 
       if (method === "6.") {
-        obj['userName'] = addCVDto.userName,
-          obj['userBirthday'] = addCVDto.userBirthday,
-          obj['userGender'] = addCVDto.userGender,
-          obj['userBirthplace'] = addCVDto.userBirthplace,
-          obj['userNationality'] = addCVDto.userNationality,
-          obj['userContactAddress'] = addCVDto.userContactAddress,
-          obj['userPhone'] = addCVDto.cvaiPhone,
-          obj['cvaiEmail'] = addCVDto.cvaiEmail,
-          obj['userSchool10'] = addCVDto.userSchool10,
-          obj['userSchool11'] = addCVDto.userSchool11,
-          obj['userSchool12'] = addCVDto.userSchool12,
-          obj['cvaiGPA10'] = addCVDto.cvaiGPA10,
-          obj['cvaiGPA11'] = addCVDto.cvaiGPA11,
-          obj['cvaiGPA12'] = addCVDto.cvaiGPA12,
-          obj['cvaiGPATotal'] = addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12,
-          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore,
-          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore,
-          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel,
+        obj['userName'] = addCVDto.userName !== undefined && addCVDto.userName ? addCVDto.userName : "",
+          obj['userBirthday'] = addCVDto.userBirthday !== undefined && addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          obj['userGender'] = addCVDto.userGender !== undefined && addCVDto.userGender ? addCVDto.userGender : "",
+          obj['userBirthplace'] = addCVDto.userBirthplace !== undefined && addCVDto.userBirthplace ? addCVDto.userBirthplace : "",
+          obj['userNationality'] = addCVDto.userNationality !== undefined && addCVDto.userNationality ? addCVDto.userNationality : "",
+          obj['userContactAddress'] = addCVDto.userContactAddress !== undefined && addCVDto.userContactAddress ? addCVDto.userContactAddress : "",
+          obj['userPhone'] = addCVDto.cvaiPhone !== undefined && addCVDto.cvaiPhone ? addCVDto.cvaiPhone : "",
+          obj['cvaiEmail'] = addCVDto.cvaiEmail !== undefined && addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
+          obj['userSchool10'] = addCVDto.userSchool10 !== undefined && addCVDto.userSchool10 ? addCVDto.userSchool10 : "",
+          obj['userSchool11'] = addCVDto.userSchool11 !== undefined && addCVDto.userSchool11 ? addCVDto.userSchool11 : "",
+          obj['userSchool12'] = addCVDto.userSchool12 !== undefined && addCVDto.userSchool12 ? addCVDto.userSchool12 : "",
+          obj['cvaiGPA10'] = addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10 ? addCVDto.cvaiGPA10 : "",
+          obj['cvaiGPA11'] = addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11 ? addCVDto.cvaiGPA11 : "",
+          obj['cvaiGPA12'] = addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12 ? addCVDto.cvaiGPA12 : "",
+          obj['cvaiGPATotal'] = (addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10) 
+                                && (addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11) 
+                                && (addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12) 
+                                ? addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12 : "",
+          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore !== undefined && addCVDto.cvaiIeltsCertificateScore ? addCVDto.cvaiIeltsCertificateScore : "",
+          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore !== undefined && addCVDto.cvaiToeflCertificateScore ? addCVDto.cvaiToeflCertificateScore : "",
+          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel !== undefined && addCVDto.cvaiVietnameseCertificateLevel ? addCVDto.cvaiVietnameseCertificateLevel : "",
 
           await this.pdfService.generatePdf(cvId, obj, "6.")
       }
-
-
-
 
       return {
         cvId: cvId,
@@ -1243,7 +1257,7 @@ export class CvsService {
 
         // Gửi mail báo đã nộp thành công
         const message =
-          '<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã thành công nộp hồ sơ với mã <b>' + cvId +'</b> vào trường Đại học Khoa học Tự Nhiên.<p>Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>';
+          '<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã thành công nộp hồ sơ với mã <b>' + cvId + '</b> vào trường Đại học Khoa học Tự Nhiên.<p>Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>';
         await this.mailService.notifyUser(
           detail[0]['user_userEmail'],
           'THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG',
