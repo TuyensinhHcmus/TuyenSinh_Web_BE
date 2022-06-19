@@ -1149,7 +1149,7 @@ export class CvsService {
 
         // Gửi mail báo đã nộp thành công
         const message =
-          '<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã nộp hồ sơ thành công vào trường. Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>';
+          '<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã thành công nộp hồ sơ với mã <b>' + cvId +'</b> vào trường Đại học Khoa học Tự Nhiên.<p>Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>';
         await this.mailService.notifyUser(
           detail[0]['user_userEmail'],
           'THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG',
