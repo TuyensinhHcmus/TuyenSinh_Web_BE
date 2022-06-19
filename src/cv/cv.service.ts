@@ -156,6 +156,104 @@ export class CvsService {
 
       await this.userService.editUserById(userId, userInfo);
 
+      let obj = {}
+      if (method === "DT") {
+
+        obj['graduatedYear'] = addCVDto.cvaiUniversityGraduateYear,
+          obj['gpa12'] = addCVDto.cvaiGPA12,
+          obj['area'] = addCVDto.cvaiPriorityArea,
+          obj['class12'] = addCVDto.userSchool12,
+          obj['province12'] = addCVDto.userAddress12,
+          obj['district'] = addCVDto.userDistrictResidence,
+          obj['name'] = addCVDto.userName,
+          obj['ethnic'] = addCVDto.userEthnicity,
+          obj['birthday'] = addCVDto.userEthnicity,
+          obj['birthplace'] = addCVDto.userBirthplace,
+          obj['address'] = addCVDto.userContactAddress,
+          obj['phone'] = addCVDto.cvaiPhone,
+          obj['email'] = addCVDto.cvaiEmail,
+          obj['national'] = addCVDto.userNationality,
+          obj['province'] = addCVDto.userProvinceResidence,
+          await this.pdfService.generatePdf(cvId, obj, "DT")
+      }
+      if (method === "XT") {
+        obj['majorName'] = 'MajorName',
+          obj['userBirthday'] = addCVDto.userBirthday,
+          obj['userGender'] = addCVDto.userGender,
+          obj['cmnd'] = addCVDto.userIdentityNumber,
+          obj['userAddress'] = addCVDto.userContactAddress,
+          obj['cvaiPhone'] = addCVDto.cvaiPhone,
+          obj['cvaiEmail'] = addCVDto.cvaiEmail,
+          obj['cvaiGraduateUniversity'] = addCVDto.cvaiGraduateUniversity,
+
+          await this.pdfService.generatePdf(cvId, obj, "XT")
+      }
+
+      if (method === "2A") {
+        obj['userName'] = addCVDto.userName,
+          obj['userBirthplace'] = addCVDto.userBirthplace,
+          obj['userSchool10'] = addCVDto.userSchool10,
+          obj['userSchool11'] = addCVDto.userSchool11,
+          obj['userSchool12'] = addCVDto.userSchool12,
+          obj['cvaiProvincialExcellentSubject'] = addCVDto.cvaiProvincialExcellentSubject,
+          obj['cvaiProvincialExcellentYear'] = addCVDto.cvaiProvincialExcellentYear,
+          obj['cvaiConduct10'] = addCVDto.cvaiConduct10,
+          obj['cvaiConduct11'] = addCVDto.cvaiConduct11,
+          obj['cvaiConduct12'] = addCVDto.cvaiConduct12,
+          obj['cvaiPhone'] = addCVDto.cvaiPhone,
+          obj['cvaiEmail'] = addCVDto.cvaiEmail,
+
+          await this.pdfService.generatePdf(cvId, obj, "2A")
+      }
+
+      if (method === "5.") {
+        obj['userName'] = addCVDto.userName,
+          obj['userBirthday'] = addCVDto.userBirthday,
+          obj['userGender'] = addCVDto.userGender,
+          obj['userBirthplace'] = addCVDto.userBirthplace,
+          obj['userNationality'] = addCVDto.userNationality,
+          obj['userContactAddress'] = addCVDto.userContactAddress,
+          obj['userPhone'] = addCVDto.cvaiPhone,
+          obj['cvaiEmail'] = addCVDto.cvaiEmail,
+          obj['userSchool10'] = addCVDto.userSchool10,
+          obj['userSchool11'] = addCVDto.userSchool11,
+          obj['userSchool12'] = addCVDto.userSchool12,
+          obj['cvaiGPA10'] = addCVDto.cvaiGPA10,
+          obj['cvaiGPA11'] = addCVDto.cvaiGPA11,
+          obj['cvaiGPA12'] = addCVDto.cvaiGPA12,
+          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore,
+          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore,
+          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel,
+
+          await this.pdfService.generatePdf(cvId, obj, "5.")
+      }
+
+      if (method === "6.") {
+        obj['userName'] = addCVDto.userName,
+          obj['userBirthday'] = addCVDto.userBirthday,
+          obj['userGender'] = addCVDto.userGender,
+          obj['userBirthplace'] = addCVDto.userBirthplace,
+          obj['userNationality'] = addCVDto.userNationality,
+          obj['userContactAddress'] = addCVDto.userContactAddress,
+          obj['userPhone'] = addCVDto.cvaiPhone,
+          obj['cvaiEmail'] = addCVDto.cvaiEmail,
+          obj['userSchool10'] = addCVDto.userSchool10,
+          obj['userSchool11'] = addCVDto.userSchool11,
+          obj['userSchool12'] = addCVDto.userSchool12,
+          obj['cvaiGPA10'] = addCVDto.cvaiGPA10,
+          obj['cvaiGPA11'] = addCVDto.cvaiGPA11,
+          obj['cvaiGPA12'] = addCVDto.cvaiGPA12,
+          obj['cvaiGPATotal'] = addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12,
+          obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore,
+          obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore,
+          obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel,
+
+          await this.pdfService.generatePdf(cvId, obj, "6.")
+      }
+
+
+
+
       return {
         cvId: cvId,
         message: "Đã lưu thành công !"
@@ -757,10 +855,10 @@ export class CvsService {
     //   },
     // })
     const listCV = await createQueryBuilder("cv")
-    .where("cvState!= :state", {state: "Đã lưu"})
-    .andWhere("cvState!= :state", {state: ""})
-    .andWhere("cv.cvMethodId = :method", {method: cvMethodId})
-    .getRawMany();
+      .where("cvState!= :state", { state: "Đã lưu" })
+      .andWhere("cvState!= :state", { state: "" })
+      .andWhere("cv.cvMethodId = :method", { method: cvMethodId })
+      .getRawMany();
 
     console.log(listCV);
 
@@ -781,6 +879,21 @@ export class CvsService {
     // Find cv 
     const cv = await this.findCV(cvId);
 
+
+    const detail = await createQueryBuilder('cv')
+      .where('cv.cvId = :id', { id: cvId })
+      .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
+      .select([
+        'cv.cvId',
+        'cv.cvFile',
+        'cv.cvState',
+        'user.userEmail'
+      ])
+      .getRawMany()
+
+    console.log("detail", detail, detail[0]['user_userEmail']);
+
+
     // Kiểm tra xem trong danh sách cv đã nộp có cv nào có method giống không
     await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId);
 
@@ -794,181 +907,192 @@ export class CvsService {
         const detail = await createQueryBuilder('cv')
           .where('cv.cvId = :id', { id: cvId })
           .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
-          .leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
-          .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
-          .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
-          .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
-          // .leftJoinAndMapMany('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'method.methodTypeOfTrainingID = typeoftraining.typeOfTrainingId')
           .select([
             'cv.cvId',
-            'method.methodName',
             'cv.cvFile',
             'cv.cvState',
-
-            'user.userName',
-            'user.userGender',
-            'user.userPhone',
-            'user.userEmail',
-            'user.userEthnicity',
-            'user.userNationality',
-            'user.userBirthday',
-            'user.userBirthplace',
-            'user.userContactAddress',
-            'user.userProvinceResidence',
-            'user.userDistrictResidence',
-            'user.userAddress12',
-            'user.userSchool12',
-            'user.userAddress11',
-            'user.userSchool11',
-            'user.userAddress10',
-            'user.userSchool10',
-
-            'cvai.cvaiGraduateUniversity',
-            'cvai.cvaiUniversityGPA',
-            'cvai.cvaiUniversityGraduateYear',
-            'cvai.cvaiGraduateCollege',
-            'cvai.cvaiCollegeGPA',
-            'cvai.cvaiCollegeGraduateYear',
-            'cvai.cvaiPriorityArea',
-            'cvai.cvaiGPA12',
-            'cvai.cvaiGPA11',
-            'cvai.cvaiGPA10',
-            'cvai.cvaiHighSchoolGraduateYear',
-            'cvai.cvaiCapacity12',
-            'cvai.cvaiConduct12',
-            'cvai.cvaiCapacity11',
-            'cvai.cvaiConduct11',
-            'cvai.cvaiCapacity10',
-            'cvai.cvaiConduct10',
-            'cvai.cvaiProvincialExcellentSubject',
-            'cvai.cvaiProvincialExcellentYear',
-            'cvai.cvaiProvincialExcellentAward',
-            'cvai.cvaiIeltsCertificateScore',
-            'cvai.cvaiIeltsCertificateExpiration',
-            'cvai.cvaiToeflCertificateScore',
-            'cvai.cvaiToeflCertificateExpiration',
-            'cvai.cvaiHaveVietnameseCertificate',
-            'cvai.cvaiVietnameseCertificateLevel',
-
-            'major.majorName',
-            'major.majorId',
+            'user.userEmail'
           ])
           .getRawMany()
 
-        console.log("cvDetail", detail[0], "cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
-        let obj = {}
-        if (cv.cvMethodId === "DT" && detail.length > 0) {
+        // const detail = await createQueryBuilder('cv')
+        //   .where('cv.cvId = :id', { id: cvId })
+        //   .leftJoinAndMapMany('cv.cvUserId', user, 'user', 'user.userId = cv.cvUserId')
+        //   .leftJoinAndMapMany('cv.cvId', cvapplyinformation, 'cvai', 'cvai.cvaiId = cv.cvId')
+        //   .leftJoinAndMapMany('cv.cvId', aspiration, 'aspiration', 'aspiration.aspirationCvId = cv.cvId')
+        //   .leftJoinAndMapMany('aspiration.aspirationMajor', major, 'major', 'major.majorId = aspiration.aspirationMajor')
+        //   .leftJoinAndMapMany('cv.cvMethodId', method, 'method', 'method.methodId = cv.cvMethodId')
+        //   // .leftJoinAndMapMany('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'method.methodTypeOfTrainingID = typeoftraining.typeOfTrainingId')
+        //   .select([
+        //     'cv.cvId',
+        //     'method.methodName',
+        //     'cv.cvFile',
+        //     'cv.cvState',
 
-          obj['graduatedYear'] = detail[0]['cvai_cvaiUniversityGraduateYear'],
-            obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
-            //   gpa12: "9",
-            obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
-            //   area: "1",
-            obj['class12'] = detail[0]['user_userSchool12'],
-            //   class12: "Hung Vuong",
-            obj['province12'] = detail[0]['user_userAddress12'],
-            //   province12: "Binh Thuan",
-            obj['district'] = detail[0]['user_userDistrictResidence'],
-            //   district: "Binh Thuan",
-            obj['name'] = detail[0]['user_userName'],
-            //   name: "Phung Quoc Luong Test",
-            obj['ethnic'] = detail[0]['user_userEthnicity'],
-            //   ethnic: "Kinh",
-            //   cmnd: "261508456",
-            obj['birthday'] = detail[0]['user_userEthnicity'],
-            //   birthday: "25/03/2000",
-            obj['birthplace'] = detail[0]['user_userBirthplace'],
-            //   birthplace: "Binh Thuan",
-            obj['address'] = detail[0]['user_userContactAddress'],
-            //   address: "Tan Ha, Duc Linh, Binh Thuan",
-            obj['phone'] = detail[0]['user_userPhone'],
-            //   phone: "0375006715",
-            obj['email'] = detail[0]['user_userEmail'],
-            //   email: "quocluong2503@gmail.com",
-            // obj['code'] = detail[0]['userEmail'],
-            //   code: "abcdefgh",
-            obj['national'] = detail[0]['user_userNationality'],
-            //   national: "Viet nam",
-            obj['province'] = detail[0]['user_userProvinceResidence'],
-            //   province: "Binh Thuan"
-            // }
-            await this.pdfService.generatePdf(cvId, obj, "DT")
-        }
-        if (cv.cvMethodId === "XT" && detail.length > 0) {
+        //     'user.userName',
+        //     'user.userGender',
+        //     'user.userPhone',
+        //     'user.userEmail',
+        //     'user.userEthnicity',
+        //     'user.userNationality',
+        //     'user.userBirthday',
+        //     'user.userBirthplace',
+        //     'user.userContactAddress',
+        //     'user.userProvinceResidence',
+        //     'user.userDistrictResidence',
+        //     'user.userAddress12',
+        //     'user.userSchool12',
+        //     'user.userAddress11',
+        //     'user.userSchool11',
+        //     'user.userAddress10',
+        //     'user.userSchool10',
 
-          obj['majorName'] = detail[0]['major_majorName'],
-            obj['userBirthday'] = detail[0]['user_userBirthday'],
-            obj['userGender'] = detail[0]['user_userGender'],
-            obj['cmnd'] = '00000000000000',
-            obj['userAddress'] = detail[0]['user_userContactAddress'],
-            obj['cvaiPhone'] = detail[0]['user_userPhone'],
-            obj['cvaiEmail'] = detail[0]['user_userEmail'],
-            obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
+        //     'cvai.cvaiGraduateUniversity',
+        //     'cvai.cvaiUniversityGPA',
+        //     'cvai.cvaiUniversityGraduateYear',
+        //     'cvai.cvaiGraduateCollege',
+        //     'cvai.cvaiCollegeGPA',
+        //     'cvai.cvaiCollegeGraduateYear',
+        //     'cvai.cvaiPriorityArea',
+        //     'cvai.cvaiGPA12',
+        //     'cvai.cvaiGPA11',
+        //     'cvai.cvaiGPA10',
+        //     'cvai.cvaiHighSchoolGraduateYear',
+        //     'cvai.cvaiCapacity12',
+        //     'cvai.cvaiConduct12',
+        //     'cvai.cvaiCapacity11',
+        //     'cvai.cvaiConduct11',
+        //     'cvai.cvaiCapacity10',
+        //     'cvai.cvaiConduct10',
+        //     'cvai.cvaiProvincialExcellentSubject',
+        //     'cvai.cvaiProvincialExcellentYear',
+        //     'cvai.cvaiProvincialExcellentAward',
+        //     'cvai.cvaiIeltsCertificateScore',
+        //     'cvai.cvaiIeltsCertificateExpiration',
+        //     'cvai.cvaiToeflCertificateScore',
+        //     'cvai.cvaiToeflCertificateExpiration',
+        //     'cvai.cvaiHaveVietnameseCertificate',
+        //     'cvai.cvaiVietnameseCertificateLevel',
 
-            await this.pdfService.generatePdf(cvId, obj, "XT")
-        }
+        //     'major.majorName',
+        //     'major.majorId',
+        //   ])
+        //   .getRawMany()
 
-        if (cv.cvMethodId === "2A" && detail.length > 0) {
-          obj['userName'] = detail[0]['user_userName'],
-            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-            obj['userSchool10'] = detail[0]['user_userSchool10'],
-            obj['userSchool11'] = detail[0]['user_userSchool11'],
-            obj['userSchool12'] = detail[0]['user_userSchool12'],
-            obj['cvaiProvincialExcellentSubject'] = detail[0]['cvai_cvaiProvincialExcellentSubject'],
-            obj['cvaiProvincialExcellentYear'] = detail[0]['cvai_cvaiProvincialExcellentYear'],
-            obj['cvaiConduct10'] = detail[0]['cvai_cvaiConduct10'],
-            obj['cvaiConduct11'] = detail[0]['cvai_cvaiConduct11'],
-            obj['cvaiConduct12'] = detail[0]['cvai_cvaiConduct12'],
-            obj['cvaiPhone'] = detail[0]['cvai_cvaiPhone'],
-            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+        // console.log("cvDetail", detail[0], "cvDetailcvDetailcvDetail", detail[0].cvaiUniversityGraduateYear);
+        // let obj = {}
+        // if (cv.cvMethodId === "DT" && detail.length > 0) {
 
-            await this.pdfService.generatePdf(cvId, obj, "2A")
-        }
+        //   obj['graduatedYear'] = detail[0]['cvai_cvaiUniversityGraduateYear'],
+        //     obj['gpa12'] = detail[0]['cvai_cvaiGPA12'],
+        //     //   gpa12: "9",
+        //     obj['area'] = detail[0]['cvai_cvaiPriorityArea'],
+        //     //   area: "1",
+        //     obj['class12'] = detail[0]['user_userSchool12'],
+        //     //   class12: "Hung Vuong",
+        //     obj['province12'] = detail[0]['user_userAddress12'],
+        //     //   province12: "Binh Thuan",
+        //     obj['district'] = detail[0]['user_userDistrictResidence'],
+        //     //   district: "Binh Thuan",
+        //     obj['name'] = detail[0]['user_userName'],
+        //     //   name: "Phung Quoc Luong Test",
+        //     obj['ethnic'] = detail[0]['user_userEthnicity'],
+        //     //   ethnic: "Kinh",
+        //     //   cmnd: "261508456",
+        //     obj['birthday'] = detail[0]['user_userEthnicity'],
+        //     //   birthday: "25/03/2000",
+        //     obj['birthplace'] = detail[0]['user_userBirthplace'],
+        //     //   birthplace: "Binh Thuan",
+        //     obj['address'] = detail[0]['user_userContactAddress'],
+        //     //   address: "Tan Ha, Duc Linh, Binh Thuan",
+        //     obj['phone'] = detail[0]['user_userPhone'],
+        //     //   phone: "0375006715",
+        //     obj['email'] = detail[0]['user_userEmail'],
+        //     //   email: "quocluong2503@gmail.com",
+        //     // obj['code'] = detail[0]['userEmail'],
+        //     //   code: "abcdefgh",
+        //     obj['national'] = detail[0]['user_userNationality'],
+        //     //   national: "Viet nam",
+        //     obj['province'] = detail[0]['user_userProvinceResidence'],
+        //     //   province: "Binh Thuan"
+        //     // }
+        //     await this.pdfService.generatePdf(cvId, obj, "DT")
+        // }
+        // if (cv.cvMethodId === "XT" && detail.length > 0) {
 
-        if (cv.cvMethodId === "5." && detail.length > 0) {
-          obj['userName'] = detail[0]['user_userName'],
-            obj['userBirthday'] = detail[0]['user_userBirthday'],
-            obj['userGender'] = detail[0]['user_userGender'],
-            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-            obj['userNationality'] = detail[0]['user_userNationality'],
-            obj['userContactAddress'] = detail[0]['user_userContactAddress'],
-            obj['userPhone'] = detail[0]['user_userPhone'],
-            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
-            obj['userSchool10'] = detail[0]['user_userSchool10'],
-            obj['userSchool11'] = detail[0]['user_userSchool11'],
-            obj['userSchool12'] = detail[0]['user_userSchool12'],
-            obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
-            obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
-            obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
-            obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
-            obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
-            obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+        //   obj['majorName'] = detail[0]['major_majorName'],
+        //     obj['userBirthday'] = detail[0]['user_userBirthday'],
+        //     obj['userGender'] = detail[0]['user_userGender'],
+        //     obj['cmnd'] = '00000000000000',
+        //     obj['userAddress'] = detail[0]['user_userContactAddress'],
+        //     obj['cvaiPhone'] = detail[0]['user_userPhone'],
+        //     obj['cvaiEmail'] = detail[0]['user_userEmail'],
+        //     obj['cvaiGraduateUniversity'] = detail[0]['user_cvaiGraduateUniversity'],
 
-            await this.pdfService.generatePdf(cvId, obj, "5.")
-        }
+        //     await this.pdfService.generatePdf(cvId, obj, "XT")
+        // }
 
-        if (cv.cvMethodId === "6." && detail.length > 0) {
-          obj['userName'] = detail[0]['user_userName'],
-            obj['userBirthday'] = detail[0]['user_userBirthday'],
-            obj['userGender'] = detail[0]['user_userGender'],
-            obj['userBirthplace'] = detail[0]['user_userBirthplace'],
-            obj['userNationality'] = detail[0]['user_userNationality'],
-            obj['userContactAddress'] = detail[0]['user_userContactAddress'],
-            obj['userPhone'] = detail[0]['user_userPhone'],
-            obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
-            obj['userSchool10'] = detail[0]['user_userSchool10'],
-            obj['userSchool11'] = detail[0]['user_userSchool11'],
-            obj['userSchool12'] = detail[0]['user_userSchool12'],
-            obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
-            obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
-            obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
-            obj['cvaiGPATotal'] = detail[0]['cvai_cvaiGPATotal'],
-            obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
-            obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
-            obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+        // if (cv.cvMethodId === "2A" && detail.length > 0) {
+        //   obj['userName'] = detail[0]['user_userName'],
+        //     obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+        //     obj['userSchool10'] = detail[0]['user_userSchool10'],
+        //     obj['userSchool11'] = detail[0]['user_userSchool11'],
+        //     obj['userSchool12'] = detail[0]['user_userSchool12'],
+        //     obj['cvaiProvincialExcellentSubject'] = detail[0]['cvai_cvaiProvincialExcellentSubject'],
+        //     obj['cvaiProvincialExcellentYear'] = detail[0]['cvai_cvaiProvincialExcellentYear'],
+        //     obj['cvaiConduct10'] = detail[0]['cvai_cvaiConduct10'],
+        //     obj['cvaiConduct11'] = detail[0]['cvai_cvaiConduct11'],
+        //     obj['cvaiConduct12'] = detail[0]['cvai_cvaiConduct12'],
+        //     obj['cvaiPhone'] = detail[0]['cvai_cvaiPhone'],
+        //     obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
 
-            await this.pdfService.generatePdf(cvId, obj, "6.")
-        }
+        //     await this.pdfService.generatePdf(cvId, obj, "2A")
+        // }
+
+        // if (cv.cvMethodId === "5." && detail.length > 0) {
+        //   obj['userName'] = detail[0]['user_userName'],
+        //     obj['userBirthday'] = detail[0]['user_userBirthday'],
+        //     obj['userGender'] = detail[0]['user_userGender'],
+        //     obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+        //     obj['userNationality'] = detail[0]['user_userNationality'],
+        //     obj['userContactAddress'] = detail[0]['user_userContactAddress'],
+        //     obj['userPhone'] = detail[0]['user_userPhone'],
+        //     obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+        //     obj['userSchool10'] = detail[0]['user_userSchool10'],
+        //     obj['userSchool11'] = detail[0]['user_userSchool11'],
+        //     obj['userSchool12'] = detail[0]['user_userSchool12'],
+        //     obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
+        //     obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
+        //     obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
+        //     obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
+        //     obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
+        //     obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+
+        //     await this.pdfService.generatePdf(cvId, obj, "5.")
+        // }
+
+        // if (cv.cvMethodId === "6." && detail.length > 0) {
+        //   obj['userName'] = detail[0]['user_userName'],
+        //     obj['userBirthday'] = detail[0]['user_userBirthday'],
+        //     obj['userGender'] = detail[0]['user_userGender'],
+        //     obj['userBirthplace'] = detail[0]['user_userBirthplace'],
+        //     obj['userNationality'] = detail[0]['user_userNationality'],
+        //     obj['userContactAddress'] = detail[0]['user_userContactAddress'],
+        //     obj['userPhone'] = detail[0]['user_userPhone'],
+        //     obj['cvaiEmail'] = detail[0]['cvai_cvaiEmail'],
+        //     obj['userSchool10'] = detail[0]['user_userSchool10'],
+        //     obj['userSchool11'] = detail[0]['user_userSchool11'],
+        //     obj['userSchool12'] = detail[0]['user_userSchool12'],
+        //     obj['cvaiGPA10'] = detail[0]['cvai_cvaiGPA10'],
+        //     obj['cvaiGPA11'] = detail[0]['cvai_cvaiGPA11'],
+        //     obj['cvaiGPA12'] = detail[0]['cvai_cvaiGPA12'],
+        //     obj['cvaiGPATotal'] = detail[0]['cvai_cvaiGPATotal'],
+        //     obj['cvaiIeltsCertificateScore'] = detail[0]['cvai_cvaiIeltsCertificateScore'],
+        //     obj['cvaiToeflCertificateScore'] = detail[0]['cvai_cvaiToeflCertificateScore'],
+        //     obj['cvaiVietnameseCertificateLevel'] = detail[0]['cvai_cvaiVietnameseCertificateLevel'],
+
+        //     await this.pdfService.generatePdf(cvId, obj, "6.")
+        // }
 
         // Gửi mail báo đã nộp thành công
         const message = "<div ><div ><p ></p></div><p>Chào bạn,</p><p>Chúc mừng bạn đã nộp hồ sơ thành công vào trường. Bạn vui lòng theo dõi thông tin tại app hoặc website của trường và kiểm tra email thường xuyên để cập nhật kết quả sớm nhất</p></p><p>Trân trọng,</p><p>Phòng công tác sinh viên</p>Trường Đại học Khoa học Tự nhiên</div>"
@@ -978,7 +1102,7 @@ export class CvsService {
         return {
           message: "Đã cập nhật trạng thái của cv thành công!",
           cvId: cvId,
-          detail: detail
+          // detail: detail
         }
       }
     } catch (error) {
