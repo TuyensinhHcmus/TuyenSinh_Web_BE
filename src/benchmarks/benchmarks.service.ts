@@ -46,10 +46,10 @@ export class BenchmarksService {
     }
   }
 
-  async updateBenchmark(updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
+  async updateBenchmark(benchmarkId, updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
 
     console.log(updateBenchmarkDto);
-    const { benchmarkId, benchmarkMajorId, benchmarkYear, benchmarkScore, benchmarkMethodId } = updateBenchmarkDto;
+    const { benchmarkMajorId, benchmarkYear, benchmarkScore, benchmarkMethodId } = updateBenchmarkDto;
 
     let benchmark = await this.findBenchmark(benchmarkId);
 
