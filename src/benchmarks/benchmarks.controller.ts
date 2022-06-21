@@ -43,16 +43,18 @@ export class BenchmarksController {
   }
 
   // [Put] /benchmarks/:id
-  @Put('updateBenchmark')
+  @Put(':id')
   async updateBenchmark(
     @Body() updateBenchmarkDto: UpdateBenchmarkDto,
+    @Param('id') benchmarkId: number
   ): Promise<benchmark> {
-    return await this.benchmarksService.updateBenchmark(updateBenchmarkDto);
+    return await this.benchmarksService.updateBenchmark(benchmarkId, updateBenchmarkDto);
   }
 
-  @Delete('deleteBenchmark')
+  // [DELETE] /benchmarks/:id
+  @Delete(':id')
   async deleteBenchmark(
-    @Body('benchmarkId') benchmarkId: number,
+    @Param('id') benchmarkId: number,
   ): Promise<any> {
     return await this.benchmarksService.deleteBenchmark(benchmarkId);
   }

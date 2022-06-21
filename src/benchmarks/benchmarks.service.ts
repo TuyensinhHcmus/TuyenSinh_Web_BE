@@ -29,12 +29,13 @@ export class BenchmarksService {
 
   async addBenchmark(addBenchmarkDto: AddBenchmarkDto): Promise<benchmark> {
 
-    const {benchmarkMajorId, benchmarkYear, benchmarkScore } = addBenchmarkDto;
+    const {benchmarkMajorId, benchmarkYear, benchmarkScore, benchmarkMethodId } = addBenchmarkDto;
 
     const benchmark = await this.benchmarksRepo.create({
       benchmarkMajorId: benchmarkMajorId,
       benchmarkYear: benchmarkYear,
-      benchmarkScore: benchmarkScore
+      benchmarkScore: benchmarkScore,
+      benchmarkMethodId: benchmarkMethodId
     })
 
     try {
@@ -45,16 +46,17 @@ export class BenchmarksService {
     }
   }
 
-  async updateBenchmark(updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
+  async updateBenchmark(benchmarkId, updateBenchmarkDto: UpdateBenchmarkDto): Promise<benchmark> {
 
     console.log(updateBenchmarkDto);
-    const { benchmarkId, benchmarkMajorId, benchmarkYear, benchmarkScore } = updateBenchmarkDto;
+    const { benchmarkMajorId, benchmarkYear, benchmarkScore, benchmarkMethodId } = updateBenchmarkDto;
 
     let benchmark = await this.findBenchmark(benchmarkId);
 
     benchmark.benchmarkMajorId = benchmarkMajorId;
     benchmark.benchmarkYear = benchmarkYear;
     benchmark.benchmarkScore = benchmarkScore;
+    benchmark.benchmarkMethodId = benchmarkMethodId;
 
     try {
       await this.benchmarksRepo.update({ benchmarkId: benchmarkId }, benchmark);
