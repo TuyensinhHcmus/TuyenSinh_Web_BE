@@ -18,10 +18,8 @@ export class AddMethodDto {
     @IsNotEmpty()
     parentId: string;
 
-    @IsNotEmpty()
     dateStart: Timestamp;
 
-    @IsNotEmpty()
     dateEnd: Timestamp;
 
     @IsNotEmpty()
@@ -36,15 +34,11 @@ export class AddMethodDto {
     @IsNotEmpty()
     limitAspiration: number;
 
-    @IsNotEmpty()
     startEdit: Timestamp;
 
-    @IsNotEmpty()
     endEdit: Timestamp;
 
-    @IsNotEmpty()
     endPayFee: Date;
 
-    @IsNotEmpty()
     resultTime: Date
 }
