@@ -9,4 +9,7 @@ export class AddBenchmarkDto {
 
     @IsNotEmpty()
     benchmarkScore: number;
+
+    @IsNotEmpty()
+    benchmarkMethodId: string;
 }

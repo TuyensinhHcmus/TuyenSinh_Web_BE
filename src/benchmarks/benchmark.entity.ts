@@ -26,4 +26,10 @@ export class benchmark {
         type: 'float',
     })
     benchmarkScore: number
+
+    @Column({
+        type: 'char',
+        length: 5
+    })
+    benchmarkMethodId: string
 }
