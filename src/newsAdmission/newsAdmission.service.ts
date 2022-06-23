@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, Not } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -93,16 +93,17 @@ export class NewsAdmissionService {
     typeOfProgram: string
   ) {
 
-    // console.log('type oftraining', typeOfTraining, typeof typeOfTraining);
+    // console.log('type oftraining', typeOfTraining, typeof typeOfTraining, typeof page, keyword, typeOfProgram,typeof perPage);
 
     const condition = sortCondition === "DESC" ? -1 : 1;
 
     const [news, newsTotal] = await Promise.all([
       this.newsRepo.find({
         where: {
-          newsTitle: Like(`%${keyword}%`),
+          newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
-          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram
+          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
+          newsState: Not('hidden')
         },
         take: perPage,
         order: {
@@ -112,9 +113,10 @@ export class NewsAdmissionService {
       }),
       this.newsRepo.count({
         where: {
-          newsTitle: Like(`%${keyword}%`),
+          newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
-          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram
+          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
+          newsState: Not('hidden')
         }
       })
     ])
