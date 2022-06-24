@@ -163,26 +163,35 @@ export class ApplyTempService {
         'ag.agThirdSubject',
 
         'bm.benchmarkYear',
-        'bm.benchmarkScore'
+        'bm.benchmarkScore',
+        'bm.benchmarkMethodId'
       ])
       .getRawMany();
 
     console.log(listApplyTemp);
 
+    let listApplyTemp2 = [];
+    listApplyTemp.forEach(obj => {
+      if(obj.bm_benchmarkMethodId === "3")
+      {
+        listApplyTemp2.push(obj);
+      }
+    })
+
     // Tìm benchmark
     let previousYear, currentYear;
     let previousYearBenchmark, currentYearBenchmark;
-    if(listApplyTemp.length === 2){
+    if(listApplyTemp2.length === 2){
       // So sánh năm 
-      if(listApplyTemp[0].bm_benchmarkYear > listApplyTemp[1].bm_benchmarkYear)
+      if(listApplyTemp2[0].bm_benchmarkYear > listApplyTemp2[1].bm_benchmarkYear)
       {
-        previousYearBenchmark = listApplyTemp[1].bm_benchmarkScore;
-        currentYearBenchmark = listApplyTemp[0].bm_benchmarkScore;
+        previousYearBenchmark = listApplyTemp2[1].bm_benchmarkScore;
+        currentYearBenchmark = listApplyTemp2[0].bm_benchmarkScore;
       }
       else
       {
-        previousYearBenchmark = listApplyTemp[0].bm_benchmarkScore;
-        currentYearBenchmark = listApplyTemp[1].bm_benchmarkScore;
+        previousYearBenchmark = listApplyTemp2[0].bm_benchmarkScore;
+        currentYearBenchmark = listApplyTemp2[1].bm_benchmarkScore;
       }
     }
 
