@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { AtGuard } from "src/common/guards";
 import { AdmissionNotificationsService } from "./admissionNotifications.service";
@@ -68,19 +68,31 @@ export class AdmissionNotificationsController {
     }
 
     @Get('/testSendTopicMessage')
-    testSendTopicMessage() {
-        this.admissionNotificationsService.sendTopicMessage('body', 'Topic', 'scree', '123', '5');
+    testSendTopicMessage(
+        @Query('body') body: string,
+        @Query('title') title: string,
+        @Query('screen') screen: string,
+        @Query('id') id: string,
+        @Query('topic') topic: string
+    ) {
+        this.admissionNotificationsService.sendTopicMessage(body, title, screen, id, topic);
     }
 
     @Get('/testSendToDirectDevice')
-    testSendToDirectDevice() {
-        const tokenHa = 'e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX';
-        const tokenDuc = 'dC9Wu6oySBGSj5UqimxfXA:APA91bGe_LHIdGuT8G43mTeH438W4_CN73YbQLg9R7phUEx1dyzvuhznQoaO1tOXg1ER1yaUTu_CzqAxJNs23lXp7bExIJ-coyccqzqTxN0nxLBsU5V6CIRRLPQ-22Um2qKSOqtcbVag';
+    testSendToDirectDevice(
+        @Query('body') body: string,
+        @Query('title') title: string,
+        @Query('screen') screen: string,
+        @Query('id') id: string,
+        @Query('tokenDevice') tokenDevice: string
+    ) {
+        //const tokenHa = 'e661DbRIRui8rZr1ltRZKU:APA91bG724m2xjiDMZFrQ0uL9LBQ36Wq3BIMj7meBF2_42osGOcVJVTlWRm18HG-hKir6qQ3zBvCzl8MgIiV3PiL2EkcyZZz21vuz_vvypW8_6skZrPJiFSxL9ex5hqm_iclgRB6lGzX';
+        //const tokenDuc = 'dC9Wu6oySBGSj5UqimxfXA:APA91bGe_LHIdGuT8G43mTeH438W4_CN73YbQLg9R7phUEx1dyzvuhznQoaO1tOXg1ER1yaUTu_CzqAxJNs23lXp7bExIJ-coyccqzqTxN0nxLBsU5V6CIRRLPQ-22Um2qKSOqtcbVag';
         this.admissionNotificationsService.sendToDirectDevice(
-            'body', 
-            'Direct', 
-            'screen',
-            '123',
-            tokenDuc);
+            body,
+            title,
+            screen,
+            id,
+            tokenDevice);
     }
 }
