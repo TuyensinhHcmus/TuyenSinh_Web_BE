@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, Not, MoreThan } from 'typeorm';
+import { Repository, Like, Not, MoreThan, LessThan, Between } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -156,8 +156,8 @@ export class NewsAdmissionService {
     return { newsTotal, news };
   }
 
-  getFirstDayOfMonth(year: number, month: number) {
-    return new Date(year, month, 1);
+  getFirstDayOfMonth(year: number, month: number, date: number = 1) {
+    return new Date(year, month, date);
   }
 
   async statisticThisMonth() {
@@ -173,18 +173,26 @@ export class NewsAdmissionService {
       date.getMonth() > 1 ? date.getMonth() -1 : 12,
     );
 
-    console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth);
+    const curDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() -1 : 12,
+      date.getDate()
+    );
+
+    console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
+      date.getFullYear(), date.getDate(), date.getMonth()
+    );
     
 
-    const numNew = this.newsRepo.count({
+    const numNew = await this.newsRepo.count({
       where: {
         newsDateCreate: MoreThan(firstDayCurrentMonth)
       }
     })
 
-    const numOld = this.newsRepo.count({
+    const numOld = await this.newsRepo.count({
       where: {
-        newsDateCreate: MoreThan(firstDayCurrentMonth)
+        newsDateCreate: Between(firstDayLastMonth, curDayLastMonth),
       }
     })
 

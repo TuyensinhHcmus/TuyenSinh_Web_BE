@@ -11,15 +11,9 @@ export class StatisticService {
     private readonly cvService: CvsService
   ) { }
 
-  
-  // async getMethodCanApply() {
-  //   const methods = await this.methodRepo
-  //     .createQueryBuilder('method')
-  //     .leftJoinAndMapOne('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'typeoftraining.typeOfTrainingId = method.methodTypeOfTrainingID')
-  //     .where("(method.methodParentId != '') and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)")
-  //     .getMany()
-  //   return methods;
-  // }
+  async statisticNews() {
+    await this.newsService.statisticThisMonth();
+  }
 
   // async getStatusApply(methodId: string): Promise<boolean> {
   //   const method = await this.methodRepo

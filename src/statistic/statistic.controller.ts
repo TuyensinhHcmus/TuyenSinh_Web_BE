@@ -9,18 +9,15 @@ import {
 import { StatisticService } from './statistic.service';
 
 
-@Controller('methods')
+@Controller('statistic')
 export class StatisticController {
-  constructor(private readonly methodsService: StatisticService) {}
-
-
-
+  constructor(private readonly statisticService: StatisticService) {}
   // [GET] /methods/:id
-  // @Get('/getlistbytypeoftraining/:id')
-  // async getMethodByTypeOfTraining(@Param('id') typeOfTrainingId: string): Promise<method[]> {
-  //   const methods = await this.methodsService.getMethodsByTypeOfTrainingId(typeOfTrainingId);
-  //   return methods;
-  // }
+  @Get('/news')
+  async getStatisticNews(): Promise<any> {
+    const methods = await this.statisticService.statisticNews()
+    return methods;
+  }
 
   // // [DELETE] /methods/:id
   // @Delete(':id')
