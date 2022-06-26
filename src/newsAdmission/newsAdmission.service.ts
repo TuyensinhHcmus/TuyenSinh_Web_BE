@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like, Not } from 'typeorm';
+import { Repository, Like, Not, MoreThan } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -30,11 +30,11 @@ export class NewsAdmissionService {
         newsTypeOfProgram: typeOfProgram,
         newsImage: newsImage
       });
-  
+
       const result = await this.newsRepo.save(news);
       return result;
     } catch (error) {
-      throw new HttpException("Thêm tin tức không thành công",HttpStatus.BAD_REQUEST)
+      throw new HttpException("Thêm tin tức không thành công", HttpStatus.BAD_REQUEST)
     }
   }
 
@@ -154,5 +154,42 @@ export class NewsAdmissionService {
     ])
 
     return { newsTotal, news };
+  }
+
+  getFirstDayOfMonth(year: number, month: number) {
+    return new Date(year, month, 1);
+  }
+
+  async statisticThisMonth() {
+
+    const date = new Date();
+    const firstDayCurrentMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth(),
+    );
+
+    const firstDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() -1 : 12,
+    );
+
+    console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth);
+    
+
+    const numNew = this.newsRepo.count({
+      where: {
+        newsDateCreate: MoreThan(firstDayCurrentMonth)
+      }
+    })
+
+    const numOld = this.newsRepo.count({
+      where: {
+        newsDateCreate: MoreThan(firstDayCurrentMonth)
+      }
+    })
+
+    console.log("numNew", numNew, "numOld", numOld);
+    
+
   }
 }
