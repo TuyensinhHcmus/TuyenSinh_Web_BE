@@ -11,6 +11,7 @@ import { news } from './newsAdmission.entity';
     TypeOrmModule.forFeature([news]),
   ],
   providers: [NewsAdmissionService],
-  controllers: [NewsAdmissionController]
+  controllers: [NewsAdmissionController],
+  exports: [NewsAdmissionService]
 })
 export class NewsAdmissionModule {}

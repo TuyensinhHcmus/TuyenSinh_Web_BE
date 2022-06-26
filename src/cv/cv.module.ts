@@ -26,6 +26,7 @@ import { MajorsModule } from 'src/majors/majors.module';
   
   controllers: [CvsController],
   providers: [CvsService],
+  exports: [CvsService]
 })
 
 export class CvsModule {}
