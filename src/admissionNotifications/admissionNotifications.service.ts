@@ -166,7 +166,10 @@ export class AdmissionNotificationsService {
   }
 
 
-  async sendToDirectDevice(body: any, title: any, screen: any, id: any, tokenDevice: any) {
+  async sendToDirectDevice(body: any, title: any, screen: any, id: any, userId: any) {
+    let user = await this.userService.getUserById(userId);
+    let tokenDevice = user.currentTokenDevice;
+
     // Set up message
     var DATA = {
       notification: {
@@ -202,15 +205,16 @@ export class AdmissionNotificationsService {
       .set({ [notifyId]: notifyData })
 
 
-    // Send message
-    firebase.messaging().send(DATA)
-      .then((response) => {
-        console.log('Success sent message: ' + response);
-      })
-      .catch((err) => {
-        console.log('Error sending message: ' + err);
-      });
-
+    if (tokenDevice) {
+      // Send message
+      firebase.messaging().send(DATA)
+        .then((response) => {
+          console.log('Success sent message: ' + response);
+        })
+        .catch((err) => {
+          console.log('Error sending message: ' + err);
+        });
+    }
   }
 
   // var notifyData = {
@@ -254,7 +258,7 @@ export class AdmissionNotificationsService {
     for (let i = 0; i < listUserId.length; i++) {
 
       var notifyIdentity = uuidv4();
- 
+
       console.log(notifyIdentity)
       var notifyData = {
         body: body,

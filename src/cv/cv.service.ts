@@ -33,6 +33,7 @@ import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 import { PdfService } from 'src/generatePdf/generatePdf.service';
 import { MailService } from 'src/mail/mail.service';
 import { MajorsService } from 'src/majors/majors.service';
+import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
 
 @Injectable()
 export class CvsService {
@@ -45,6 +46,7 @@ export class CvsService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly majorService: MajorsService,
+    private readonly notifyService: AdmissionNotificationsService
   ) {}
 
   async addCv(
@@ -1156,6 +1158,15 @@ export class CvsService {
           message,
         );
 
+        // Gửi thông báo
+        await this.notifyService.sendToDirectDevice(
+          "Thông báo đã nộp hồ sơ thành công",
+          "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG",
+          "cv",
+          cv.cvId,
+          cv.cvUserId
+        )
+
         return {
           message: 'Đã cập nhật trạng thái của cv thành công!',
           cvId: cvId,
@@ -1211,7 +1222,9 @@ export class CvsService {
         const content =
           'Chúc mừng bạn đã trúng tuyển vào ngành <b>' +
           majorName +
-          '</b> của Trường Đại học Khoa học Tự nhiên';
+          '</b> của Trường Đại học Khoa học Tự nhiên' +
+          '</p></p></p>Mã hồ sơ của bạn là <b>' + cv.cvId + '</b></p>'
+          
         const cvai = await this.cvaiSerivce.findCvai(cv.cvId);
         const message =
           '<div ><div ><p ></p></div><p>Chào bạn,</p><p>' +
@@ -1222,6 +1235,15 @@ export class CvsService {
           'THÔNG BÁO TRÚNG TUYỂN',
           message,
         );
+
+        // Gửi thông báo
+        await this.notifyService.sendToDirectDevice(
+          "Chúc mừng bạn đã trúng tuyển",
+          'THÔNG BÁO TRÚNG TUYỂN',
+          'cv',
+          cv.cvId,
+          cv.cvUserId
+        )
       }
 
       return {
