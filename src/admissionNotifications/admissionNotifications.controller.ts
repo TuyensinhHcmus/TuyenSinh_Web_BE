@@ -95,4 +95,15 @@ export class AdmissionNotificationsController {
             id,
             tokenDevice);
     }
+
+    @Get('/sendAllMessage')
+    sendAllMessage(
+        @Query('body') body: string,
+        @Query('title') title: string,
+        @Query('screen') screen: string,
+        @Query('id') id: string,
+        @Query('image') image: string
+    ) {
+        this.admissionNotificationsService.sendAllMessage(body, title, screen, id, image);
+    }
 }

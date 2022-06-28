@@ -3,12 +3,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { timeline } from "./timeline.entity";
 import { TimelineDto } from "./dto/add-timeline-dto";
+import { AdmissionNotificationsService } from "src/admissionNotifications/admissionNotifications.service";
 
 @Injectable()
 export class TimelineService {
   constructor(
     @InjectRepository(timeline)
     private readonly timelineModel: Repository<timeline>,
+    private readonly notifyService: AdmissionNotificationsService
   ) { }
 
   async insertTimeline(timelineInformation: TimelineDto) {
@@ -17,6 +19,15 @@ export class TimelineService {
       ...timelineInformation
     });
     const result = await this.timelineModel.save(newTimeline);
+
+    // Send notify for all etne Ha
+    await this.notifyService.sendAllMessage(
+      "",
+      "",
+      "",
+      "",
+      ""
+      )
 
     return result;
   }

@@ -339,6 +339,37 @@ export class AdmissionNotificationsService {
     }
   }
 
+  async sendAllMessage(body: any, title: any, screen: any, id: any, image: any) {
+    const topic = 'all';
+
+    // Set up message
+    var DATA = {
+      notification: {
+        body: body,
+        title: title,
+      },
+      data: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+        sound: "default",
+        status: "done",
+        id: id,
+        screen: screen,
+      },
+      topic: topic 
+    };
+
+
+    // Send a message to devices subscribed to the provided topic.
+    firebase.messaging().send(DATA)
+      .then((response) => {
+        // Response is a message ID string.
+        console.log('Successfully sent message:', response);
+      })
+      .catch((error) => {
+        console.log('Error sending message:', error);
+      });
+    //console.log(tokenDevices);
+  }
   // async findAll() {
   //   const result = [];
   //   const firestore = new firebase.firestore.Firestore();
