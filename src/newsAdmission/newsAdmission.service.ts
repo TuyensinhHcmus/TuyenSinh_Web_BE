@@ -18,36 +18,36 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, newsImage } = addNewsAdmissionDto;
+
+    const news = this.newsRepo.create({
+      newsTitle: title,
+      newsContent: content,
+      newsDateCreate: dateCreate,
+      newsCreator: creator,
+      newsState: state,
+      newsSlug: slug(title) + "-" + (new Date()).getTime(),
+      newsTypeOfTrainingID: typeOfTrainingID,
+      newsTypeOfProgram: typeOfProgram,
+      newsImage: newsImage
+    });
+
+    const result = await this.newsRepo.save(news);
     try {
-      const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, newsImage } = addNewsAdmissionDto;
-
-      const news = this.newsRepo.create({
-        newsTitle: title,
-        newsContent: content,
-        newsDateCreate: dateCreate,
-        newsCreator: creator,
-        newsState: state,
-        newsSlug: slug(title) + "-" + (new Date()).getTime(),
-        newsTypeOfTrainingID: typeOfTrainingID,
-        newsTypeOfProgram: typeOfProgram,
-        newsImage: newsImage
-      });
-
-      const result = await this.newsRepo.save(news);
-
       // Send notify for all etne Ha
       await this.notifyService.sendAllMessage(
         title,
         "Cập nhật thông tin tuyển sinh mới.",
         "news",
-        news.newsId,
+        result.newsId.toString(),
         newsImage
-        )
-
-      return result;
+      )
     } catch (error) {
-      throw new HttpException("Thêm tin tức không thành công", HttpStatus.BAD_REQUEST)
+      // console.log("Loi gui api");
+      // throw new HttpException("", HttpStatus.BAD_REQUEST)
     }
+    return result;
+
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {
@@ -182,19 +182,19 @@ export class NewsAdmissionService {
 
     const firstDayLastMonth = this.getFirstDayOfMonth(
       date.getFullYear(),
-      date.getMonth() > 1 ? date.getMonth() -1 : 12,
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
     );
 
     const curDayLastMonth = this.getFirstDayOfMonth(
       date.getFullYear(),
-      date.getMonth() > 1 ? date.getMonth() -1 : 12,
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
       date.getDate()
     );
 
     // console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
     //   date.getFullYear(), date.getDate(), date.getMonth()
     // );
-    
+
 
     const numNew = await this.newsRepo.count({
       where: {
@@ -212,12 +212,10 @@ export class NewsAdmissionService {
 
     let percentVsLastMonth = 0;
     let increase = true;
-    if (numNew > numOld)
-    {
+    if (numNew > numOld) {
       percentVsLastMonth = Math.round(((numNew - numOld) / numOld) * 100);
     }
-    if (numNew < numOld)
-    {
+    if (numNew < numOld) {
       increase = false
       percentVsLastMonth = Math.round(((numOld - numNew) / numOld) * 100);
     }
@@ -227,6 +225,6 @@ export class NewsAdmissionService {
       percentVsLastMonth,
       increase
     }
-    
+
   }
 }
