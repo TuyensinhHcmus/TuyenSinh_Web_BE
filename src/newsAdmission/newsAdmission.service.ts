@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository, Like, Not, MoreThan, LessThan, Between } from 'typeorm';
 
 import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -18,36 +18,36 @@ export class NewsAdmissionService {
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
+    const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, newsImage } = addNewsAdmissionDto;
+
+    const news = this.newsRepo.create({
+      newsTitle: title,
+      newsContent: content,
+      newsDateCreate: dateCreate,
+      newsCreator: creator,
+      newsState: state,
+      newsSlug: slug(title) + "-" + (new Date()).getTime(),
+      newsTypeOfTrainingID: typeOfTrainingID,
+      newsTypeOfProgram: typeOfProgram,
+      newsImage: newsImage
+    });
+
+    const result = await this.newsRepo.save(news);
     try {
-      const { title, content, dateCreate, creator, state, typeOfTrainingID, typeOfProgram, newsImage } = addNewsAdmissionDto;
-
-      const news = this.newsRepo.create({
-        newsTitle: title,
-        newsContent: content,
-        newsDateCreate: dateCreate,
-        newsCreator: creator,
-        newsState: state,
-        newsSlug: slug(title) + "-" + (new Date()).getTime(),
-        newsTypeOfTrainingID: typeOfTrainingID,
-        newsTypeOfProgram: typeOfProgram,
-        newsImage: newsImage
-      });
-  
-      const result = await this.newsRepo.save(news);
-
       // Send notify for all etne Ha
       await this.notifyService.sendAllMessage(
         title,
         "Cập nhật thông tin tuyển sinh mới.",
         "news",
-        news.newsId,
+        result.newsId.toString(),
         newsImage
-        )
-
-      return result;
+      )
     } catch (error) {
-      throw new HttpException("Thêm tin tức không thành công",HttpStatus.BAD_REQUEST)
+      // console.log("Loi gui api");
+      // throw new HttpException("", HttpStatus.BAD_REQUEST)
     }
+    return result;
+
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {
@@ -105,16 +105,17 @@ export class NewsAdmissionService {
     typeOfProgram: string
   ) {
 
-    // console.log('type oftraining', typeOfTraining, typeof typeOfTraining);
+    // console.log('type oftraining', typeOfTraining, typeof typeOfTraining, typeof page, keyword, typeOfProgram,typeof perPage);
 
     const condition = sortCondition === "DESC" ? -1 : 1;
 
     const [news, newsTotal] = await Promise.all([
       this.newsRepo.find({
         where: {
-          newsTitle: Like(`%${keyword}%`),
+          newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
-          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram
+          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
+          newsState: "publish"
         },
         take: perPage,
         order: {
@@ -124,9 +125,10 @@ export class NewsAdmissionService {
       }),
       this.newsRepo.count({
         where: {
-          newsTitle: Like(`%${keyword}%`),
+          newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
-          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram
+          newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
+          newsState: "publish"
         }
       })
     ])
@@ -164,5 +166,65 @@ export class NewsAdmissionService {
     ])
 
     return { newsTotal, news };
+  }
+
+  getFirstDayOfMonth(year: number, month: number, date: number = 1) {
+    return new Date(year, month, date);
+  }
+
+  async statisticThisMonth() {
+
+    const date = new Date();
+    const firstDayCurrentMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth(),
+    );
+
+    const firstDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
+    );
+
+    const curDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
+      date.getDate()
+    );
+
+    // console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
+    //   date.getFullYear(), date.getDate(), date.getMonth()
+    // );
+
+
+    const numNew = await this.newsRepo.count({
+      where: {
+        newsDateCreate: MoreThan(firstDayCurrentMonth)
+      }
+    })
+
+    const numOld = await this.newsRepo.count({
+      where: {
+        newsDateCreate: Between(firstDayLastMonth, curDayLastMonth),
+      }
+    })
+
+    // console.log("numNew", numNew, "numOld", numOld);
+
+    let percentVsLastMonth = 0;
+    let increase = true;
+    if (numNew > numOld) {
+      percentVsLastMonth = Math.round(((numNew - numOld) / numOld) * 100);
+    }
+    if (numNew < numOld) {
+      increase = false
+      percentVsLastMonth = Math.round(((numOld - numNew) / numOld) * 100);
+    }
+
+    return {
+      amount: numNew,
+      percentVsLastMonth,
+      increase
+    }
+
   }
 }

@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt'
 import { User } from './users.model';
 import { InjectRepository } from '@nestjs/typeorm';
 import { user } from './users.entity';
-import { Repository } from 'typeorm';
+import { Between, MoreThan, Repository } from 'typeorm';
 import { EditUserDto } from './dto/edit-user-dto';
 import { string } from '@hapi/joi';
 import ChangePasswordDto from './dto/change-password.dto';
@@ -248,6 +248,66 @@ export class UsersService {
     await this.userModel.update({ userId: userId }, user);
 
     return user;
+  }
+
+  getFirstDayOfMonth(year: number, month: number, date: number = 1) {
+    return new Date(year, month, date);
+  }
+
+  async statisticUser() {
+
+    const date = new Date();
+    const firstDayCurrentMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth(),
+    );
+
+    const firstDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
+    );
+
+    const curDayLastMonth = this.getFirstDayOfMonth(
+      date.getFullYear(),
+      date.getMonth() > 1 ? date.getMonth() - 1 : 12,
+      date.getDate()
+    );
+
+    // console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
+    //   date.getFullYear(), date.getDate(), date.getMonth()
+    // );
+
+
+    const numNew = await this.userModel.count({
+      where: {
+        newsDateCreate: MoreThan(firstDayCurrentMonth)
+      }
+    })
+
+    const numOld = await this.userModel.count({
+      where: {
+        newsDateCreate: Between(firstDayLastMonth, curDayLastMonth),
+      }
+    })
+
+    console.log("numNew", numNew, "numOld", numOld);
+
+    let percentVsLastMonth = 0;
+    let increase = true;
+    if (numNew > numOld) {
+      percentVsLastMonth = Math.round(((numNew - numOld) / numOld) * 100);
+    }
+    if (numNew < numOld) {
+      increase = false
+      percentVsLastMonth = Math.round(((numOld - numNew) / numOld) * 100);
+    }
+
+    return {
+      amount: numNew,
+      percentVsLastMonth,
+      increase
+    }
+
   }
 
   // Add user by admin

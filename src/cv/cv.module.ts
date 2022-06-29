@@ -28,6 +28,7 @@ import { AdmissionNotificationsModule } from 'src/admissionNotifications/admissi
   
   controllers: [CvsController],
   providers: [CvsService],
+  exports: [CvsService]
 })
 
 export class CvsModule {}

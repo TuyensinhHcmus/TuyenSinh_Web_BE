@@ -13,6 +13,7 @@ import { AdmissionNotificationsModule } from 'src/admissionNotifications/admissi
     AdmissionNotificationsModule
   ],
   providers: [NewsAdmissionService],
-  controllers: [NewsAdmissionController]
+  controllers: [NewsAdmissionController],
+  exports: [NewsAdmissionService]
 })
 export class NewsAdmissionModule {}

@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { MethodsModule } from './methods/methods.module';
 import { MajorsModule } from './majors/majors.module';
 import { ProgramsModule } from './programs/programs.module';
+import { StatisticModule } from './statistic/statistic.module';
 import { ResQuestionsModule } from './resQuestions/resQuestions.module';
 import { NewsAdmissionModule } from './newsAdmission/newsAdmission.module';
 import { SchoolInfoModule } from './schoolInfo/schoolInfo.module';
@@ -61,6 +62,7 @@ import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
     MethodsModule,
     MajorsModule,
     ProgramsModule,
+    StatisticModule,
     SchoolInfoModule,
     ContactsModule,
     UnVerifyUsersModule,
