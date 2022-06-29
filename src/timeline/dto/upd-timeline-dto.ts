@@ -1,6 +1,9 @@
 import { IsNotEmpty, IsString } from 'class-validator'
 
-export class TimelineDto {
+export class UpdTimelineDto {
+    @IsNotEmpty() 
+    timelineId: number;
+
     @IsNotEmpty() 
     timelineTitle: string;
 
