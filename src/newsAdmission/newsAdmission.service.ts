@@ -115,7 +115,7 @@ export class NewsAdmissionService {
           newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
           newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
-          newsState: Not('hidden')
+          newsState: "publish"
         },
         take: perPage,
         order: {
@@ -128,7 +128,7 @@ export class NewsAdmissionService {
           newsTitle: keyword === undefined || keyword === "" ? Like('%') : Like(`%${keyword}%`),
           newsTypeOfTrainingID: typeOfTraining === undefined || typeOfTraining === "" ? Like('%') : typeOfTraining,
           newsTypeOfProgram: typeOfProgram === undefined || typeOfProgram === "" ? Like('%') : typeOfProgram,
-          newsState: Not('hidden')
+          newsState: "publish"
         }
       })
     ])
