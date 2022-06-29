@@ -179,9 +179,9 @@ export class NewsAdmissionService {
       date.getDate()
     );
 
-    console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
-      date.getFullYear(), date.getDate(), date.getMonth()
-    );
+    // console.log("firstdate", firstDayCurrentMonth, "lastmonth", firstDayLastMonth, "curDayLastMonth", curDayLastMonth, "abc",
+    //   date.getFullYear(), date.getDate(), date.getMonth()
+    // );
     
 
     const numNew = await this.newsRepo.count({
@@ -196,8 +196,25 @@ export class NewsAdmissionService {
       }
     })
 
-    console.log("numNew", numNew, "numOld", numOld);
-    
+    // console.log("numNew", numNew, "numOld", numOld);
 
+    let percentVsLastMonth = 0;
+    let increase = true;
+    if (numNew > numOld)
+    {
+      percentVsLastMonth = Math.round(((numNew - numOld) / numOld) * 100);
+    }
+    if (numNew < numOld)
+    {
+      increase = false
+      percentVsLastMonth = Math.round(((numOld - numNew) / numOld) * 100);
+    }
+
+    return {
+      amount: numNew,
+      percentVsLastMonth,
+      increase
+    }
+    
   }
 }
