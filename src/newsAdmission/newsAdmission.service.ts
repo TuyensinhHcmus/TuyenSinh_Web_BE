@@ -37,11 +37,11 @@ export class NewsAdmissionService {
 
       // Send notify for all etne Ha
       await this.notifyService.sendAllMessage(
-        "",
-        "",
-        "",
-        "",
-        ""
+        title,
+        "Cập nhật thông tin tuyển sinh mới.",
+        "news",
+        news.newsID,
+        newsImage
         )
 
       return result;

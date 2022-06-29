@@ -191,7 +191,7 @@ export class AdmissionNotificationsService {
     var notifyData = {
       body: body,
       title: title,
-      date: "1656061958",
+      date: "1656061958", //etne fix timestamp
       image: "image",
       status: "unread",
       data: "this is data",
@@ -263,8 +263,8 @@ export class AdmissionNotificationsService {
       var notifyData = {
         body: body,
         title: title,
-        date: "1656061958",
-        image: "image",
+        date: "1656061958", //etne fix timestamp
+        image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
         status: "unread",
         data: id,
         type: "timeline",
