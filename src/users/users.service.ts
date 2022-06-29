@@ -78,12 +78,36 @@ export class UsersService {
         userRole: 'user',
         userSecret: userSecret,
         userPhone: userPhone ? userPhone : uuidv4(),
-        userContactAddress: userContactAddress
+        userContactAddress: userContactAddress,
+        // Default value
+        userIsBlock: false,
+        userRefreshToken: "",
+        userAvatar: "",
+        userGender: "",
+        userEthnicity: "",
+        userNationality: "",
+        userBirthday: new Date(),
+        userBirthplace: "",
+        userProvinceResidence: "",
+        userDistrictResidence: "",
+        userAddress12: "",
+        userSchool12: "",
+        userAddress11: "",
+        userSchool11: "",
+        userAddress10: "",
+        userSchool10: "",
+        userIdentityNumber: "",
+        userWardResidence: "",
+        userStreetResidence: "",
+        currentTokenDevice: "",
+        oldTokenDevice: "",
+        userCandicateId: ""
       });
 
       const result = await this.userModel.save(newUser);
       return result;
     } catch (error) {
+      console.log(error)
       throw new NotImplementedException("Không thể thêm user vào database do trường email, number phone hoặc userCandidateId bị trùng")
     }
   }
@@ -152,7 +176,7 @@ export class UsersService {
     }
 
     throw new BadRequestException("Mật khẩu cũ không đúng!")
-    
+
     // return {
     //   message: "Mật khẩu cũ không đúng!"
     // };
@@ -306,10 +330,38 @@ export class UsersService {
         //userSecret: userSecret,
         userPhone: uuidv4(),
         //userContactAddress: userContactAddress
+
+        // Default value
+        userSecret: "",
+        userContactAddress: "",
+        userIsBlock: false,
+        userRefreshToken: "",
+        userAvatar: "",
+        userGender: "",
+        userEthnicity: "",
+        userNationality: "",
+        userBirthday: new Date(),
+        userBirthplace: "",
+        userProvinceResidence: "",
+        userDistrictResidence: "",
+        userAddress12: "",
+        userSchool12: "",
+        userAddress11: "",
+        userSchool11: "",
+        userAddress10: "",
+        userSchool10: "",
+        userIdentityNumber: "",
+        userWardResidence: "",
+        userStreetResidence: "",
+        currentTokenDevice: "",
+        oldTokenDevice: "",
+        userCandicateId: ""
       });
+      console.log(newUser)
       const result = await this.userModel.save(newUser);
       return result;
     } catch (error) {
+      console.log(error)
       throw new HttpException('User with that email or number phone already exists', HttpStatus.BAD_REQUEST);
     }
   }

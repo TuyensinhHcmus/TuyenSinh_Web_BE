@@ -3,12 +3,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { timeline } from "./timeline.entity";
 import { TimelineDto } from "./dto/add-timeline-dto";
+import { AdmissionNotificationsService } from "src/admissionNotifications/admissionNotifications.service";
 
 @Injectable()
 export class TimelineService {
   constructor(
     @InjectRepository(timeline)
     private readonly timelineModel: Repository<timeline>,
+    private readonly notifyService: AdmissionNotificationsService
   ) { }
 
   async insertTimeline(timelineInformation: TimelineDto) {
@@ -17,6 +19,15 @@ export class TimelineService {
       ...timelineInformation
     });
     const result = await this.timelineModel.save(newTimeline);
+
+    // Send notify for all etne Ha
+    await this.notifyService.sendAllMessage(
+      timelineInformation.timelineTitle,
+      "Cập nhật sự kiện tuyển sinh mới",
+      "events",
+      timelineInformation.timelineId,
+      "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d"
+      )
 
     return result;
   }

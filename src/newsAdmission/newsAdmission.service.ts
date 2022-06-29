@@ -6,6 +6,7 @@ import { news } from './newsAdmission.entity';
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { UpdateNewsDto } from './dto/upadteNewAdmission.dto';
+import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
 var slug = require('slug')
 
 @Injectable()
@@ -13,6 +14,7 @@ export class NewsAdmissionService {
   constructor(
     @InjectRepository(news)
     private readonly newsRepo: Repository<news>,
+    private readonly notifyService: AdmissionNotificationsService
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
@@ -32,6 +34,16 @@ export class NewsAdmissionService {
       });
 
       const result = await this.newsRepo.save(news);
+
+      // Send notify for all etne Ha
+      await this.notifyService.sendAllMessage(
+        title,
+        "Cập nhật thông tin tuyển sinh mới.",
+        "news",
+        news.newsId,
+        newsImage
+        )
+
       return result;
     } catch (error) {
       throw new HttpException("Thêm tin tức không thành công", HttpStatus.BAD_REQUEST)

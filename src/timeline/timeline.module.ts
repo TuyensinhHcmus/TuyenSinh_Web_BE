@@ -4,11 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TimelineController } from "./timeline.controller";
 import { TimelineService } from "./timeline.service";
 import { timeline } from "./timeline.entity";
+import { AdmissionNotificationsModule } from "src/admissionNotifications/admissionNotifications.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([timeline]),
-        AuthModule
+        AuthModule,
+        AdmissionNotificationsModule
     ],
     controllers:[TimelineController],
     providers: [TimelineService]

@@ -33,6 +33,7 @@ import { typeoftraining } from 'src/typeOfTraining/typeOfTraining.entity';
 import { PdfService } from 'src/generatePdf/generatePdf.service';
 import { MailService } from 'src/mail/mail.service';
 import { MajorsService } from 'src/majors/majors.service';
+import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
 
 @Injectable()
 export class CvsService {
@@ -45,6 +46,7 @@ export class CvsService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly majorService: MajorsService,
+    private readonly notifyService: AdmissionNotificationsService
   ) { }
 
   async addCv(
@@ -664,6 +666,8 @@ export class CvsService {
         'method.methodName',
         'cv.cvFile',
         'cv.cvState',
+        'cv.cvStatusPay',
+        'cv.cvComment',
 
         'user.userName',
         'user.userGender',
@@ -719,6 +723,8 @@ export class CvsService {
         method: cv.method_methodName,
         fileUrl: cv.cv_cvFile,
         cvState: cv.cv_cvState,
+        cvStatusPay: cv.cv_cvStatusPay,
+        cvComment: cv.cv_cvComment,
 
         userName: cv.user_userName,
         userGender: cv.user_userGender,
@@ -1264,6 +1270,17 @@ export class CvsService {
           message,
         );
 
+        let body = "Chúc mừng bạn đã thành công nộp hồ sơ với mã " + cv.cvId + " vào trường Đại học Khoa học Tự Nhiên."
+
+        // Gửi thông báo
+        await this.notifyService.sendToDirectDevice(
+          body,
+          "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG",
+          "cv",
+          cv.cvId,
+          cv.cvUserId
+        )
+
         return {
           message: 'Đã cập nhật trạng thái của cv thành công!',
           cvId: cvId,
@@ -1309,17 +1326,20 @@ export class CvsService {
         }
       }
 
-      // Tìm tên major
-      const majorName = await (
-        await this.majorService.getSingleMajor(majorId)
-      ).majorName;
 
       if (cvState === 'Trúng tuyển') {
+        // Tìm tên major
+        const majorName = await (
+          await this.majorService.getSingleMajor(majorId)
+        ).majorName;
+
         // Gửi mail báo trúng tuyển
         const content =
           'Chúc mừng bạn đã trúng tuyển vào ngành <b>' +
           majorName +
-          '</b> của Trường Đại học Khoa học Tự nhiên';
+          '</b> của Trường Đại học Khoa học Tự nhiên' +
+          '</p></p></p>Mã hồ sơ của bạn là <b>' + cv.cvId + '</b></p>'
+
         const cvai = await this.cvaiSerivce.findCvai(cv.cvId);
         const message =
           '<div ><div ><p ></p></div><p>Chào bạn,</p><p>' +
@@ -1330,6 +1350,17 @@ export class CvsService {
           'THÔNG BÁO TRÚNG TUYỂN',
           message,
         );
+        
+        let body = "Chúc mừng bạn đã trúng tuyển vào ngành " + majorName + " của Trường Đại học Khoa học Tự nhiên. Mã hồ sơ của bạn là " + cv.cvId;
+
+        // Gửi thông báo
+        await this.notifyService.sendToDirectDevice(
+          body,
+          'THÔNG BÁO TRÚNG TUYỂN',
+          'cv',
+          cv.cvId,
+          cv.cvUserId
+        )
       }
 
       return {
@@ -1340,6 +1371,13 @@ export class CvsService {
     }
   }
 
+  async getOneCV(cvId: number){
+    await this.findCV(cvId);
+
+    const cv = await this.getCVInformation(cvId);
+
+    return cv;
+  }
   private async findCV(cvId: number): Promise<cv> {
     let cv;
     try {

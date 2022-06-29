@@ -10,6 +10,7 @@ import { UsersModule } from 'src/users/users.module';
 import { PdfModule } from 'src/generatePdf/generatePdf.module';
 import { MailModule } from 'src/mail/mail.module';
 import { MajorsModule } from 'src/majors/majors.module';
+import { AdmissionNotificationsModule } from 'src/admissionNotifications/admissionNotifications.module';
 
 
 @Module({
@@ -21,7 +22,8 @@ import { MajorsModule } from 'src/majors/majors.module';
     CvaisModule,
     PdfModule,
     MailModule,
-    MajorsModule
+    MajorsModule,
+    AdmissionNotificationsModule
   ],
   
   controllers: [CvsController],

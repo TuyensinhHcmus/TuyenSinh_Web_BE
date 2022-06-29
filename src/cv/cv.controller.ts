@@ -126,20 +126,13 @@ export class CvsController {
     return await this.cvsService.updateStatusCV(updateStatusCVDto);
   }
 
+  // Lấy dữ liệu của một cv bằng cvId
+  @UseGuards(AtGuard)
+  @Get('getOneCV')
+  async getOneCV(
+    @Query('cvId') cvId: number,
+    @Req() req) {
 
-  // // [GET] /contacts/:id
-  // @Get(':id')
-  // async getContact(@Param('id') contactId: string): Promise<contact> {
-  //   const contact = await this.contactsService.getSingleContact(contactId);
-  //   return contact;
-  // }
-
-  // // [PATCH] /contacts/:id
-  // @Patch(':id')
-  // async updateFaculty(
-  //   @Param('id') id: string,
-  //   @Body() updateContactDto: UpdateContactDto,
-  // ): Promise<contact> {
-  //   return await this.contactsService.updateContact(id, updateContactDto);
-  // }
+    return await this.cvsService.getOneCV(cvId);
+  }
 }

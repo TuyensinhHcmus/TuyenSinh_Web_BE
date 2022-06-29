@@ -26,7 +26,8 @@ export class UnVerifyUsersService {
             userPassword: userPasswordHash,
             userPhone: userPhone,
             userContactAddress: userContactAddress,
-            userSecret: userSecret
+            userSecret: userSecret,
+            userType: "email"
         });
 
         const result = await this.unVerifyUserRepo.save(newUser);
