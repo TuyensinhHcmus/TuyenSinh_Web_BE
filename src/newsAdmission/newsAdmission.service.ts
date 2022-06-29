@@ -40,7 +40,7 @@ export class NewsAdmissionService {
         title,
         "Cập nhật thông tin tuyển sinh mới.",
         "news",
-        news.newsID,
+        news.newsId,
         newsImage
         )
 
