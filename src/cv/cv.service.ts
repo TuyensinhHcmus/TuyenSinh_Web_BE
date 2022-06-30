@@ -299,6 +299,7 @@ export class CvsService {
         message: 'Đã lưu thành công !',
       };
     } catch (error) {
+      console.log(error)
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,

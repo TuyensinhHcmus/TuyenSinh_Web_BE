@@ -41,15 +41,18 @@ export class ApplyTempService {
 
       // Check majorId is changed
       let isChangeMajorId = false;
+
       if (applyTemp.applyTempMajorId !== applyTempMajorId) {
         isChangeMajorId = true;
       }
+
 
       // Check this change major id can duplicate
       if (isChangeMajorId) {
         const isCheckDuplicate = await this.applyTempRepo.findOne(
           {
-            applyTempMajorId: applyTempMajorId
+            applyTempMajorId: applyTempMajorId,
+            applyTempUserId: applyTempUserId
           })
 
         if (isCheckDuplicate) {
@@ -451,6 +454,7 @@ export class ApplyTempService {
     const applyTemp = await this.findApplyTemp(applyTempId);
 
     // Check exist 
+    console.log(applyTemp.applyTempId)
     await this.checkInfor(applyTemp.applyTempUserId, applyTempMajorId, applyTempId);
 
     // Update apply temp
