@@ -17,7 +17,7 @@
 // newsState varchar(10) 
 // newsSlug varchar(255)
 
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, Timestamp } from "typeorm";
 
 @Entity("user")
 export class user {
@@ -266,4 +266,11 @@ export class user {
         }
     )
     userCandicateId: string
+
+    @Column(
+        {
+            type: 'timestamp'
+        }
+    )
+    userDateCreate: Timestamp
 }
