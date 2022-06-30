@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { TimelineService } from "./timeline.service";
 import { TimelineDto } from "./dto/add-timeline-dto";
+import { UpdTimelineDto } from "./dto/upd-timeline-dto";
 
 // @UseGuards(AuthGuard())
 @Controller('timeline')
@@ -21,7 +22,7 @@ export class TimelineController {
     }
 
     @Post('update')
-    updateTimeline(@Body() timelineInfo: TimelineDto) {
+    updateTimeline(@Body() timelineInfo: UpdTimelineDto) {
         let {timelineId, ...other} = timelineInfo
         const genId =  this.timelineService.updateTimeline(timelineId, timelineInfo)
         return genId
