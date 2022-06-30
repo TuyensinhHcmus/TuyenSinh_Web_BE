@@ -18,13 +18,14 @@ export class FacultiesService {
   ) { }
 
   async insertFaculty(addFacultyDto: AddFacultyDto): Promise<faculty> {
-    const { name, introduction, imageCompare, imageHighlight } = addFacultyDto;
+    const { name, introduction, imageCompare, imageHighlight ,logo } = addFacultyDto;
 
     const faculty = await this.facultiesRepo.create({
       facultyName: name,
       facultyIntroduction: introduction,
       facultyImageCompare: imageCompare,
       facultyImageHighlight: imageHighlight,
+      facultyLogo: logo
     })
 
     const result = await this.facultiesRepo.save(faculty);
@@ -63,7 +64,7 @@ export class FacultiesService {
 
   async updateFaculty(id: string, updateFacultyDto: UpdateFacultyDto): Promise<faculty> {
 
-    const { name, introduction, imageCompare, imageHighlight } = updateFacultyDto;
+    const { name, introduction, imageCompare, imageHighlight, logo } = updateFacultyDto;
 
     const faculty = await this.findFaculty(id);
 
@@ -71,6 +72,7 @@ export class FacultiesService {
     faculty.facultyIntroduction = introduction;
     faculty.facultyImageCompare = imageCompare;
     faculty.facultyImageHighlight = imageHighlight;
+    faculty.facultyLogo = logo;
 
     await this.facultiesRepo.update({ facultyId: parseInt(id) }, faculty);
     //await this.facultiesRepo.save(faculty);
