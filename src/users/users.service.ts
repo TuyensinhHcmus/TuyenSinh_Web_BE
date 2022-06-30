@@ -101,7 +101,8 @@ export class UsersService {
         userStreetResidence: "",
         currentTokenDevice: "",
         oldTokenDevice: "",
-        userCandicateId: ""
+        userCandicateId: "",
+        userDateCreate: new Date()
       });
 
       const result = await this.userModel.save(newUser);
@@ -355,7 +356,8 @@ export class UsersService {
         userStreetResidence: "",
         currentTokenDevice: "",
         oldTokenDevice: "",
-        userCandicateId: ""
+        userCandicateId: "",
+        userDateCreate: new Date()
       });
       console.log(newUser)
       const result = await this.userModel.save(newUser);
