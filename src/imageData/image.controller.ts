@@ -7,7 +7,12 @@ import {
     Post,
     Put,
     Query,
+    UseGuards,
 } from '@nestjs/common';
+import { AtGuard } from 'src/common/guards';
+import { Roles } from 'src/role/role.decorator';
+import Role from 'src/role/role.enum';
+import { RoleGuard } from 'src/role/role.guard';
 import { AddImageDto } from './dto/add-image.dto';
 import { UpdateImageDto } from './dto/update-image.dto';
 import { imageData } from './image.entity';
@@ -19,6 +24,8 @@ export class ImageController {
     constructor(private readonly imageService: ImageService) { }
 
     // [GET] /image/getList
+    @UseGuards(AtGuard, RoleGuard)
+    @Roles(Role.user, Role.admin)
     @Get('getList')
     async getListImage(): Promise<imageData[]> {
         const listImage = await this.imageService.getListImage();

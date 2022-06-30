@@ -20,6 +20,10 @@ import { AuthGuard } from '@nestjs/passport';
 import { AtGuard, RtGuard, GgGuard } from 'src/common/guards';
 import ChangePasswordDto, { ResetPasswordDto } from './dto/resetPassword.dto';
 
+import Role from 'src/role/role.enum';
+import { Roles } from 'src/role/role.decorator';
+import { RoleGuard } from 'src/role/role.guard';
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -48,10 +52,22 @@ export class AuthController {
     return this.authService.refreshOTP(userId)
   }
 
-  @UseGuards(LocalAuthenticationGuard)
+  
+  @UseGuards(LocalAuthenticationGuard, RoleGuard)
+  @Roles(Role.user, Role.admin)
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async logIn(@Req() req: RequestWithUser) {
+    const user = req.user;
+    user.userPassword = undefined;
+    return user;
+  }
+
+  @UseGuards(LocalAuthenticationGuard, RoleGuard)
+  @Roles(Role.admin, Role.colab)
+  @Post('loginAdmin')
+  @HttpCode(HttpStatus.OK)
+  async logAdmin(@Req() req: RequestWithUser) {
     const user = req.user;
     user.userPassword = undefined;
     return user;
