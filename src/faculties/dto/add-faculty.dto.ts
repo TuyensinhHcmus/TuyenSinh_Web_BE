@@ -12,4 +12,7 @@ export class AddFacultyDto {
 
     @IsNotEmpty()
     introduction: string;
+
+    @IsNotEmpty()
+    logo: string;
 }
