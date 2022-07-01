@@ -225,7 +225,7 @@ export class UsersService {
     return user;
   }
 
-  private async findUserById(id: string): Promise<user> {
+  public async findUserById(id: string): Promise<user> {
     let user;
 
     try {

@@ -167,54 +167,59 @@ export class AdmissionNotificationsService {
 
 
   async sendToDirectDevice(body: any, title: any, screen: any, id: any, userId: any) {
-    let user = await this.userService.getUserById(userId);
-    let tokenDevice = user.currentTokenDevice;
+    let user = await this.userService.findUserById(userId);
+    try {
+      let tokenDevice = user.currentTokenDevice;
 
-    // Set up message
-    var DATA = {
-      notification: {
+      // Set up message
+      var DATA = {
+        notification: {
+          body: body,
+          title: title,
+        },
+        data: {
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+          sound: "default",
+          status: "done",
+          id: id,
+          screen: screen,
+        },
+        token: tokenDevice // Here is device token need to send
+      };
+
+      let notifyId = uuidv4();
+
+      var notifyData = {
         body: body,
         title: title,
-      },
-      data: {
-        click_action: "FLUTTER_NOTIFICATION_CLICK",
-        sound: "default",
-        status: "done",
-        id: id,
-        screen: screen,
-      },
-      token: tokenDevice // Here is device token need to send
-    };
+        date: new Date().getTime().toString(), //etne fix timestamp
+        image: "image",
+        status: "unread",
+        data: "this is data",
+        type: screen,
+        id: notifyId
+      };
 
-    let notifyId = uuidv4();
-
-    var notifyData = {
-      body: body,
-      title: title,
-      date: "1656061958", //etne fix timestamp
-      image: "image",
-      status: "unread",
-      data: "this is data",
-      type: screen,
-      id: notifyId
-    };
-
-    await this.db
-      .collection("notify")
-      .doc("abc")
-      .set({ [notifyId]: notifyData })
+      await this.db
+        .collection("notify")
+        .doc("abc")
+        .set({ [notifyId]: notifyData })
 
 
-    if (tokenDevice) {
-      // Send message
-      firebase.messaging().send(DATA)
-        .then((response) => {
-          console.log('Success sent message: ' + response);
-        })
-        .catch((err) => {
-          console.log('Error sending message: ' + err);
-        });
+      if (tokenDevice) {
+        // Send message
+        firebase.messaging().send(DATA)
+          .then((response) => {
+            console.log('Success sent message: ' + response);
+          })
+          .catch((err) => {
+            console.log('Error sending message: ' + err);
+          });
+      }
+    } catch (error) {
+
     }
+
   }
 
   // var notifyData = {
@@ -245,6 +250,7 @@ export class AdmissionNotificationsService {
       })
     })
 
+    console.log(new Date().getTime().toString());
 
 
     const objectArray = Object.entries(object);
@@ -263,7 +269,7 @@ export class AdmissionNotificationsService {
       var notifyData = {
         body: body,
         title: title,
-        date: "1656061958", //etne fix timestamp
+        date: new Date().getTime().toString(), //etne fix timestamp
         image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
         status: "unread",
         data: id,
@@ -355,7 +361,7 @@ export class AdmissionNotificationsService {
         id: id,
         screen: screen,
       },
-      topic: topic 
+      topic: topic
     };
 
 
