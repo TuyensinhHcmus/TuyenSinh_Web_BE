@@ -64,7 +64,7 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthenticationGuard, RoleGuard)
-  @Roles(Role.admin, Role.colab)
+  @Roles(Role.admin, Role.collab)
   @Post('loginAdmin')
   @HttpCode(HttpStatus.OK)
   async logAdmin(@Req() req: RequestWithUser) {

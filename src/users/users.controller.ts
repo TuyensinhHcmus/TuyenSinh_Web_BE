@@ -12,6 +12,9 @@ import {
   NotImplementedException,
 } from '@nestjs/common';
 import { AtGuard } from 'src/common/guards';
+import { Roles } from 'src/role/role.decorator';
+import Role from 'src/role/role.enum';
+import { RoleGuard } from 'src/role/role.guard';
 import ChangePasswordDto from './dto/change-password.dto';
 import { EditUserDto } from './dto/edit-user-dto';
 
@@ -21,6 +24,8 @@ import { UsersService } from './users.service';
 export class UsersController {
   constructor(private readonly usersService: UsersService) { }
 
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin)
   @Post('/ban')
   async banUser(
     @Body('userId') userId: string,
@@ -124,7 +129,8 @@ export class UsersController {
     return res;
   }
 
-  @UseGuards(AtGuard)
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin)
   @Post('/addUserByAdmin')
   async addUserByAdmin(
     @Req() req,

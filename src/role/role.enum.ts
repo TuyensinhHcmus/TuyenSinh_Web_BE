@@ -1,7 +1,7 @@
 enum Role {
     user = 'user',
     admin = 'admin',
-    colab = 'colab'
+    collab = 'collab'
 }
 
 export default Role;

@@ -18,6 +18,9 @@ import { AddListCVDto } from './dto/add-listcv.dto';
 import { UpdateCVDto } from './dto/update-cv.dto';
 import { AtGuard } from 'src/common/guards';
 import { UpdateStatusCVDto } from './dto/update-status.dto';
+import { RoleGuard } from 'src/role/role.guard';
+import { Roles } from 'src/role/role.decorator';
+import Role from 'src/role/role.enum';
 @Controller('cvs')
 export class CvsController {
   constructor(private readonly cvsService: CvsService) { }
@@ -117,7 +120,8 @@ export class CvsController {
   }
 
   // Đổi trạng thái của CV và aspiration sang trúng tuyển/không trúng tuyển
-  @UseGuards(AtGuard)
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin, Role.collab)
   @Post('updateStatusCV')
   async updateStatusCV(
     @Body() updateStatusCVDto: UpdateStatusCVDto,

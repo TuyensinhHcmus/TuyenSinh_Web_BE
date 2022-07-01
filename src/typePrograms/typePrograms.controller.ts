@@ -8,11 +8,16 @@ import {
   Delete,
   Query,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 
 import { TypeProgramsService } from './typePrograms.service';
 import { typeProgram } from './typeProgram.entity';
 import { TypeProgramDto } from './dto/add-typeprogram-dto';
+import { AtGuard } from 'src/common/guards';
+import { RoleGuard } from 'src/role/role.guard';
+import Role from 'src/role/role.enum';
+import { Roles } from 'src/role/role.decorator';
 
 @Controller('type-programs')
 export class TypeProgramsController {
@@ -49,17 +54,24 @@ export class TypeProgramsController {
     return typePrograms;
   }
 
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin, Role.collab)
   @Post("/add")
   async addTypeProgram(@Body() infor: TypeProgramDto): Promise<typeProgram> {
     const typePrograms = await this.typeProgramsService.addTypeProgram(infor);
     return typePrograms;
   }
 
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin, Role.collab)
   @Post("/delete")
   async delteTypeProgram(@Body("typeProgramId") id: string): Promise<any> {
     const res = await this.typeProgramsService.deleteTypeProgram(id);
     return res;
   }
+
+  @UseGuards(AtGuard, RoleGuard)
+  @Roles(Role.admin, Role.collab)
   @Post("/update")
   async updateTypeProgram(@Body() infor: TypeProgramDto): Promise<any> {
     const typePrograms = await this.typeProgramsService.updateTypeProgram(infor);
