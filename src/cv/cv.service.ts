@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, LessThan, Repository } from 'typeorm';
-
+import moment from 'moment';
 import { AddCVDto } from './dto/add-cv.dto';
 
 import { cv } from './cv.entity';
@@ -60,6 +60,8 @@ export class CvsService {
       cvFile: cvFile,
       cvDateCreate: new Date(),
       cvState: 'Đã lưu',
+      cvComment: '',
+      cvStatusPay: ''
     });
 
     const result = await this.cvsRepo.save(cv);
@@ -141,10 +143,10 @@ export class CvsService {
       cvaiData.cvaiProvincialExcellentAward = data.cvaiProvincialExcellentAward;
       cvaiData.cvaiIeltsCertificateScore = data.cvaiIeltsCertificateScore;
       cvaiData.cvaiIeltsCertificateExpiration =
-        data.cvaiIeltsCertificateExpiration;
+        new Date(data.cvaiIeltsCertificateExpiration);
       cvaiData.cvaiToeflCertificateScore = data.cvaiToeflCertificateScore;
       cvaiData.cvaiToeflCertificateExpiration =
-        data.cvaiToeflCertificateExpiration;
+        new Date(data.cvaiToeflCertificateExpiration);
       cvaiData.cvaiHaveVietnameseCertificate =
         data.cvaiHaveVietnameseCertificate;
       cvaiData.cvaiVietnameseCertificateLevel =
@@ -162,7 +164,7 @@ export class CvsService {
       //userInfo.userEmail = userEmail;
       userInfo.userEthnicity = userEthnicity;
       userInfo.userNationality = userNationality;
-      userInfo.userBirthday = userBirthday;
+      userInfo.userBirthday = new Date(userBirthday);
       userInfo.userBirthplace = userBirthplace;
       userInfo.userContactAddress = userContactAddress;
       userInfo.userProvinceResidence = userProvinceResidence;
