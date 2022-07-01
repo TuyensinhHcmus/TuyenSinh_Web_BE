@@ -6,7 +6,7 @@ executors:
       - image: circleci/node:14
 
 orbs:
-  node: circleci/node@3.0.0
+  node: circleci/node@4.7.0
   docker: circleci/docker@1.4.0
 
 aliases:
