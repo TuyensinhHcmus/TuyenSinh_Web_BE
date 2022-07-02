@@ -41,12 +41,13 @@ import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.MYSQL_HOST,
-      username:  process.env.MYSQL_USER,
+      port: parseInt(process.env.MYSQL_PORT),
+      username: process.env.MYSQL_USER,
       password: process.env.MYSQL_PASSWORD,
       database: process.env.MYSQL_DB,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       autoLoadEntities: true,
-      synchronize: true,
+      synchronize: false,
     }),
     ResultModule,
     PdfModule,
@@ -74,10 +75,10 @@ import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
     InforCandidatesModule,
     AdmissionNotificationsModule,
     ImageModule,
-    ApplyTempModule
+    ApplyTempModule,
   ],
 
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
