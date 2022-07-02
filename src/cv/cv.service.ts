@@ -303,7 +303,7 @@ export class CvsService {
     } catch (error) {
       console.log(error)
       throw new HttpException(
-        'Something went wrong',
+        error,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
