@@ -1,4 +1,4 @@
-FROM node:16.0.0
+FROM node:14.15.0
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
@@ -10,7 +10,7 @@ COPY package*.json ./
 
 RUN npm install -g npm@latest && npm install
 
-RUN yarn add husky@7 --dev \
+RUN npm install husky@7 --dev \
   && npx husky-init \
   && npm exec -- github:typicode/husky-4-to-7 --remove-v4-config
 
