@@ -1,4 +1,4 @@
-FROM node:14.16.0
+FROM node:14.17.0
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
