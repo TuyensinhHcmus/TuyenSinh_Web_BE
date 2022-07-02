@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN sudo rm -rf node_modules package-lock.json && npm install -g npm@latest && npm install
+RUN npm install -g npm@latest && npm install
 
 RUN npm link webpack
 
