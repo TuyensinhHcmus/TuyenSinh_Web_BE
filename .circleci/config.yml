@@ -6,14 +6,14 @@ executors:
       - image: circleci/node:14
 
 orbs:
-  node: circleci/node@4.7.0
+  node: circleci/node@5.0.2
   docker: circleci/docker@1.4.0
 
 aliases:
   install_node_modules: &install_node_modules
     run:
       name: Install dependencies
-      command: sudo rm -rf node_modules package-lock.json && npm install -g npm@latest && npm install
+      command: yarn
 
   save_cache: &save_cache
     save_cache:
@@ -24,11 +24,15 @@ aliases:
 
 jobs:
   build:
-    executor: node
+    docker:
+      - image: cimg/node:14.16.0
     steps:
       - checkout
-      - <<: *install_node_modules
+#       - <<: *install_node_modules
       # - <<: *save_cache
+      - run:
+          name: Install dependencies
+          command: npm install
       - run:
           name: Build
           command: npm run build
