@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:14.16.0
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
+RUN sudo rm -rf node_modules package-lock.json && npm install -g npm@latest && npm install
 
 RUN npm link webpack
 
