@@ -1,4 +1,4 @@
-FROM node:14.15.0
+FROM node:14-stretch-slim
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
@@ -8,11 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install -g npm@latest && npm install
-
-RUN npm install husky@7 --dev \
-  && npx husky-init \
-  && npm exec -- github:typicode/husky-4-to-7 --remove-v4-config
+RUN npm install
 
 RUN npm link webpack
 
