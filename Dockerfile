@@ -1,4 +1,4 @@
-FROM node:14-stretch-slim
+FROM node:12
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
