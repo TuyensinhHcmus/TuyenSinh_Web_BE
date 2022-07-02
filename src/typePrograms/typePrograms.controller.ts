@@ -55,7 +55,7 @@ export class TypeProgramsController {
   }
 
   @UseGuards(AtGuard, RoleGuard)
-  @Roles(Role.admin, Role.collab)
+  @Roles(Role.admin)
   @Post("/add")
   async addTypeProgram(@Body() infor: TypeProgramDto): Promise<typeProgram> {
     const typePrograms = await this.typeProgramsService.addTypeProgram(infor);
@@ -63,7 +63,7 @@ export class TypeProgramsController {
   }
 
   @UseGuards(AtGuard, RoleGuard)
-  @Roles(Role.admin, Role.collab)
+  @Roles(Role.admin)
   @Post("/delete")
   async delteTypeProgram(@Body("typeProgramId") id: string): Promise<any> {
     const res = await this.typeProgramsService.deleteTypeProgram(id);
@@ -71,7 +71,7 @@ export class TypeProgramsController {
   }
 
   @UseGuards(AtGuard, RoleGuard)
-  @Roles(Role.admin, Role.collab)
+  @Roles(Role.admin)
   @Post("/update")
   async updateTypeProgram(@Body() infor: TypeProgramDto): Promise<any> {
     const typePrograms = await this.typeProgramsService.updateTypeProgram(infor);

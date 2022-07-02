@@ -24,10 +24,9 @@ export class ImageController {
     constructor(private readonly imageService: ImageService) { }
 
     // [GET] /image/getList
-    @UseGuards(AtGuard, RoleGuard)
-    @Roles(Role.user, Role.admin)
     @Get('getList')
     async getListImage(): Promise<imageData[]> {
+        console.log(new Date().getTime().toString())
         const listImage = await this.imageService.getListImage();
         return listImage;
     }
