@@ -164,7 +164,7 @@ export class PdfService {
           let ref = await db.collection('streams');
 
           await ref.doc(cvId.toString()).set({
-            value: buffer
+            value: buffer?.toString('base64')
           });
           // const snapshot = await ref.where('capital', '==', true).get();
 
