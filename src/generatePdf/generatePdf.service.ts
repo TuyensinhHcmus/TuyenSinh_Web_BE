@@ -137,10 +137,10 @@ export class PdfService {
         const options = {
           width: '635px',
           height: '820px',
-          border: {
-            top: '40px',
-            bottom: '60px',
-          },
+          // border: {
+          //   top: '40px',
+          //   bottom: '60px',
+          // },
         };
 
         //tra file truc tiep
