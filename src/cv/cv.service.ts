@@ -1280,7 +1280,7 @@ export class CvsService {
           body,
           "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG",
           "cv",
-          cv.cvId,
+          cv.cvId.toString(),
           cv.cvUserId
         )
 
@@ -1361,7 +1361,7 @@ export class CvsService {
           body,
           'THÔNG BÁO TRÚNG TUYỂN',
           'cv',
-          cv.cvId,
+          cv.cvId.toString(),
           cv.cvUserId
         )
       }
