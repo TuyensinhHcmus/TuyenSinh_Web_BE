@@ -137,10 +137,10 @@ export class PdfService {
         const options = {
           width: '635px',
           height: '820px',
-          // border: {
-          //   top: '40px',
-          //   bottom: '60px',
-          // },
+          border: {
+            top: '40px',
+            bottom: '60px',
+          },
         };
 
         //tra file truc tiep
@@ -164,7 +164,7 @@ export class PdfService {
           let ref = await db.collection('streams');
 
           await ref.doc(cvId.toString()).set({
-            value: buffer?.toString('base64')
+            value: buffer
           });
           // const snapshot = await ref.where('capital', '==', true).get();
 
