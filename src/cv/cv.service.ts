@@ -205,8 +205,8 @@ export class CvsService {
           obj['national'] = addCVDto.userNationality !== undefined || addCVDto.userNationality ? addCVDto.userNationality : "",
           obj['province'] = addCVDto.userProvinceResidence !== undefined || addCVDto.userProvinceResidence ? addCVDto.userProvinceResidence : "",
           console.log("obj", obj);
-          
-          await this.pdfService.generatePdf(cvId, obj, "DT")
+
+        await this.pdfService.generatePdf(cvId, obj, "DT")
       }
       if (method === "XT") {
         obj['majorName'] = '',
@@ -285,10 +285,10 @@ export class CvsService {
           obj['cvaiGPA10'] = addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10 ? addCVDto.cvaiGPA10 : "",
           obj['cvaiGPA11'] = addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11 ? addCVDto.cvaiGPA11 : "",
           obj['cvaiGPA12'] = addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12 ? addCVDto.cvaiGPA12 : "",
-          obj['cvaiGPATotal'] = (addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10) 
-                                && (addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11) 
-                                && (addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12) 
-                                ? addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12 : "",
+          obj['cvaiGPATotal'] = (addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10)
+            && (addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11)
+            && (addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12)
+            ? addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12 : "",
           obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore !== undefined && addCVDto.cvaiIeltsCertificateScore ? addCVDto.cvaiIeltsCertificateScore : "",
           obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore !== undefined && addCVDto.cvaiToeflCertificateScore ? addCVDto.cvaiToeflCertificateScore : "",
           obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel !== undefined && addCVDto.cvaiVietnameseCertificateLevel ? addCVDto.cvaiVietnameseCertificateLevel : "",
@@ -975,10 +975,18 @@ export class CvsService {
   }
 
   async deleteCv(cvId: number) {
-    try {
-      // Find CV
-      await this.findCV(cvId);
 
+    // Find CV
+    const cv = await this.findCV(cvId);
+
+    // Check state of cv
+    if (cv.cvState === "Trúng tuyển" ||
+      cv.cvState === "Không trúng tuyển" ||
+      cv.cvState === "Đã nộp"
+    ) {
+      throw new HttpException("Bạn không thể xóa cv " + cv.cvState, HttpStatus.BAD_REQUEST);
+    }
+    try {
       // Find listAspiration
       const listAspiration = await createQueryBuilder('cv')
         .where('cv.cvId = :cvId', { cvId: cvId })
@@ -1353,7 +1361,7 @@ export class CvsService {
           'THÔNG BÁO TRÚNG TUYỂN',
           message,
         );
-        
+
         let body = "Chúc mừng bạn đã trúng tuyển vào ngành " + majorName + " của Trường Đại học Khoa học Tự nhiên. Mã hồ sơ của bạn là " + cv.cvId;
 
         // Gửi thông báo
@@ -1374,7 +1382,7 @@ export class CvsService {
     }
   }
 
-  async getOneCV(cvId: number){
+  async getOneCV(cvId: number) {
     await this.findCV(cvId);
 
     const cv = await this.getCVInformation(cvId);

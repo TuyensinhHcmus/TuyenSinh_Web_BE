@@ -106,4 +106,10 @@ export class AdmissionNotificationsController {
     ) {
         return this.admissionNotificationsService.sendAllMessage(body, title, screen, id, image);
     }
+
+    @Get('/test')
+    test()
+    {
+        return this.admissionNotificationsService.test();
+    }
 }

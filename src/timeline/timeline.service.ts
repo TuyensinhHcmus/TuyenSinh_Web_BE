@@ -30,6 +30,9 @@ export class TimelineService {
       "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d"
       )
 
+    // Gọi cron jon
+    // callCronJobTopic(timeStart, timeEnd, content);
+
     return result;
   }
 

@@ -14,6 +14,7 @@ import { UsersService } from "src/users/users.service";
 var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
 //../../src/admissionNotifications/serviceAccountKey.json
 import { getStorage } from "firebase-admin/storage"
+import { Console } from "console";
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
@@ -26,9 +27,10 @@ export class AdmissionNotificationsService {
     private mailService: MailService,
     private userService: UsersService,
   ) {
-    this.cronJob = new CronJob('*/10 * * * * *', async () => {
+    this.cronJob = new CronJob('30 0-5 14 * * *', async () => {
       try {
         console.log("test auto send mail")
+        console.log(new Date().toLocaleString());
         const user = new RegisterDto();
 
         user.userEmail = "lyhandong123@gmail.com"
@@ -36,7 +38,10 @@ export class AdmissionNotificationsService {
       } catch (e) {
         console.error(e);
       }
-    });
+    },
+    null,
+    false,
+    "Asia/Ho_Chi_Minh");
 
     this.defaultApp = firebase.initializeApp({
       credential: firebase.credential.cert(serviceAccount),
@@ -144,6 +149,7 @@ export class AdmissionNotificationsService {
   }
 
   async testStart() {
+    console.log("start")
     this.cronJob.start();
   }
 
@@ -193,17 +199,18 @@ export class AdmissionNotificationsService {
         body: body,
         title: title,
         date: new Date().getTime().toString(), //etne fix timestamp
-        image: "image",
+        image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d",
         status: "unread",
-        data: "this is data",
+        data: id,
         type: screen,
         id: notifyId
       };
 
       await this.db
         .collection("notify")
-        .doc("abc")
-        .set({ [notifyId]: notifyData })
+        .doc(userId)
+        .set({ [notifyId]: notifyData }, {merge:true})
+        
 
 
       if (tokenDevice) {
@@ -287,7 +294,7 @@ export class AdmissionNotificationsService {
       await this.db
         .collection("notify")
         .doc(listUserId[i])
-        .set(obj);
+        .set(obj, {merge:true});
 
     }
 
@@ -364,6 +371,25 @@ export class AdmissionNotificationsService {
       topic: topic
     };
 
+    //
+    const notifyId = uuidv4();
+
+    var notifyData = {
+      body: body,
+      title: title,
+      date: new Date().getTime().toString(), //etne fix timestamp
+      image: image,
+      status: "unread",
+      data: id,
+      type: screen,
+      id: notifyId
+    };
+
+    await this.db
+        .collection("notify")
+        .doc("all")
+        .set({ [notifyId]: notifyData }, {merge:true})
+
 
     // Send a message to devices subscribed to the provided topic.
     firebase.messaging().send(DATA)
@@ -376,14 +402,23 @@ export class AdmissionNotificationsService {
       });
     //console.log(tokenDevices);
   }
-  // async findAll() {
-  //   const result = [];
-  //   const firestore = new firebase.firestore.Firestore();
 
-  //   (await firestore.collection('topics').get()).docs.map(data => {
-  //     if (data.id == topic) {
-  //       listUserId.push(element.data());
-  //     }
-  //   })
-  // }
+  async test() {
+    const job = new CronJob("0 44-47 13 4 7 *", async () => {
+      try {
+        console.log("test auto send mail")
+        const user = new RegisterDto();
+
+        user.userEmail = "lyhandong123@gmail.com"
+        await this.mailService.sendUserConfirmation(user, "hello");
+      } catch (e) {
+        console.error(e);
+      }
+    },
+      null,
+      true,
+      "Asia/Ho_Chi_Minh"
+    );
+  }
+
 }
