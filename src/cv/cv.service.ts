@@ -869,10 +869,10 @@ export class CvsService {
       cvaiData.cvaiProvincialExcellentAward = data.cvaiProvincialExcellentAward;
       cvaiData.cvaiIeltsCertificateScore = data.cvaiIeltsCertificateScore;
       cvaiData.cvaiIeltsCertificateExpiration =
-        data.cvaiIeltsCertificateExpiration;
+        new Date(data.cvaiIeltsCertificateExpiration);
       cvaiData.cvaiToeflCertificateScore = data.cvaiToeflCertificateScore;
       cvaiData.cvaiToeflCertificateExpiration =
-        data.cvaiToeflCertificateExpiration;
+        new Date(data.cvaiToeflCertificateExpiration);
       cvaiData.cvaiHaveVietnameseCertificate =
         data.cvaiHaveVietnameseCertificate;
       cvaiData.cvaiVietnameseCertificateLevel =
@@ -890,7 +890,7 @@ export class CvsService {
       //userInfo.userEmail = userEmail;
       userInfo.userEthnicity = userEthnicity;
       userInfo.userNationality = userNationality;
-      userInfo.userBirthday = userBirthday;
+      userInfo.userBirthday = new Date(userBirthday);
       userInfo.userBirthplace = userBirthplace;
       userInfo.userContactAddress = userContactAddress;
       userInfo.userProvinceResidence = userProvinceResidence;

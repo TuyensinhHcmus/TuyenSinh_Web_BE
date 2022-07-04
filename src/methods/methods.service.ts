@@ -156,7 +156,7 @@ export class MethodsService {
     const methods = await this.methodRepo
       .createQueryBuilder('method')
       .leftJoinAndMapOne('method.methodTypeOfTrainingID', typeoftraining, 'typeoftraining', 'typeoftraining.typeOfTrainingId = method.methodTypeOfTrainingID')
-      .where("(method.methodParentId != '') and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)")
+      .where("(method.methodParentId != '') and (method.methodParentId != '0') and (CURRENT_TIMESTAMP between method.methodDateStart AND method.methodDateEnd)")
       .getMany()
     return methods;
   }
