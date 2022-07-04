@@ -33,19 +33,7 @@ export class NewsAdmissionService {
     });
 
     const result = await this.newsRepo.save(news);
-    try {
-      // Send notify for all etne Ha
-      await this.notifyService.sendAllMessage(
-        title,
-        "Cập nhật thông tin tuyển sinh mới.",
-        "news",
-        result.newsId.toString(),
-        newsImage
-      )
-    } catch (error) {
-      // console.log("Loi gui api");
-      // throw new HttpException("", HttpStatus.BAD_REQUEST)
-    }
+    
     return result;
 
   }
@@ -81,7 +69,25 @@ export class NewsAdmissionService {
   }
 
   async updateStatus(id: number, status: string) {
-    const res = await this.newsRepo.update({ newsId: id }, { newsState: status })
+    const news = await this.newsRepo.findOne({newsId: id })
+
+    const res = await this.newsRepo.update({ newsId: id }, { newsState: status });
+
+    if(status === "publish")
+    try {
+      // Send notify for all etne Ha
+      await this.notifyService.sendAllMessage(
+        news.newsTitle,
+        "Cập nhật thông tin tuyển sinh mới.",
+        "news",
+        news.newsId.toString(),
+        news.newsImage
+      )
+    } catch (error) {
+      // console.log("Loi gui api");
+      throw new HttpException("Không thể gửi thông báo cập nhật tin tức", HttpStatus.BAD_REQUEST)
+    }
+
     return res;
   }
 
