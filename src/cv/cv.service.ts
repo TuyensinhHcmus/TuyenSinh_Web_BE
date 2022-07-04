@@ -194,7 +194,7 @@ export class CvsService {
           obj['cmnd'] = addCVDto.userIdentityNumber !== undefined || addCVDto.userIdentityNumber ? addCVDto.userIdentityNumber : "",
           obj['name'] = addCVDto.userName !== undefined || addCVDto.userName ? addCVDto.userName : "",
           obj['ethnic'] = addCVDto.userEthnicity !== undefined || addCVDto.userEthnicity ? addCVDto.userEthnicity : "",
-          obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? addCVDto.userBirthday.toString().slice(0, 10) : "",
           // obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? 
           //                   addCVDto.userBirthday.getDay() + "/" + addCVDto.userBirthday.getMonth() + "/" + addCVDto.userBirthday.getFullYear() 
           //                   : "",
@@ -204,6 +204,7 @@ export class CvsService {
           obj['email'] = addCVDto.cvaiEmail !== undefined || addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
           obj['national'] = addCVDto.userNationality !== undefined || addCVDto.userNationality ? addCVDto.userNationality : "",
           obj['province'] = addCVDto.userProvinceResidence !== undefined || addCVDto.userProvinceResidence ? addCVDto.userProvinceResidence : "",
+          obj['code'] = cvId
           console.log("obj", obj);
 
         await this.pdfService.generatePdf(cvId, obj, "DT")
