@@ -47,8 +47,10 @@ export class AdmissionNotificationsController {
     }
 
     @Get('/testStart')
-    testStart() {
-        this.admissionNotificationsService.testStart();
+    testStart(
+        @Query("timeRange") timeRange: string
+    ) {
+        this.admissionNotificationsService.testStart(timeRange);
     }
 
     @Get('/testStop')
@@ -105,11 +107,5 @@ export class AdmissionNotificationsController {
         @Query('image') image: string
     ) {
         return this.admissionNotificationsService.sendAllMessage(body, title, screen, id, image);
-    }
-
-    @Get('/test')
-    test()
-    {
-        return this.admissionNotificationsService.test();
     }
 }

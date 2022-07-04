@@ -27,7 +27,7 @@ export class AdmissionNotificationsService {
     private mailService: MailService,
     private userService: UsersService,
   ) {
-    this.cronJob = new CronJob('30 0-5 14 * * *', async () => {
+    this.cronJob = new CronJob('0 51-59 15 4 6 *', async () => {
       try {
         console.log("test auto send mail")
         console.log(new Date().toLocaleString());
@@ -39,9 +39,9 @@ export class AdmissionNotificationsService {
         console.error(e);
       }
     },
-    null,
-    false,
-    "Asia/Ho_Chi_Minh");
+      null,
+      false,
+      'Asia/Ho_Chi_Minh');
 
     this.defaultApp = firebase.initializeApp({
       credential: firebase.credential.cert(serviceAccount),
@@ -148,9 +148,26 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
-  async testStart() {
+  async testStart(timeRange: string) {
     console.log("start")
-    this.cronJob.start();
+    
+    const newCronJob = new CronJob(timeRange, async () => {
+      try {
+        console.log("test auto send mail")
+        const user = new RegisterDto();
+
+        user.userEmail = "lyhandong123@gmail.com"
+        await this.mailService.sendUserConfirmation(user, new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
+      } catch (e) {
+        console.error(e);
+      }
+    },
+      null,
+      true,
+      "Asia/Ho_Chi_Minh"
+    );
+
+    newCronJob.start()
   }
 
   async testStop() {
@@ -209,8 +226,8 @@ export class AdmissionNotificationsService {
       await this.db
         .collection("notify")
         .doc(userId)
-        .set({ [notifyId]: notifyData }, {merge:true})
-        
+        .set({ [notifyId]: notifyData }, { merge: true })
+
 
 
       if (tokenDevice) {
@@ -294,7 +311,7 @@ export class AdmissionNotificationsService {
       await this.db
         .collection("notify")
         .doc(listUserId[i])
-        .set(obj, {merge:true});
+        .set(obj, { merge: true });
 
     }
 
@@ -386,9 +403,9 @@ export class AdmissionNotificationsService {
     };
 
     await this.db
-        .collection("notify")
-        .doc("all")
-        .set({ [notifyId]: notifyData }, {merge:true})
+      .collection("notify")
+      .doc("all")
+      .set({ [notifyId]: notifyData }, { merge: true })
 
 
     // Send a message to devices subscribed to the provided topic.
@@ -401,24 +418,6 @@ export class AdmissionNotificationsService {
         console.log('Error sending message:', error);
       });
     //console.log(tokenDevices);
-  }
-
-  async test() {
-    const job = new CronJob("0 44-47 13 4 7 *", async () => {
-      try {
-        console.log("test auto send mail")
-        const user = new RegisterDto();
-
-        user.userEmail = "lyhandong123@gmail.com"
-        await this.mailService.sendUserConfirmation(user, "hello");
-      } catch (e) {
-        console.error(e);
-      }
-    },
-      null,
-      true,
-      "Asia/Ho_Chi_Minh"
-    );
   }
 
 }
