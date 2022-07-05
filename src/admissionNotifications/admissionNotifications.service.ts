@@ -186,6 +186,12 @@ export class AdmissionNotificationsService {
     cronJobInMap.stop();
   }
 
+  async getStateAllCronJob(){
+    this.jobMap.forEach((cron, key) => {
+      console.log(key,': ',cron.running)
+    })
+  }
+
   async changeStateNotification(notifyId: number) {
     const notification = await this.findNotificationById(notifyId);
     try {

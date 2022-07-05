@@ -61,6 +61,12 @@ export class AdmissionNotificationsController {
         this.admissionNotificationsService.testStop(id);
     }
 
+    @Get('/getStateAllCronJob')
+    getStateAllCronJob()
+    {
+        this.admissionNotificationsService.getStateAllCronJob();
+    }
+
     @UseGuards(AtGuard)
     @Post('/postNotify')
     postNotify(
