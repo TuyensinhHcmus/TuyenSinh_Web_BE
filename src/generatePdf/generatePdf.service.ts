@@ -128,8 +128,9 @@ export class PdfService {
 
         Object.keys(objData).forEach(function (key) {
           const temp = `[pdf__${key}]`;
+          const arrField = ['cmnd', 'userName', 'userBirthday', 'cvaiEmail', 'cvaiPhone', 'code', 'userNationality']
 
-          if (strHtml?.includes(temp)) {
+          if (strHtml?.includes(temp) && arrField?.includes(key)) {
             strHtml = strHtml.replace(temp, objData[key]);
           }
         });
