@@ -14,13 +14,15 @@ import { UsersService } from "src/users/users.service";
 var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
 //../../src/admissionNotifications/serviceAccountKey.json
 import { getStorage } from "firebase-admin/storage"
-import { Console } from "console";
+
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
   private defaultApp: any;
   private db: any;
   private bucket: any;
+  jobMap: Map<string, CronJob> = new Map();
+
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
@@ -60,6 +62,10 @@ export class AdmissionNotificationsService {
 
   getBucket() {
     return this.bucket;
+  }
+
+  getJobMap() {
+    return this.jobMap;
   }
 
 
@@ -148,16 +154,17 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
-  async testStart(timeRange: string) {
+  async testStart(timeRange: string, id: string) {
     console.log("start")
     
     const newCronJob = new CronJob(timeRange, async () => {
       try {
         console.log("test auto send mail")
-        const user = new RegisterDto();
+        console.log(new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
+        //const user = new RegisterDto();
 
-        user.userEmail = "lyhandong123@gmail.com"
-        await this.mailService.sendUserConfirmation(user, new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
+        //user.userEmail = "lyhandong123@gmail.com"
+        //await this.mailService.sendUserConfirmation(user, new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
       } catch (e) {
         console.error(e);
       }
@@ -167,11 +174,16 @@ export class AdmissionNotificationsService {
       "Asia/Ho_Chi_Minh"
     );
 
+    this.jobMap.set(id, newCronJob);
+
     newCronJob.start()
   }
 
-  async testStop() {
-    this.cronJob.stop();
+  async testStop(id : string) {
+
+    const cronJobInMap = this.jobMap.get(id);
+
+    cronJobInMap.stop();
   }
 
   async changeStateNotification(notifyId: number) {

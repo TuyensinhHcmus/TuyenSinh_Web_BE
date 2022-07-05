@@ -48,14 +48,17 @@ export class AdmissionNotificationsController {
 
     @Get('/testStart')
     testStart(
-        @Query("timeRange") timeRange: string
+        @Query("timeRange") timeRange: string,
+        @Query("id") id: string
     ) {
-        this.admissionNotificationsService.testStart(timeRange);
+        this.admissionNotificationsService.testStart(timeRange, id);
     }
 
     @Get('/testStop')
-    testEnd() {
-        this.admissionNotificationsService.testStop();
+    testEnd(
+        @Query("id") id: string
+    ) {
+        this.admissionNotificationsService.testStop(id);
     }
 
     @UseGuards(AtGuard)
