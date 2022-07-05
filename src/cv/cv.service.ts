@@ -1025,25 +1025,24 @@ export class CvsService {
     }
   }
 
-  async checkMethodInCV(cvUserId: string, cvMethodId: string) {
+  async checkMethodInCV(cvUserId: string, cvMethodId: string, cvId: number) {
     // const listCV = await this.cvsRepo.find({
     //   where: {
     //     cvState: "Đã nộp",
     //     cvMethodId: cvMethodId
     //   },
     // })
-    const listCV = await createQueryBuilder('cv')
-      .where('cvState= :state', { state: 'Đã nộp' })
-      .andWhere('cvState= :state', { state: 'Trúng tuyển' })
-      .andWhere('cvState= :state', { state: 'Không trúng tuyển' })
-      .andWhere('cv.cvMethodId = :method', { method: cvMethodId })
-      .getRawMany();
+    const listCV = await this.cvsRepo.find({
+      cvMethodId: cvMethodId,
+      cvUserId: cvUserId
+    })
 
     console.log('check metod', listCV);
 
     let isDuplicate = false;
     listCV.forEach((cv) => {
-      if (cv.cv_cvUserId === cvUserId) {
+      if (cv.cvId !== cvId && 
+        cv.cvState !== "Đã lưu") {
         isDuplicate = true;
       }
     });
@@ -1075,7 +1074,7 @@ export class CvsService {
 
 
     // Kiểm tra xem trong danh sách cv đã nộp có cv nào có method giống không
-    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId);
+    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId, cvId);
 
     try {
       // Update state của cv

@@ -80,7 +80,7 @@ export class NewsAdmissionService {
         news.newsTitle,
         "Cập nhật thông tin tuyển sinh mới.",
         "news",
-        news.newsId.toString(),
+        news.newsSlug,
         news.newsImage
       )
     } catch (error) {
