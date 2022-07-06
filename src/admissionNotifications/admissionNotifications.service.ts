@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CronJob } from "cron";
+import { CronJob, CronTime, sendAt } from "cron";
 import RegisterDto from "src/auth/dto/register.dto";
 import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
@@ -53,7 +53,6 @@ export class AdmissionNotificationsService {
     this.db = firebase.firestore();
 
     this.bucket = getStorage().bucket();
-
   }
 
   getDb() {
@@ -154,15 +153,24 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
-  async testStart(timeRange: string, id: string) {
+  async testStart(timeRange1: string, timeRange2: string, id: string) {
     console.log("start")
-    
-    const newCronJob = new CronJob(timeRange, async () => {
+    let count =0;
+
+    let newCronJob = new CronJob(timeRange1, async () => {
       try {
         console.log("test auto send mail")
         console.log(new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
         //const user = new RegisterDto();
 
+        console.log(timeRange2);
+        console.log('count: ',count);
+        if(count === 0)
+        {
+          this.setTimeAgain(timeRange2, id);
+        }
+        
+        count = count + 1;
         //user.userEmail = "lyhandong123@gmail.com"
         //await this.mailService.sendUserConfirmation(user, new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
       } catch (e) {
@@ -179,16 +187,23 @@ export class AdmissionNotificationsService {
     newCronJob.start()
   }
 
-  async testStop(id : string) {
+  async testStop(id: string) {
 
     const cronJobInMap = this.jobMap.get(id);
 
     cronJobInMap.stop();
   }
 
-  async getStateAllCronJob(){
+  async setTimeAgain(timeRange2: string, id: string) {
+    console.log("setTimeAgain");
+    let cronJobInMap = this.jobMap.get(id);
+    const time = new CronTime(timeRange2)
+    cronJobInMap.setTime(time);
+  }
+
+  async getStateAllCronJob() {
     this.jobMap.forEach((cron, key) => {
-      console.log(key,': ',cron.running)
+      console.log(key, ': ', cron.running)
     })
   }
 

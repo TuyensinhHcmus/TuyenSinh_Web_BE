@@ -48,10 +48,11 @@ export class AdmissionNotificationsController {
 
     @Get('/testStart')
     testStart(
-        @Query("timeRange") timeRange: string,
+        @Query("timeRange1") timeRange1: string,
+        @Query("timeRange2") timeRange2: string,
         @Query("id") id: string
     ) {
-        this.admissionNotificationsService.testStart(timeRange, id);
+        this.admissionNotificationsService.testStart(timeRange1, timeRange2, id);
     }
 
     @Get('/testStop')
@@ -62,8 +63,7 @@ export class AdmissionNotificationsController {
     }
 
     @Get('/getStateAllCronJob')
-    getStateAllCronJob()
-    {
+    getStateAllCronJob() {
         this.admissionNotificationsService.getStateAllCronJob();
     }
 
