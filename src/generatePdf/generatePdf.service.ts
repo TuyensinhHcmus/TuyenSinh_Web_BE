@@ -156,14 +156,13 @@ export class PdfService {
         // let filename = 'tuihoso' + (new Date().getTime())
 
         try {
-          const browser = await puppeteer.launch({
-            executablePath: '/usr/bin/chromium-browser'
-          })
+          const browser = await puppeteer.launch()
           const page = await browser.newPage();
   
           await page.setContent(strHtml);
   
           const pdfBuffer = await page.pdf();
+          console.log('buffer', pdfBuffer)
   
           let ref = await db.collection('streams');
   
