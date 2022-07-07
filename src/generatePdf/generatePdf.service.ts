@@ -156,7 +156,9 @@ export class PdfService {
         // let filename = 'tuihoso' + (new Date().getTime())
 
         try {
-          const browser = await puppeteer.launch()
+          const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/google-chrome',
+          })
           const page = await browser.newPage();
   
           await page.setContent(strHtml);
@@ -171,6 +173,7 @@ export class PdfService {
             });
             return cvId
         } catch (error) {
+          console.log('err', error)
           return cvId
         }
 
