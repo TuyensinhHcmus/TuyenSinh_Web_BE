@@ -155,18 +155,27 @@ export class PdfService {
         // return result
         // let filename = 'tuihoso' + (new Date().getTime())
 
-        const browser = await puppeteer.launch();
-        const page = await browser.newPage();
+        try {
+          const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/chromium-browser'
+          })
+          const page = await browser.newPage();
+  
+          await page.setContent(strHtml);
+  
+          const pdfBuffer = await page.pdf();
+  
+          let ref = await db.collection('streams');
+  
+            await ref.doc(cvId.toString()).set({
+              value: pdfBuffer
+            });
+            return cvId
+        } catch (error) {
+          return cvId
+        }
 
-        await page.setContent(strHtml);
-
-        const pdfBuffer = await page.pdf();
-
-        let ref = await db.collection('streams');
-
-          await ref.doc(cvId.toString()).set({
-            value: pdfBuffer
-          });
+        
 
         // pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
         //   console.log('buffer', buffer);
