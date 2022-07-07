@@ -1,11 +1,26 @@
 FROM node:14.16.0
 
-# install manually all the missing libraries
-RUN apt-get install -y gconf-service libasound2 libatk1.0-0 libcairo2 libcups2 libfontconfig1 libgdk-pixbuf2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libxss1 fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils
+RUN apt-get update && apt-get install -y \
+      chromium \
+      chromium-l10n \
+      fonts-liberation \
+      fonts-roboto \
+      hicolor-icon-theme \
+      libcanberra-gtk-module \
+      libexif-dev \
+      libgl1-mesa-dri \
+      libgl1-mesa-glx \
+      libpangox-1.0-0 \
+      libv4l-0 \
+      fonts-symbola \
+      --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /etc/chromium.d/ \
+    && /bin/echo -e 'export GOOGLE_API_KEY="AIzaSyCkfPOPZXDKNn8hhgu3JrA62wIgC93d44k"\nexport GOOGLE_DEFAULT_CLIENT_ID="811574891467.apps.googleusercontent.com"\nexport GOOGLE_DEFAULT_CLIENT_SECRET="kdloedMFGdGla2P1zacGjAQh"' > /etc/chromium.d/googleapikeys
 
-# install chrome
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install
+# Add chromium user
+RUN groupadd -r chromium && useradd -r -g chromium -G audio,video chromium \
+    && mkdir -p /home/chromium/Downloads && chown -R chromium:chromium /home/chromium
 
 # Create app directory, this is in our container/in our image
 WORKDIR /usr/src/app
