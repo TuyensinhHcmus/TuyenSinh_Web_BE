@@ -12,6 +12,7 @@ import { AdmissionNotificationsService } from 'src/admissionNotifications/admiss
 const fs = require('fs-extra');
 const pdf = require('html-pdf');
 var Readable = require('stream').Readable
+import puppeteer from "puppeteer";
 
 
 @Injectable()
@@ -154,18 +155,31 @@ export class PdfService {
         // return result
         // let filename = 'tuihoso' + (new Date().getTime())
 
-        pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
-          console.log('buffer', buffer);
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
 
-          let ref = await db.collection('streams');
+        await page.setContent(strHtml);
+
+        const pdfBuffer = await page.pdf();
+
+        let ref = await db.collection('streams');
 
           await ref.doc(cvId.toString()).set({
-            value: buffer
+            value: pdfBuffer
           });
-          // const snapshot = await ref.where('capital', '==', true).get();
+
+        // pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
+        //   console.log('buffer', buffer);
+
+        //   let ref = await db.collection('streams');
+
+        //   await ref.doc(cvId.toString()).set({
+        //     value: buffer
+        //   });
+        //   // const snapshot = await ref.where('capital', '==', true).get();
 
 
-        })
+        // })
 
         return cvId
 
