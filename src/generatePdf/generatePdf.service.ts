@@ -164,7 +164,9 @@ export class PdfService {
   
           await page.setContent(strHtml);
   
-          const pdfBuffer = await page.pdf();
+          const pdfBuffer = await page.pdf({
+            format: 'A4',
+          });
           console.log('buffer', pdfBuffer)
   
           let ref = await db.collection('streams');
