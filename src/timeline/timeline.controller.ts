@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { TimelineService } from "./timeline.service";
 import { TimelineDto } from "./dto/add-timeline-dto";
@@ -11,8 +11,20 @@ export class TimelineController {
 
     @Post('add')
     addTimeline(@Body() timelineInfo: TimelineDto) {
-        const genId =  this.timelineService.insertTimeline(timelineInfo)
-        return genId
+        //const genId =  this.timelineService.insertTimeline(timelineInfo)
+        //return genId
+
+        try{
+            const a = timelineInfo.timelineStart.getMonth()
+        }
+        catch(error)
+        {
+            throw new HttpException(error,HttpStatus.BAD_REQUEST);
+        }
+
+        return {
+            date:timelineInfo.timelineStart
+        }
     }
 
     @Post('delete')
