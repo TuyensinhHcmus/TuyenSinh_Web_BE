@@ -11,21 +11,21 @@ export class TimelineController {
 
     @Post('add')
     addTimeline(@Body() timelineInfo: TimelineDto) {
-        //const genId =  this.timelineService.insertTimeline(timelineInfo)
-        //return genId
+        const genId =  this.timelineService.insertTimeline(timelineInfo)
+        return genId
 
-        try{
-            const a = new Date(timelineInfo.timelineStart).getMonth()
+        // try{
+        //     const a = new Date(timelineInfo.timelineStart).getMonth()
 
-            return {
-                date:timelineInfo.timelineStart,
-                data: a
-            }
-        }
-        catch(error)
-        {
-            throw new HttpException(error,HttpStatus.BAD_REQUEST);
-        }
+        //     return {
+        //         date:timelineInfo.timelineStart,
+        //         data: a
+        //     }
+        // }
+        // catch(error)
+        // {
+        //     throw new HttpException(error,HttpStatus.BAD_REQUEST);
+        // }
     }
 
     @Post('delete')
