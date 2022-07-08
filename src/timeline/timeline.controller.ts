@@ -15,15 +15,16 @@ export class TimelineController {
         //return genId
 
         try{
-            const a = timelineInfo.timelineStart.getMonth()
+            const a = new Date(timelineInfo.timelineStart).getMonth()
+
+            return {
+                date:timelineInfo.timelineStart,
+                data: a
+            }
         }
         catch(error)
         {
             throw new HttpException(error,HttpStatus.BAD_REQUEST);
-        }
-
-        return {
-            date:timelineInfo.timelineStart
         }
     }
 
