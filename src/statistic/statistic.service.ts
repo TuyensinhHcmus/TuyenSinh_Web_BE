@@ -49,59 +49,79 @@ export class StatisticService {
   }
 
   async addStatisticUser() {
-    const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
-    let res = await this.statisticRepo.update(
-      {
-        statisticYear: this.getYear(),
-        statisticMonth: this.getMonth()
-      },
-      {
-        ...data,
-        statisticNumberNewUser: data.statisticNumberNewUser + 1
-      }
-    );
+    try {
+      const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
+      let res = await this.statisticRepo.update(
+        {
+          statisticYear: this.getYear(),
+          statisticMonth: this.getMonth()
+        },
+        {
+          ...data,
+          statisticNumberNewUser: data.statisticNumberNewUser + 1
+        }
+      );
+    } catch (error) {
+      
+    }
+    
   }
 
   async addStatisticCV() {
-    const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
-    let res = await this.statisticRepo.update(
-      {
-        statisticYear: this.getYear(),
-        statisticMonth: this.getMonth()
-      },
-      {
-        ...data,
-        statisticNumberCv: data.statisticNumberCv + 1
-      }
-    );
+    try {
+      const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
+      let res = await this.statisticRepo.update(
+        {
+          statisticYear: this.getYear(),
+          statisticMonth: this.getMonth()
+        },
+        {
+          ...data,
+          statisticNumberCv: data.statisticNumberCv + 1
+        }
+      );
+    } catch (error) {
+      
+    }
+    
   }
 
   async addStatisticApplyTemp() {
-    const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
-    let res = await this.statisticRepo.update(
-      {
-        statisticYear: this.getYear(),
-        statisticMonth: this.getMonth()
-      },
-      {
-        ...data,
-        statisticApplyTemp: data.statisticApplyTemp + 1
-      }
-    );
+    try {
+      const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
+      let res = await this.statisticRepo.update(
+        {
+          statisticYear: this.getYear(),
+          statisticMonth: this.getMonth()
+        },
+        {
+          ...data,
+          statisticApplyTemp: data.statisticApplyTemp + 1
+        }
+      );
+    } catch (error) {
+      
+    }
+    
   }
 
   async addStatisticNews() {
-    const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
-    let res = await this.statisticRepo.update(
-      {
-        statisticYear: this.getYear(),
-        statisticMonth: this.getMonth()
-      },
-      {
-        ...data,
-        statisticNumberNews: data.statisticNumberNews + 1
-      }
-    );
+    try {
+      const data = await this.statisticRepo.findOne({ statisticYear: this.getYear(), statisticMonth: this.getMonth() })
+      let res = await this.statisticRepo.update(
+        {
+          statisticYear: this.getYear(),
+          statisticMonth: this.getMonth()
+        },
+        {
+          ...data,
+          statisticNumberNews: data.statisticNumberNews + 1
+        }
+      );
+    } catch (error) {
+      
+    }
+    
   }
 
   // async getStatusApply(methodId: string): Promise<boolean> {

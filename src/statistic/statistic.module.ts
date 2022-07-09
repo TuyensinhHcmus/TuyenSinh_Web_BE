@@ -10,6 +10,7 @@ import { statisticRepo } from './statistic.entity';
     TypeOrmModule.forFeature([statisticRepo])],
   controllers: [StatisticController],
   providers: [StatisticService],
+  exports: [StatisticService]
 })
 
 export class StatisticModule {}
