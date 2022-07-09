@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { StatisticService } from './statistic.service';
 import { StatisticController } from './statistic.controller'
-import { UsersModule } from 'src/users/users.module';
-import { NewsAdmissionModule } from 'src/newsAdmission/newsAdmission.module';
-import { CvsModule } from 'src/cv/cv.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { statisticRepo } from './statistic.entity';
 
 
 @Module({
-  imports: [UsersModule, NewsAdmissionModule, CvsModule],
+  imports: [
+    TypeOrmModule.forFeature([statisticRepo])],
   controllers: [StatisticController],
   providers: [StatisticService],
 })
