@@ -34,6 +34,7 @@ import { PdfService } from 'src/generatePdf/generatePdf.service';
 import { MailService } from 'src/mail/mail.service';
 import { MajorsService } from 'src/majors/majors.service';
 import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
+import { StatisticService } from 'src/statistic/statistic.service';
 
 @Injectable()
 export class CvsService {
@@ -46,7 +47,9 @@ export class CvsService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly majorService: MajorsService,
-    private readonly notifyService: AdmissionNotificationsService
+    private readonly notifyService: AdmissionNotificationsService,
+    private readonly statisticService: StatisticService,
+    
   ) { }
 
   async addCv(
@@ -64,6 +67,7 @@ export class CvsService {
       cvStatusPay: ''
     });
 
+    this.statisticService.addStatisticCV()
     const result = await this.cvsRepo.save(cv);
 
     return result;

@@ -11,6 +11,7 @@ import { PdfModule } from 'src/generatePdf/generatePdf.module';
 import { MailModule } from 'src/mail/mail.module';
 import { MajorsModule } from 'src/majors/majors.module';
 import { AdmissionNotificationsModule } from 'src/admissionNotifications/admissionNotifications.module';
+import { StatisticModule } from 'src/statistic/statistic.module';
 
 
 @Module({
@@ -23,7 +24,8 @@ import { AdmissionNotificationsModule } from 'src/admissionNotifications/admissi
     PdfModule,
     MailModule,
     MajorsModule,
-    AdmissionNotificationsModule
+    AdmissionNotificationsModule,
+    StatisticModule
   ],
   
   controllers: [CvsController],

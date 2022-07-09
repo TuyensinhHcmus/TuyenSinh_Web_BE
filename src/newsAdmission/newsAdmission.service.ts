@@ -7,6 +7,7 @@ import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { UpdateNewsDto } from './dto/upadteNewAdmission.dto';
 import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
+import { StatisticService } from 'src/statistic/statistic.service';
 var slug = require('slug')
 
 @Injectable()
@@ -14,7 +15,9 @@ export class NewsAdmissionService {
   constructor(
     @InjectRepository(news)
     private readonly newsRepo: Repository<news>,
-    private readonly notifyService: AdmissionNotificationsService
+    private readonly notifyService: AdmissionNotificationsService,
+    private readonly statisticService: StatisticService,
+  
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
@@ -32,6 +35,7 @@ export class NewsAdmissionService {
       newsImage: newsImage
     });
 
+    this.statisticService.addStatisticNews()
     const result = await this.newsRepo.save(news);
     
     return result;
