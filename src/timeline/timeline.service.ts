@@ -28,10 +28,62 @@ export class TimelineService {
       "events",
       result.timelineId.toString(),
       "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d"
-      )
+    )
 
-    // Gọi cron jon
-    // callCronJobTopic(timeStart, timeEnd, content);
+
+    // Khi sự kiện bắt đầu thì gửi thông báo và 
+    // trước khi sự kiện kết thúc 12 giờ thì gửi thông báo 
+
+    // Convert to date
+    let timeStart = new Date(timelineInformation.timelineStart);
+    let timeEnd = new Date(timelineInformation.timelineEnd);
+    let rangeTime = timeEnd.getHours() - timeStart.getHours();
+    if (rangeTime > 12) {
+      timeEnd.setHours(timeEnd.getHours() - 12);
+    }
+    if (rangeTime < 12 && rangeTime > 1) {
+      timeEnd.setHours(timeEnd.getHours() - 1);
+    }
+    if (rangeTime < 1) {
+      let rangeTime1 = timeEnd.getMinutes() - timeStart.getMinutes();
+      if(rangeTime1 > 1)
+      {
+        timeEnd.setMinutes(timeEnd.getMinutes() - 1);
+      }
+    }
+
+    // Get timeRange1
+    const timeRange1Hour = timeStart.getHours().toString();
+    const timeRange1Day = timeStart.getDate().toString();
+    const timeRange1Month = timeStart.getMonth().toString();
+    const timeRang1Minute = timeStart.getMinutes().toString();
+
+    const timeRange1 = "0 " + timeRang1Minute + " " + timeRange1Hour + " " + timeRange1Day + " " + timeRange1Month + " *";
+    console.log(timeRange1);
+
+    // Get timeRange2
+    const timeRange2Hour = timeEnd.getHours().toString();
+    const timeRange2Day = timeEnd.getDate().toString();
+    const timeRange2Month = timeEnd.getMonth().toString();
+    const timeRang2Minute = timeEnd.getMinutes().toString();
+
+    const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
+    console.log(timeRange2);
+
+    // Create a function
+    let callbackfunction = async () => {
+      // Send notify
+      await this.notifyService.sendTopicMessage(
+        result.timelineTitle,
+        "Nhắc nhở sự kiện tuyển sinh",
+        "events",
+        result.timelineId.toString(),
+        result.timelineId.toString()
+      )
+    }
+
+    // Call cron jon
+    await this.notifyService.testStart(timeRange1, timeRange2, result.timelineId.toString(), callbackfunction);
 
     return result;
   }
@@ -62,12 +114,11 @@ export class TimelineService {
   }
 
   async updateTimeline(timelineId: number, timelineInformation: TimelineDto) {
-    let result =  await this.timelineModel.update({ timelineId: timelineId }, timelineInformation);
-    if( result.affected ===0 )
-    {
+    let result = await this.timelineModel.update({ timelineId: timelineId }, timelineInformation);
+    if (result.affected === 0) {
       throw new HttpException("No data updated", 400);
     }
-    else{
+    else {
       return result;
     }
   }

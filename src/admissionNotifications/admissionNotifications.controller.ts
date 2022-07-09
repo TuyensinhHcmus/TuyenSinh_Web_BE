@@ -52,7 +52,7 @@ export class AdmissionNotificationsController {
         @Query("timeRange2") timeRange2: string,
         @Query("id") id: string
     ) {
-        this.admissionNotificationsService.testStart(timeRange1, timeRange2, id);
+        this.admissionNotificationsService.testStart(timeRange1, timeRange2, id, null);
     }
 
     @Get('/testStop')

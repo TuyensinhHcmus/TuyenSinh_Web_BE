@@ -153,21 +153,25 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
-  async testStart(timeRange1: string, timeRange2: string, id: string) {
+  async testStart(timeRange1: string, timeRange2: string, id: string, callbackfunction) {
     console.log("start")
     let count =0;
 
     let newCronJob = new CronJob(timeRange1, async () => {
       try {
-        console.log("test auto send mail")
-        console.log(new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
-        //const user = new RegisterDto();
+        await callbackfunction();
 
-        console.log(timeRange2);
-        console.log('count: ',count);
         if(count === 0)
         {
-          this.setTimeAgain(timeRange2, id);
+          await this.setTimeAgain(timeRange2, id);
+        }
+
+        if(count !== 0)
+        {
+          console.log("Stop cron job")
+          let cronJob = this.jobMap.get(id);
+          cronJob.stop();
+          this.jobMap.delete(id);
         }
         
         count = count + 1;
@@ -308,97 +312,99 @@ export class AdmissionNotificationsService {
     })
 
     console.log(new Date().getTime().toString());
+    console.log(object);
+    if(object !== undefined)
+    {
+      const objectArray = Object.entries(object);
 
-
-    const objectArray = Object.entries(object);
-
-    objectArray.forEach(([key, value]) => {
-      listUserId.push(key)
-    });
-
-
-
-    for (let i = 0; i < listUserId.length; i++) {
-
-      var notifyIdentity = uuidv4();
-
-      console.log(notifyIdentity)
-      var notifyData = {
-        body: body,
-        title: title,
-        date: new Date().getTime().toString(), //etne fix timestamp
-        image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
-        status: "unread",
-        data: id,
-        type: "timeline",
-        id: notifyIdentity
+      objectArray.forEach(([key, value]) => {
+        listUserId.push(key)
+      });
+  
+  
+  
+      for (let i = 0; i < listUserId.length; i++) {
+  
+        var notifyIdentity = uuidv4();
+  
+        console.log(notifyIdentity)
+        var notifyData = {
+          body: body,
+          title: title,
+          date: new Date().getTime().toString(), //etne fix timestamp
+          image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
+          status: "unread",
+          data: id,
+          type: "timeline",
+          id: notifyIdentity
+        };
+  
+        const someValueArray = notifyData;
+  
+        const obj = {
+          [notifyIdentity]: someValueArray,
+        }
+  
+  
+        await this.db
+          .collection("notify")
+          .doc(listUserId[i])
+          .set(obj, { merge: true });
+  
+      }
+  
+      console.log(listUserId);
+  
+      // Find in db where tokenDevices current in listUserId
+      let tokenDevices;
+      tokenDevices = [];
+  
+      // Get user from listUserId
+      let listUser = [];
+      let user;
+      for (let i = 0; i < listUserId.length; i++) {
+        user = await this.userService.getUserById(listUserId[i]);
+        if (user) {
+          listUser.push(user);
+        }
+      }
+  
+      listUser.forEach(user => {
+        //console.log(user)
+        if (user.currentTokenDevice !== '') {
+          tokenDevices.push(user.currentTokenDevice);
+        }
+      });
+  
+      //console.log(tokenDevices);
+  
+      // Set up message
+      var DATA = {
+        notification: {
+          body: body,
+          title: title,
+        },
+        data: {
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+          sound: "default",
+          status: "done",
+          id: id,
+          screen: screen,
+        },
+        tokens: tokenDevices // Here is devices token need to send
       };
-
-      const someValueArray = notifyData;
-
-      const obj = {
-        [notifyIdentity]: someValueArray,
+  
+  
+      // Send message
+      if (tokenDevices.length !== 0) {
+        await firebase.messaging().sendMulticast(DATA)
+          .then((response) => {
+            console.log('Success sent message: ' + response);
+          })
+          .catch((err) => {
+            console.log('Error sending message: ' + err);
+          });
       }
-
-
-      await this.db
-        .collection("notify")
-        .doc(listUserId[i])
-        .set(obj, { merge: true });
-
-    }
-
-    console.log(listUserId);
-
-    // Find in db where tokenDevices current in listUserId
-    let tokenDevices;
-    tokenDevices = [];
-
-    // Get user from listUserId
-    let listUser = [];
-    let user;
-    for (let i = 0; i < listUserId.length; i++) {
-      user = await this.userService.getUserById(listUserId[i]);
-      if (user) {
-        listUser.push(user);
-      }
-    }
-
-    listUser.forEach(user => {
-      //console.log(user)
-      if (user.currentTokenDevice !== '') {
-        tokenDevices.push(user.currentTokenDevice);
-      }
-    });
-
-    //console.log(tokenDevices);
-
-    // Set up message
-    var DATA = {
-      notification: {
-        body: body,
-        title: title,
-      },
-      data: {
-        click_action: "FLUTTER_NOTIFICATION_CLICK",
-        sound: "default",
-        status: "done",
-        id: id,
-        screen: screen,
-      },
-      tokens: tokenDevices // Here is devices token need to send
-    };
-
-
-    // Send message
-    if (tokenDevices.length !== 0) {
-      firebase.messaging().sendMulticast(DATA)
-        .then((response) => {
-          console.log('Success sent message: ' + response);
-        })
-        .catch((err) => {
-          console.log('Error sending message: ' + err);
-        });
     }
   }
 
