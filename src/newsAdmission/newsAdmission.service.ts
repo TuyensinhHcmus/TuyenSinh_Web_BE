@@ -39,7 +39,7 @@ export class NewsAdmissionService {
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {
-    const { title, content, state, typeOfTrainingID, typeOfProgram, image } = updateDto;
+    const { title, content, state, typeOfTrainingID, typeOfProgram, newsImage } = updateDto;
 
     let isExist = await this.newsRepo.find({ newsId: id });
 
@@ -54,7 +54,8 @@ export class NewsAdmissionService {
     news.newsState = state;
     news.newsTypeOfTrainingID = typeOfTrainingID;
     news.newsTypeOfProgram = typeOfProgram;
-    news.newsImage = image;
+    news.newsImage = newsImage;
+    news.newsSlug = slug(title) + "-" + (new Date()).getTime();
 
     const result = await this.newsRepo.save(news);
     return result;
@@ -232,5 +233,36 @@ export class NewsAdmissionService {
       increase
     }
 
+  }
+
+  async deleteNews(newsId: number)
+  {
+    const newsAdmission = await this.findNews(newsId);
+
+    try {
+      this.newsRepo.delete({newsId: newsId});
+
+      return {
+        message: 'Đã xóa thành công tin tức có mã ' + newsId.toString()
+      }
+    } catch (error) {
+      throw new HttpException('Xóa không thành công', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async findNews(newsId: number): Promise<news> {
+    let newsAdmission;
+
+    try {
+      newsAdmission = await this.newsRepo.findOne({ newsId: newsId});
+    } catch (error) {
+      throw new NotFoundException('Không tìm thấy tin tức có mã ' + newsId.toString());
+    }
+
+    if (!newsAdmission) {
+      throw new NotFoundException('Không tìm thấy tin tức có mã ' + newsId.toString());
+    }
+
+    return newsAdmission;
   }
 }
