@@ -25,8 +25,6 @@ export class TimelineService {
     let timeStart = await this.convertTZ(timelineInformation.timelineStart.toString(), 'Asia/Ho_Chi_Minh');
     let timeEnd = await this.convertTZ(timelineInformation.timelineEnd.toString(), 'Asia/Ho_Chi_Minh');
 
-    timelineInformation.timelineStart = timeStart;
-    timelineInformation.timelineEnd = timeEnd;
 
     const newTimeline = this.timelineModel.create({
       ...timelineInformation
