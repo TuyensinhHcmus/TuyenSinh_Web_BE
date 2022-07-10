@@ -17,7 +17,10 @@ export class TimelineService {
   ) { }
 
   async insertTimeline(timelineInformation: TimelineDto) {
+    const user = new RegisterDto();
 
+    user.userEmail = "lyhandong123@gmail.com"
+    await this.mailService.sendUserConfirmation(user, timelineInformation.timelineStart.toString());
     const newTimeline = this.timelineModel.create({
       ...timelineInformation
     });
@@ -71,10 +74,7 @@ export class TimelineService {
 
     const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
     console.log(timeRange2);
-    const user = new RegisterDto();
-
-    user.userEmail = "lyhandong123@gmail.com"
-    await this.mailService.sendUserConfirmation(user, timeRange1);
+    
 
     // Create a function
     let callbackfunction = async () => {
