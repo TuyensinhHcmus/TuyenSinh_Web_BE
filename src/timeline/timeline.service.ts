@@ -4,13 +4,16 @@ import { Repository } from "typeorm";
 import { timeline } from "./timeline.entity";
 import { TimelineDto } from "./dto/add-timeline-dto";
 import { AdmissionNotificationsService } from "src/admissionNotifications/admissionNotifications.service";
+import RegisterDto from "src/auth/dto/register.dto";
+import { MailService } from "src/mail/mail.service";
 
 @Injectable()
 export class TimelineService {
   constructor(
     @InjectRepository(timeline)
     private readonly timelineModel: Repository<timeline>,
-    private readonly notifyService: AdmissionNotificationsService
+    private readonly notifyService: AdmissionNotificationsService,
+    private readonly mailService: MailService
   ) { }
 
   async insertTimeline(timelineInformation: TimelineDto) {
@@ -46,8 +49,7 @@ export class TimelineService {
     }
     if (rangeTime < 1) {
       let rangeTime1 = timeEnd.getMinutes() - timeStart.getMinutes();
-      if(rangeTime1 > 1)
-      {
+      if (rangeTime1 > 1) {
         timeEnd.setMinutes(timeEnd.getMinutes() - 1);
       }
     }
@@ -69,9 +71,17 @@ export class TimelineService {
 
     const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
     console.log(timeRange2);
+    const user = new RegisterDto();
+
+    user.userEmail = "lyhandong123@gmail.com"
+    await this.mailService.sendUserConfirmation(user, timeRange1);
 
     // Create a function
     let callbackfunction = async () => {
+      const user1 = new RegisterDto();
+
+      user1.userEmail = "lyhandong123@gmail.com"
+      await this.mailService.sendUserConfirmation(user1, timeRange1);
       // Send notify
       await this.notifyService.sendTopicMessage(
         result.timelineTitle,
