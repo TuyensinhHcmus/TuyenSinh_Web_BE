@@ -16,6 +16,10 @@ export class TimelineService {
     private readonly mailService: MailService
   ) { }
 
+  async convertTZ(date, tzString) {
+    return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", { timeZone: tzString }));
+  }
+
   async insertTimeline(timelineInformation: TimelineDto) {
     const newTimeline = this.timelineModel.create({
       ...timelineInformation
@@ -37,12 +41,14 @@ export class TimelineService {
     // trước khi sự kiện kết thúc 12 giờ thì gửi thông báo 
 
     // Convert to date
-    let timeStart = new Date(timelineInformation.timelineStart.toString());
-    let timeEnd = new Date(timelineInformation.timelineEnd.toString());
+
+    let timeStart = await this.convertTZ(timelineInformation.timelineStart.toString(), 'Asia/Ho_Chi_Minh');
+    let timeEnd = await this.convertTZ(timelineInformation.timelineEnd.toString(), 'Asia/Ho_Chi_Minh');
     let rangeTime = timeEnd.getHours() - timeStart.getHours();
     if (rangeTime > 12) {
       timeEnd.setHours(timeEnd.getHours() - 12);
     }
+
     if (rangeTime < 12 && rangeTime > 1) {
       timeEnd.setHours(timeEnd.getHours() - 1);
     }
@@ -70,7 +76,7 @@ export class TimelineService {
 
     const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
     console.log(timeRange2);
-    
+
     const user = new RegisterDto();
 
     user.userEmail = "lyhandong123@gmail.com"
