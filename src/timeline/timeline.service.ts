@@ -21,6 +21,13 @@ export class TimelineService {
   }
 
   async insertTimeline(timelineInformation: TimelineDto) {
+
+    let timeStart = await this.convertTZ(timelineInformation.timelineStart.toString(), 'Asia/Ho_Chi_Minh');
+    let timeEnd = await this.convertTZ(timelineInformation.timelineEnd.toString(), 'Asia/Ho_Chi_Minh');
+
+    timelineInformation.timelineStart = timeStart;
+    timelineInformation.timelineEnd = timeEnd;
+
     const newTimeline = this.timelineModel.create({
       ...timelineInformation
     });
@@ -42,8 +49,7 @@ export class TimelineService {
 
     // Convert to date
 
-    let timeStart = await this.convertTZ(timelineInformation.timelineStart.toString(), 'Asia/Ho_Chi_Minh');
-    let timeEnd = await this.convertTZ(timelineInformation.timelineEnd.toString(), 'Asia/Ho_Chi_Minh');
+    
     let rangeTime = timeEnd.getHours() - timeStart.getHours();
     if (rangeTime > 12) {
       timeEnd.setHours(timeEnd.getHours() - 12);
