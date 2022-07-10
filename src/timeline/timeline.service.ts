@@ -37,8 +37,8 @@ export class TimelineService {
     // trước khi sự kiện kết thúc 12 giờ thì gửi thông báo 
 
     // Convert to date
-    let timeStart = new Date(timelineInformation.timelineStart);
-    let timeEnd = new Date(timelineInformation.timelineEnd);
+    let timeStart = new Date(timelineInformation.timelineStart.toString());
+    let timeEnd = new Date(timelineInformation.timelineEnd.toString());
     let rangeTime = timeEnd.getHours() - timeStart.getHours();
     if (rangeTime > 12) {
       timeEnd.setHours(timeEnd.getHours() - 12);
