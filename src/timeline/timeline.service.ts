@@ -47,7 +47,7 @@ export class TimelineService {
 
     // Convert to date
 
-    
+
     let rangeTime = timeEnd.getHours() - timeStart.getHours();
     if (rangeTime > 12) {
       timeEnd.setHours(timeEnd.getHours() - 12);
@@ -80,11 +80,6 @@ export class TimelineService {
 
     const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
     console.log(timeRange2);
-
-    const user = new RegisterDto();
-
-    user.userEmail = "lyhandong123@gmail.com"
-    await this.mailService.sendUserConfirmation(user, timelineInformation.timelineStart.toString() + " and " + timeRange1);
 
     // Create a function
     let callbackfunction = async () => {
@@ -139,6 +134,71 @@ export class TimelineService {
       throw new HttpException("No data updated", 400);
     }
     else {
+      let timeStart = await this.convertTZ(timelineInformation.timelineStart.toString(), 'Asia/Ho_Chi_Minh');
+      let timeEnd = await this.convertTZ(timelineInformation.timelineEnd.toString(), 'Asia/Ho_Chi_Minh');
+
+      let rangeTime = timeEnd.getHours() - timeStart.getHours();
+      if (rangeTime > 12) {
+        timeEnd.setHours(timeEnd.getHours() - 12);
+      }
+
+      if (rangeTime < 12 && rangeTime > 1) {
+        timeEnd.setHours(timeEnd.getHours() - 1);
+      }
+      if (rangeTime < 1) {
+        let rangeTime1 = timeEnd.getMinutes() - timeStart.getMinutes();
+        if (rangeTime1 > 1) {
+          timeEnd.setMinutes(timeEnd.getMinutes() - 1);
+        }
+      }
+
+      // Get timeRange1
+      const timeRange1Hour = timeStart.getHours().toString();
+      const timeRange1Day = timeStart.getDate().toString();
+      const timeRange1Month = timeStart.getMonth().toString();
+      const timeRang1Minute = timeStart.getMinutes().toString();
+
+      const timeRange1 = "0 " + timeRang1Minute + " " + timeRange1Hour + " " + timeRange1Day + " " + timeRange1Month + " *";
+      console.log(timeRange1);
+
+      // Get timeRange2
+      const timeRange2Hour = timeEnd.getHours().toString();
+      const timeRange2Day = timeEnd.getDate().toString();
+      const timeRange2Month = timeEnd.getMonth().toString();
+      const timeRang2Minute = timeEnd.getMinutes().toString();
+
+      const timeRange2 = "0 " + timeRang2Minute + " " + timeRange2Hour + " " + timeRange2Day + " " + timeRange2Month + " *";
+      console.log(timeRange2);
+
+      // Create a function
+      let callbackfunction = async () => {
+        const user1 = new RegisterDto();
+
+        user1.userEmail = "lyhandong123@gmail.com"
+        await this.mailService.sendUserConfirmation(user1, timeRange1);
+        // Send notify
+        await this.notifyService.sendTopicMessage(
+          timelineId.toString(),
+          "Nhắc nhở sự kiện tuyển sinh",
+          "events",
+          timelineId.toString(),
+          timelineId.toString()
+        )
+      }
+
+      // Stop cron job
+      let jobMap = await this.notifyService.getJobMap();
+      let cronJobInMap = jobMap.get(timelineId.toString());
+      if(cronJobInMap)
+      {
+        cronJobInMap.stop();
+        jobMap.delete(timelineId.toString());
+      }
+
+      // Call cron job
+      await this.notifyService.testStart(timeRange1, timeRange2, timelineId.toString(), callbackfunction);
+
+
       return result;
     }
   }
