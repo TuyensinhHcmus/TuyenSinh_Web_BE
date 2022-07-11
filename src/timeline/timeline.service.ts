@@ -36,7 +36,7 @@ export class TimelineService {
     await this.notifyService.sendAllMessage(
       result.timelineTitle,
       "Cập nhật sự kiện tuyển sinh mới",
-      "events",
+      "timeline",
       result.timelineId.toString(),
       "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d"
     )
@@ -83,10 +83,10 @@ export class TimelineService {
 
     // Create a function
     let callbackfunction = async () => {
-      const user1 = new RegisterDto();
+      // const user1 = new RegisterDto();
 
-      user1.userEmail = "lyhandong123@gmail.com"
-      await this.mailService.sendUserConfirmation(user1, timeRange1);
+      // user1.userEmail = "lyhandong123@gmail.com"
+      // await this.mailService.sendUserConfirmation(user1, timeRange1);
       // Send notify
       await this.notifyService.sendTopicMessage(
         result.timelineTitle,
