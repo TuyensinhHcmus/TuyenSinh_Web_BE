@@ -57,23 +57,23 @@ export class MajorsService {
 
   async getMajors(): Promise<any[]> {
     const majors = await this.majorRepo.createQueryBuilder('major')
-    .leftJoinAndMapOne( 'major.majorFaculty', faculty, 'faculty', 'faculty.facultyId = major.majorFaculty')
-    .select([
-          "major.majorId",
-          "major.majorFaculty",
-          "major.majorName",
-          "major.majorIntroduction",
-          "major.majorImageName",
-          "major.majorTarget", 
-          "major.majorTypeProgram",
-          "major.majorVideo",
-          "major.majorTuition",
-          "major.majorAdmissionsInfo",
-          "faculty.facultyName",
-          "faculty.facultyId"
-        ],)   
-    .getMany()
-  
+      .leftJoinAndMapOne('major.majorFaculty', faculty, 'faculty', 'faculty.facultyId = major.majorFaculty')
+      .select([
+        "major.majorId",
+        "major.majorFaculty",
+        "major.majorName",
+        "major.majorIntroduction",
+        "major.majorImageName",
+        "major.majorTarget",
+        "major.majorTypeProgram",
+        "major.majorVideo",
+        "major.majorTuition",
+        "major.majorAdmissionsInfo",
+        "faculty.facultyName",
+        "faculty.facultyId"
+      ])
+      .getMany()
+
     return majors;
   }
 
@@ -90,8 +90,7 @@ export class MajorsService {
     return major;
   }
 
-  async getMajorsByMethodId( methodId: string)
-  {
+  async getMajorsByMethodId(methodId: string) {
     // const majors = await this.majorRepo
     //   .createQueryBuilder('major')
     //   .leftJoinAndSelect("major.methods", "methods")
@@ -113,40 +112,40 @@ export class MajorsService {
     // })
     const listAdmissionGroup = await this.admissionService.getAdmissionGroupMapMajor();
 
-    
+
 
     // console.log('listAdmissionGroup', listAdmissionGroup);
-    
+
 
     const majors = await this.majorRepo.createQueryBuilder('major')
-    .leftJoinAndMapOne( 'major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
-    .leftJoinAndMapOne('major.majorMapMethod', majormethod, 'majormethod', 'majormethod.majorId = major.majorId')
-    .select([
-          "major.majorId",
-          "major.majorTypeProgram",
-          "major.majorName",
-          "major.majorIntroduction",
-          "major.majorImageName",
-          "major.majorTarget", 
-          "major.majorTypeProgram",
-          "major.majorVideo",
-          "major.majorTuition",
-          "major.majorAdmissionsInfo",
-          "typeProgram.typeProgramId",
-          "typeProgram.typeProgramName",
-          "majormethod.methodId",
-          "majormethod.majorId",
-        ],)
-    .where('majormethod.methodId = :methodId', { methodId })
-    .getMany()
+      .leftJoinAndMapOne('major.majorTypeProgram', typeProgram, 'typeProgram', 'typeProgram.typeProgramId = major.majorTypeProgram')
+      .leftJoinAndMapOne('major.majorMapMethod', majormethod, 'majormethod', 'majormethod.majorId = major.majorId')
+      .select([
+        "major.majorId",
+        "major.majorTypeProgram",
+        "major.majorName",
+        "major.majorIntroduction",
+        "major.majorImageName",
+        "major.majorTarget",
+        "major.majorTypeProgram",
+        "major.majorVideo",
+        "major.majorTuition",
+        "major.majorAdmissionsInfo",
+        "typeProgram.typeProgramId",
+        "typeProgram.typeProgramName",
+        "majormethod.methodId",
+        "majormethod.majorId",
+      ])
+      .where('majormethod.methodId = :methodId', { methodId })
+      .getMany()
 
     // console.log(methodContainListMajor)
 
-    let temp = majors.map( item => {
-      let admissionGroups = listAdmissionGroup.filter( adg => adg.majorId === item.majorId)
-      return {...item, admissionGroups}
+    let temp = majors.map(item => {
+      let admissionGroups = listAdmissionGroup.filter(adg => adg.majorId === item.majorId)
+      return { ...item, admissionGroups }
     })
-    
+
     return temp;
   }
 
@@ -186,7 +185,67 @@ export class MajorsService {
       select: ["majorId", "majorName"],
       where: { majorTypeProgram: typeProgramId }
     })
-    
+
+    return majors;
+  }
+
+  async getByTypeOfTraining(typeOfTrainingId: string): Promise<any> {
+    const listMajors = await createQueryBuilder('typeoftraining')
+      .where('typeoftraining.typeOfTrainingId = :typeOfTrainingId', { typeOfTrainingId: typeOfTrainingId })
+      .leftJoinAndMapMany(
+        'typeoftraining.typeOfTrainingId',
+        typeProgram,
+        'typeProgram',
+        'typeProgram.typeProgramTypeOfTrainingID = typeoftraining.typeOfTrainingId',
+      )
+      .leftJoinAndMapMany(
+        'typeProgram.typeProgramId',
+        major,
+        'major',
+        'major.majorTypeProgram = typeProgram.typeProgramId',
+      )
+      .leftJoinAndMapOne(
+        'major.majorFaculty', 
+        faculty, 
+        'faculty', 
+        'faculty.facultyId = major.majorFaculty')
+      //.andWhere('major.majorFaculty = :majorFaculty', { majorFaculty: 1 })
+      .select([
+        // Major
+        "major.majorId",
+        "major.majorFaculty",
+        "major.majorName",
+        "major.majorIntroduction",
+        "major.majorImageName",
+        "major.majorTarget",
+        "major.majorTypeProgram",
+        "major.majorVideo",
+        "major.majorTuition",
+        "major.majorAdmissionsInfo",
+        "faculty.facultyName",
+        "faculty.facultyId"
+      ])
+      .getRawMany();
+
+    let majors = [];
+    listMajors.forEach(major =>{
+      majors.push({
+        "majorId": major.major_majorId,
+        "majorFaculty": {
+            "facultyId": major.faculty_facultyId,
+            "facultyName": major.faculty_facultyName
+        },
+        "majorName": major.major_majorName,
+        "majorIntroduction": major.major_majorIntroduction,
+        "majorImageName": major.major_majorImageName,
+        "majorTarget": major.major_majorTarget,
+        "majorTypeProgram": major.major_majorTypeProgram,
+        "majorVideo": major.major_majorVideo,
+        "majorTuition": major.major_majorTuition,
+        "majorAdmissionsInfo": major.major_majorAdmissionsInfo
+      })
+    })
+
     return majors;
   }
 
@@ -194,7 +253,7 @@ export class MajorsService {
     let major;
 
     try {
-      major = await this.majorRepo.findOne({majorId: id});
+      major = await this.majorRepo.findOne({ majorId: id });
     } catch (error) {
       throw new NotFoundException('Could not find major.');
     }

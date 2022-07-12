@@ -28,6 +28,16 @@ export class MajorsController {
     return majors;
   }
 
+  // [GET] /majors/getByTypeOfTraining
+  @Get('getByTypeOfTraining')
+  async getByTypeOfTraining(
+    @Query('typeOfTrainingId') typeOfTrainingId: string,
+  ): Promise<any[]> {
+
+    const majors = await this.majorsService.getByTypeOfTraining(typeOfTrainingId);
+    return majors;
+  }
+
   // [GET] /majors
   @Get()
   async getAllMajors(): Promise<any[]> {

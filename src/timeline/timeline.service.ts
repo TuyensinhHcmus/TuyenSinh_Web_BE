@@ -172,10 +172,10 @@ export class TimelineService {
 
       // Create a function
       let callbackfunction = async () => {
-        const user1 = new RegisterDto();
+        // const user1 = new RegisterDto();
 
-        user1.userEmail = "lyhandong123@gmail.com"
-        await this.mailService.sendUserConfirmation(user1, timeRange1);
+        // user1.userEmail = "lyhandong123@gmail.com"
+        // await this.mailService.sendUserConfirmation(user1, timeRange1);
         // Send notify
         await this.notifyService.sendTopicMessage(
           timelineId.toString(),
