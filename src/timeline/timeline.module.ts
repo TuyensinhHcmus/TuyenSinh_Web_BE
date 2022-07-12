@@ -5,12 +5,14 @@ import { TimelineController } from "./timeline.controller";
 import { TimelineService } from "./timeline.service";
 import { timeline } from "./timeline.entity";
 import { AdmissionNotificationsModule } from "src/admissionNotifications/admissionNotifications.module";
+import { MailModule } from "src/mail/mail.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([timeline]),
         AuthModule,
-        AdmissionNotificationsModule
+        AdmissionNotificationsModule,
+        MailModule
     ],
     controllers:[TimelineController],
     providers: [TimelineService]

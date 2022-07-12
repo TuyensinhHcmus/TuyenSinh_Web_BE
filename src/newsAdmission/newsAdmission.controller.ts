@@ -1,4 +1,4 @@
-import { Body, Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
@@ -63,6 +63,14 @@ export class NewsAdmissionController {
     @Query('TypeOfTraining') typeOfTraining: string
   ): Promise<news[]> {
     return await this.newsAdmissionService.getNewsByTypeOfTraining(typeOfTraining);
+  }
+
+  @Delete('deleteNews')
+  async deleteNews(
+    @Body('newsId') newsId: number
+  )
+  {
+    return await this.newsAdmissionService.deleteNews(newsId);
   }
 
 }

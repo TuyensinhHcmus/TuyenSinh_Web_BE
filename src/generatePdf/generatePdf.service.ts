@@ -12,6 +12,7 @@ import { AdmissionNotificationsService } from 'src/admissionNotifications/admiss
 const fs = require('fs-extra');
 const pdf = require('html-pdf');
 var Readable = require('stream').Readable
+import puppeteer from "puppeteer";
 
 
 @Injectable()
@@ -136,11 +137,7 @@ export class PdfService {
 
         const options = {
           width: '635px',
-          height: '820px',
-          border: {
-            top: '40px',
-            bottom: '60px',
-          },
+          height: '920px'
         };
 
         //tra file truc tiep
@@ -158,18 +155,45 @@ export class PdfService {
         // return result
         // let filename = 'tuihoso' + (new Date().getTime())
 
-        pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
-          console.log('buffer', buffer);
-
-          let ref = await db.collection('streams');
-
-          await ref.doc(cvId.toString()).set({
-            value: buffer
+        try {
+          const browser = await puppeteer.launch({
+            executablePath: '/usr/bin/google-chrome',
+            args: ['--no-sandbox', '--disable-setuid-sandbox']
+          })
+          const page = await browser.newPage();
+  
+          await page.setContent(strHtml);
+  
+          const pdfBuffer = await page.pdf({
+            format: 'A4',
           });
-          // const snapshot = await ref.where('capital', '==', true).get();
+          console.log('buffer', pdfBuffer)
+  
+          let ref = await db.collection('streams');
+  
+            await ref.doc(cvId.toString()).set({
+              value: pdfBuffer
+            });
+            return cvId
+        } catch (error) {
+          console.log('err', error)
+          return cvId
+        }
+
+        
+
+        // pdf.create(strHtml, options).toBuffer(async (t, buffer) => {
+        //   console.log('buffer', buffer);
+
+        //   let ref = await db.collection('streams');
+
+        //   await ref.doc(cvId.toString()).set({
+        //     value: buffer
+        //   });
+        //   // const snapshot = await ref.where('capital', '==', true).get();
 
 
-        })
+        // })
 
         return cvId
 

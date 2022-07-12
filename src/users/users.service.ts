@@ -10,6 +10,7 @@ import { Between, MoreThan, Repository } from 'typeorm';
 import { EditUserDto } from './dto/edit-user-dto';
 import { string } from '@hapi/joi';
 import ChangePasswordDto from './dto/change-password.dto';
+import { StatisticService } from 'src/statistic/statistic.service';
 const { v4: uuidv4 } = require('uuid')
 
 
@@ -19,6 +20,7 @@ export class UsersService {
   constructor(
     @InjectRepository(user)
     private readonly userModel: Repository<user>,
+    private readonly statisticService: StatisticService
   ) { }
 
   // Bcrypt
@@ -104,6 +106,8 @@ export class UsersService {
         userCandicateId: "",
         userDateCreate: new Date()
       });
+
+      this.statisticService.addStatisticUser()
 
       const result = await this.userModel.save(newUser);
       return result;
@@ -360,6 +364,8 @@ export class UsersService {
         userDateCreate: new Date()
       });
       console.log(newUser)
+
+      this.statisticService.addStatisticUser()
       const result = await this.userModel.save(newUser);
       return result;
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { CronJob } from "cron";
+import { CronJob, CronTime, sendAt } from "cron";
 import RegisterDto from "src/auth/dto/register.dto";
 import { MailService } from "src/mail/mail.service";
 import { Repository } from "typeorm";
@@ -14,21 +14,25 @@ import { UsersService } from "src/users/users.service";
 var serviceAccount = require("../../src/admissionNotifications/serviceAccountKey.json");
 //../../src/admissionNotifications/serviceAccountKey.json
 import { getStorage } from "firebase-admin/storage"
+
 @Injectable()
 export class AdmissionNotificationsService {
   cronJob: CronJob
   private defaultApp: any;
   private db: any;
   private bucket: any;
+  jobMap: Map<string, CronJob> = new Map();
+
   constructor(
     @InjectRepository(notification)
     private readonly notificationModel: Repository<notification>,
     private mailService: MailService,
     private userService: UsersService,
   ) {
-    this.cronJob = new CronJob('*/10 * * * * *', async () => {
+    this.cronJob = new CronJob('0 51-59 15 4 6 *', async () => {
       try {
         console.log("test auto send mail")
+        console.log(new Date().toLocaleString());
         const user = new RegisterDto();
 
         user.userEmail = "lyhandong123@gmail.com"
@@ -36,7 +40,10 @@ export class AdmissionNotificationsService {
       } catch (e) {
         console.error(e);
       }
-    });
+    },
+      null,
+      false,
+      'Asia/Ho_Chi_Minh');
 
     this.defaultApp = firebase.initializeApp({
       credential: firebase.credential.cert(serviceAccount),
@@ -46,7 +53,6 @@ export class AdmissionNotificationsService {
     this.db = firebase.firestore();
 
     this.bucket = getStorage().bucket();
-
   }
 
   getDb() {
@@ -55,6 +61,10 @@ export class AdmissionNotificationsService {
 
   getBucket() {
     return this.bucket;
+  }
+
+  getJobMap() {
+    return this.jobMap;
   }
 
 
@@ -143,12 +153,62 @@ export class AdmissionNotificationsService {
     return listNotify;
   }
 
-  async testStart() {
-    this.cronJob.start();
+  async testStart(timeRange1: string, timeRange2: string, id: string, callbackfunction) {
+    console.log("start")
+    let count =0;
+
+    let newCronJob = new CronJob(timeRange1, async () => {
+      try {
+        await callbackfunction();
+
+        if(count === 0)
+        {
+          await this.setTimeAgain(timeRange2, id);
+        }
+
+        if(count !== 0)
+        {
+          console.log("Stop cron job")
+          let cronJob = this.jobMap.get(id);
+          cronJob.stop();
+          this.jobMap.delete(id);
+        }
+        
+        count = count + 1;
+        //user.userEmail = "lyhandong123@gmail.com"
+        //await this.mailService.sendUserConfirmation(user, new Date().toLocaleTimeString() + ',' + new Date().toLocaleDateString());
+      } catch (e) {
+        console.error(e);
+      }
+    },
+      null,
+      true,
+      "Asia/Ho_Chi_Minh"
+    );
+
+    this.jobMap.set(id, newCronJob);
+
+    newCronJob.start()
   }
 
-  async testStop() {
-    this.cronJob.stop();
+  async testStop(id: string) {
+
+    const cronJobInMap = this.jobMap.get(id);
+
+    cronJobInMap.stop();
+  }
+
+  async setTimeAgain(timeRange2: string, id: string) {
+    console.log("setTimeAgain");
+    let cronJobInMap = this.jobMap.get(id);
+    const time = new CronTime(timeRange2)
+    cronJobInMap.setTime(time);
+  }
+
+  async getStateAllCronJob() {
+    this.jobMap.forEach((cron, key) => {
+      console.log(key, ': ', cron.running)
+    })
   }
 
   async changeStateNotification(notifyId: number) {
@@ -192,18 +252,19 @@ export class AdmissionNotificationsService {
       var notifyData = {
         body: body,
         title: title,
-        date: new Date().toString(), //etne fix timestamp
-        image: "image",
+        date: new Date().getTime().toString(), //etne fix timestamp
+        image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2FLogo_HCMUS.png?alt=media&token=88f00455-aa8c-4bf3-a07c-ef7e96e66a5d",
         status: "unread",
-        data: "this is data",
+        data: id,
         type: screen,
         id: notifyId
       };
 
       await this.db
         .collection("notify")
-        .doc("abc")
-        .set({ [notifyId]: notifyData })
+        .doc(userId)
+        .set({ [notifyId]: notifyData }, { merge: true })
+
 
 
       if (tokenDevice) {
@@ -251,97 +312,99 @@ export class AdmissionNotificationsService {
     })
 
     console.log(new Date().getTime().toString());
+    console.log(object);
+    if(object !== undefined)
+    {
+      const objectArray = Object.entries(object);
 
-
-    const objectArray = Object.entries(object);
-
-    objectArray.forEach(([key, value]) => {
-      listUserId.push(key)
-    });
-
-
-
-    for (let i = 0; i < listUserId.length; i++) {
-
-      var notifyIdentity = uuidv4();
-
-      console.log(notifyIdentity)
-      var notifyData = {
-        body: body,
-        title: title,
-        date: new Date().toString(), //etne fix timestamp
-        image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
-        status: "unread",
-        data: id,
-        type: "timeline",
-        id: notifyIdentity
+      objectArray.forEach(([key, value]) => {
+        listUserId.push(key)
+      });
+  
+  
+  
+      for (let i = 0; i < listUserId.length; i++) {
+  
+        var notifyIdentity = uuidv4();
+  
+        console.log(notifyIdentity)
+        var notifyData = {
+          body: body,
+          title: title,
+          date: new Date().getTime().toString(), //etne fix timestamp
+          image: "https://firebasestorage.googleapis.com/v0/b/hcmus-admission.appspot.com/o/imageForApp%2Fkisspng-blue-bachelors-degree-cartoon-cartoon-blue-bachelor-cap-5a8d4e86607602.0098409015192101183951.png?alt=media&token=b1ff7483-b0c1-4bec-9102-1bda5c7b1e80",
+          status: "unread",
+          data: id,
+          type: "timeline",
+          id: notifyIdentity
+        };
+  
+        const someValueArray = notifyData;
+  
+        const obj = {
+          [notifyIdentity]: someValueArray,
+        }
+  
+  
+        await this.db
+          .collection("notify")
+          .doc(listUserId[i])
+          .set(obj, { merge: true });
+  
+      }
+  
+      console.log(listUserId);
+  
+      // Find in db where tokenDevices current in listUserId
+      let tokenDevices;
+      tokenDevices = [];
+  
+      // Get user from listUserId
+      let listUser = [];
+      let user;
+      for (let i = 0; i < listUserId.length; i++) {
+        user = await this.userService.getUserById(listUserId[i]);
+        if (user) {
+          listUser.push(user);
+        }
+      }
+  
+      listUser.forEach(user => {
+        //console.log(user)
+        if (user.currentTokenDevice !== '') {
+          tokenDevices.push(user.currentTokenDevice);
+        }
+      });
+  
+      //console.log(tokenDevices);
+  
+      // Set up message
+      var DATA = {
+        notification: {
+          body: body,
+          title: title,
+        },
+        data: {
+          click_action: "FLUTTER_NOTIFICATION_CLICK",
+          sound: "default",
+          status: "done",
+          id: id,
+          screen: screen,
+        },
+        tokens: tokenDevices // Here is devices token need to send
       };
-
-      const someValueArray = notifyData;
-
-      const obj = {
-        [notifyIdentity]: someValueArray,
+  
+  
+      // Send message
+      if (tokenDevices.length !== 0) {
+        await firebase.messaging().sendMulticast(DATA)
+          .then((response) => {
+            console.log('Success sent message: ' + response);
+          })
+          .catch((err) => {
+            console.log('Error sending message: ' + err);
+          });
       }
-
-
-      await this.db
-        .collection("notify")
-        .doc(listUserId[i])
-        .set(obj);
-
-    }
-
-    console.log(listUserId);
-
-    // Find in db where tokenDevices current in listUserId
-    let tokenDevices;
-    tokenDevices = [];
-
-    // Get user from listUserId
-    let listUser = [];
-    let user;
-    for (let i = 0; i < listUserId.length; i++) {
-      user = await this.userService.getUserById(listUserId[i]);
-      if (user) {
-        listUser.push(user);
-      }
-    }
-
-    listUser.forEach(user => {
-      //console.log(user)
-      if (user.currentTokenDevice !== '') {
-        tokenDevices.push(user.currentTokenDevice);
-      }
-    });
-
-    //console.log(tokenDevices);
-
-    // Set up message
-    var DATA = {
-      notification: {
-        body: body,
-        title: title,
-      },
-      data: {
-        click_action: "FLUTTER_NOTIFICATION_CLICK",
-        sound: "default",
-        status: "done",
-        id: id,
-        screen: screen,
-      },
-      tokens: tokenDevices // Here is devices token need to send
-    };
-
-
-    // Send message
-    if (tokenDevices.length !== 0) {
-      firebase.messaging().sendMulticast(DATA)
-        .then((response) => {
-          console.log('Success sent message: ' + response);
-        })
-        .catch((err) => {
-          console.log('Error sending message: ' + err);
-        });
     }
   }
 
@@ -364,6 +427,25 @@ export class AdmissionNotificationsService {
       topic: topic
     };
 
+    //
+    const notifyId = uuidv4();
+
+    var notifyData = {
+      body: body,
+      title: title,
+      date: new Date().getTime().toString(), //etne fix timestamp
+      image: image,
+      status: "unread",
+      data: id,
+      type: screen,
+      id: notifyId
+    };
+
+    await this.db
+      .collection("notify")
+      .doc("all")
+      .set({ [notifyId]: notifyData }, { merge: true })
+
 
     // Send a message to devices subscribed to the provided topic.
     firebase.messaging().send(DATA)
@@ -376,14 +458,5 @@ export class AdmissionNotificationsService {
       });
     //console.log(tokenDevices);
   }
-  // async findAll() {
-  //   const result = [];
-  //   const firestore = new firebase.firestore.Firestore();
 
-  //   (await firestore.collection('topics').get()).docs.map(data => {
-  //     if (data.id == topic) {
-  //       listUserId.push(element.data());
-  //     }
-  //   })
-  // }
 }

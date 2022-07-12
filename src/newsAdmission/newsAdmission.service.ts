@@ -7,6 +7,7 @@ import { AddNewsAdmissionDto } from './dto/addNewsAdmission.dto';
 import { IPaginationMeta, IPaginationOptions, paginate, Pagination } from 'nestjs-typeorm-paginate';
 import { UpdateNewsDto } from './dto/upadteNewAdmission.dto';
 import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
+import { StatisticService } from 'src/statistic/statistic.service';
 var slug = require('slug')
 
 @Injectable()
@@ -14,7 +15,9 @@ export class NewsAdmissionService {
   constructor(
     @InjectRepository(news)
     private readonly newsRepo: Repository<news>,
-    private readonly notifyService: AdmissionNotificationsService
+    private readonly notifyService: AdmissionNotificationsService,
+    private readonly statisticService: StatisticService,
+  
   ) { }
 
   async insertNews(addNewsAdmissionDto: AddNewsAdmissionDto): Promise<news> {
@@ -32,26 +35,15 @@ export class NewsAdmissionService {
       newsImage: newsImage
     });
 
+    this.statisticService.addStatisticNews()
     const result = await this.newsRepo.save(news);
-    try {
-      // Send notify for all etne Ha
-      await this.notifyService.sendAllMessage(
-        title,
-        "Cập nhật thông tin tuyển sinh mới.",
-        "news",
-        result.newsId.toString(),
-        newsImage
-      )
-    } catch (error) {
-      // console.log("Loi gui api");
-      // throw new HttpException("", HttpStatus.BAD_REQUEST)
-    }
+    
     return result;
 
   }
 
   async updateNews(id: number, updateDto: UpdateNewsDto): Promise<news> {
-    const { title, content, state, typeOfTrainingID, typeOfProgram, image } = updateDto;
+    const { title, content, state, typeOfTrainingID, typeOfProgram, newsImage } = updateDto;
 
     let isExist = await this.newsRepo.find({ newsId: id });
 
@@ -66,7 +58,8 @@ export class NewsAdmissionService {
     news.newsState = state;
     news.newsTypeOfTrainingID = typeOfTrainingID;
     news.newsTypeOfProgram = typeOfProgram;
-    news.newsImage = image;
+    news.newsImage = newsImage;
+    news.newsSlug = slug(title) + "-" + (new Date()).getTime();
 
     const result = await this.newsRepo.save(news);
     return result;
@@ -81,7 +74,25 @@ export class NewsAdmissionService {
   }
 
   async updateStatus(id: number, status: string) {
-    const res = await this.newsRepo.update({ newsId: id }, { newsState: status })
+    const news = await this.newsRepo.findOne({newsId: id })
+
+    const res = await this.newsRepo.update({ newsId: id }, { newsState: status });
+
+    if(status === "publish")
+    try {
+      // Send notify for all etne Ha
+      await this.notifyService.sendAllMessage(
+        news.newsTitle,
+        "Cập nhật thông tin tuyển sinh mới.",
+        "news",
+        news.newsSlug,
+        news.newsImage
+      )
+    } catch (error) {
+      // console.log("Loi gui api");
+      throw new HttpException("Không thể gửi thông báo cập nhật tin tức", HttpStatus.BAD_REQUEST)
+    }
+
     return res;
   }
 
@@ -226,5 +237,36 @@ export class NewsAdmissionService {
       increase
     }
 
+  }
+
+  async deleteNews(newsId: number)
+  {
+    const newsAdmission = await this.findNews(newsId);
+
+    try {
+      this.newsRepo.delete({newsId: newsId});
+
+      return {
+        message: 'Đã xóa thành công tin tức có mã ' + newsId.toString()
+      }
+    } catch (error) {
+      throw new HttpException('Xóa không thành công', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  private async findNews(newsId: number): Promise<news> {
+    let newsAdmission;
+
+    try {
+      newsAdmission = await this.newsRepo.findOne({ newsId: newsId});
+    } catch (error) {
+      throw new NotFoundException('Không tìm thấy tin tức có mã ' + newsId.toString());
+    }
+
+    if (!newsAdmission) {
+      throw new NotFoundException('Không tìm thấy tin tức có mã ' + newsId.toString());
+    }
+
+    return newsAdmission;
   }
 }

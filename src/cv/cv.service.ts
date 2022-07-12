@@ -33,6 +33,7 @@ import { PdfService } from 'src/generatePdf/generatePdf.service';
 import { MailService } from 'src/mail/mail.service';
 import { MajorsService } from 'src/majors/majors.service';
 import { AdmissionNotificationsService } from 'src/admissionNotifications/admissionNotifications.service';
+import { StatisticService } from 'src/statistic/statistic.service';
 
 @Injectable()
 export class CvsService {
@@ -45,7 +46,9 @@ export class CvsService {
     private readonly pdfService: PdfService,
     private readonly mailService: MailService,
     private readonly majorService: MajorsService,
-    private readonly notifyService: AdmissionNotificationsService
+    private readonly notifyService: AdmissionNotificationsService,
+    private readonly statisticService: StatisticService,
+    
   ) { }
 
   async addCv(
@@ -63,6 +66,7 @@ export class CvsService {
       cvStatusPay: ''
     });
 
+    this.statisticService.addStatisticCV()
     const result = await this.cvsRepo.save(cv);
 
     return result;
@@ -193,7 +197,7 @@ export class CvsService {
           obj['cmnd'] = addCVDto.userIdentityNumber !== undefined || addCVDto.userIdentityNumber ? addCVDto.userIdentityNumber : "",
           obj['name'] = addCVDto.userName !== undefined || addCVDto.userName ? addCVDto.userName : "",
           obj['ethnic'] = addCVDto.userEthnicity !== undefined || addCVDto.userEthnicity ? addCVDto.userEthnicity : "",
-          obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? addCVDto.userBirthday : "",
+          obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? addCVDto.userBirthday.toString().slice(0, 10) : "",
           // obj['birthday'] = addCVDto.userBirthday !== undefined || addCVDto.userBirthday ? 
           //                   addCVDto.userBirthday.getDay() + "/" + addCVDto.userBirthday.getMonth() + "/" + addCVDto.userBirthday.getFullYear() 
           //                   : "",
@@ -203,9 +207,10 @@ export class CvsService {
           obj['email'] = addCVDto.cvaiEmail !== undefined || addCVDto.cvaiEmail ? addCVDto.cvaiEmail : "",
           obj['national'] = addCVDto.userNationality !== undefined || addCVDto.userNationality ? addCVDto.userNationality : "",
           obj['province'] = addCVDto.userProvinceResidence !== undefined || addCVDto.userProvinceResidence ? addCVDto.userProvinceResidence : "",
+          obj['code'] = cvId
           console.log("obj", obj);
-          
-          await this.pdfService.generatePdf(cvId, obj, "DT")
+
+        await this.pdfService.generatePdf(cvId, obj, "DT")
       }
       if (method === "XT") {
         obj['majorName'] = '',
@@ -284,10 +289,10 @@ export class CvsService {
           obj['cvaiGPA10'] = addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10 ? addCVDto.cvaiGPA10 : "",
           obj['cvaiGPA11'] = addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11 ? addCVDto.cvaiGPA11 : "",
           obj['cvaiGPA12'] = addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12 ? addCVDto.cvaiGPA12 : "",
-          obj['cvaiGPATotal'] = (addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10) 
-                                && (addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11) 
-                                && (addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12) 
-                                ? addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12 : "",
+          obj['cvaiGPATotal'] = (addCVDto.cvaiGPA10 !== undefined && addCVDto.cvaiGPA10)
+            && (addCVDto.cvaiGPA11 !== undefined && addCVDto.cvaiGPA11)
+            && (addCVDto.cvaiGPA12 !== undefined && addCVDto.cvaiGPA12)
+            ? addCVDto.cvaiGPA10 + addCVDto.cvaiGPA11 + addCVDto.cvaiGPA12 : "",
           obj['cvaiIeltsCertificateScore'] = addCVDto.cvaiIeltsCertificateScore !== undefined && addCVDto.cvaiIeltsCertificateScore ? addCVDto.cvaiIeltsCertificateScore : "",
           obj['cvaiToeflCertificateScore'] = addCVDto.cvaiToeflCertificateScore !== undefined && addCVDto.cvaiToeflCertificateScore ? addCVDto.cvaiToeflCertificateScore : "",
           obj['cvaiVietnameseCertificateLevel'] = addCVDto.cvaiVietnameseCertificateLevel !== undefined && addCVDto.cvaiVietnameseCertificateLevel ? addCVDto.cvaiVietnameseCertificateLevel : "",
@@ -302,7 +307,7 @@ export class CvsService {
     } catch (error) {
       console.log(error)
       throw new HttpException(
-        'Something went wrong',
+        "Something went wrong.",
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
@@ -870,10 +875,10 @@ export class CvsService {
       cvaiData.cvaiProvincialExcellentAward = data.cvaiProvincialExcellentAward;
       cvaiData.cvaiIeltsCertificateScore = data.cvaiIeltsCertificateScore;
       cvaiData.cvaiIeltsCertificateExpiration =
-        data.cvaiIeltsCertificateExpiration;
+        new Date(data.cvaiIeltsCertificateExpiration);
       cvaiData.cvaiToeflCertificateScore = data.cvaiToeflCertificateScore;
       cvaiData.cvaiToeflCertificateExpiration =
-        data.cvaiToeflCertificateExpiration;
+        new Date(data.cvaiToeflCertificateExpiration);
       cvaiData.cvaiHaveVietnameseCertificate =
         data.cvaiHaveVietnameseCertificate;
       cvaiData.cvaiVietnameseCertificateLevel =
@@ -891,7 +896,7 @@ export class CvsService {
       //userInfo.userEmail = userEmail;
       userInfo.userEthnicity = userEthnicity;
       userInfo.userNationality = userNationality;
-      userInfo.userBirthday = userBirthday;
+      userInfo.userBirthday = new Date(userBirthday);
       userInfo.userBirthplace = userBirthplace;
       userInfo.userContactAddress = userContactAddress;
       userInfo.userProvinceResidence = userProvinceResidence;
@@ -976,10 +981,18 @@ export class CvsService {
   }
 
   async deleteCv(cvId: number) {
-    try {
-      // Find CV
-      await this.findCV(cvId);
 
+    // Find CV
+    const cv = await this.findCV(cvId);
+
+    // Check state of cv
+    if (cv.cvState === "Trúng tuyển" ||
+      cv.cvState === "Không trúng tuyển" ||
+      cv.cvState === "Đã nộp"
+    ) {
+      throw new HttpException("Bạn không thể xóa cv " + cv.cvState, HttpStatus.BAD_REQUEST);
+    }
+    try {
       // Find listAspiration
       const listAspiration = await createQueryBuilder('cv')
         .where('cv.cvId = :cvId', { cvId: cvId })
@@ -1017,25 +1030,24 @@ export class CvsService {
     }
   }
 
-  async checkMethodInCV(cvUserId: string, cvMethodId: string) {
+  async checkMethodInCV(cvUserId: string, cvMethodId: string, cvId: number) {
     // const listCV = await this.cvsRepo.find({
     //   where: {
     //     cvState: "Đã nộp",
     //     cvMethodId: cvMethodId
     //   },
     // })
-    const listCV = await createQueryBuilder('cv')
-      .where('cvState= :state', { state: 'Đã nộp' })
-      .andWhere('cvState= :state', { state: 'Trúng tuyển' })
-      .andWhere('cvState= :state', { state: 'Không trúng tuyển' })
-      .andWhere('cv.cvMethodId = :method', { method: cvMethodId })
-      .getRawMany();
+    const listCV = await this.cvsRepo.find({
+      cvMethodId: cvMethodId,
+      cvUserId: cvUserId
+    })
 
     console.log('check metod', listCV);
 
     let isDuplicate = false;
     listCV.forEach((cv) => {
-      if (cv.cv_cvUserId === cvUserId) {
+      if (cv.cvId !== cvId && 
+        cv.cvState !== "Đã lưu") {
         isDuplicate = true;
       }
     });
@@ -1067,7 +1079,7 @@ export class CvsService {
 
 
     // Kiểm tra xem trong danh sách cv đã nộp có cv nào có method giống không
-    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId);
+    await this.checkMethodInCV(cv.cvUserId, cv.cvMethodId, cvId);
 
     try {
       // Update state của cv
@@ -1281,7 +1293,7 @@ export class CvsService {
           body,
           "THÔNG BÁO ĐÃ NỘP HỒ SƠ THÀNH CÔNG",
           "cv",
-          cv.cvId,
+          cv.cvId.toString(),
           cv.cvUserId
         )
 
@@ -1354,7 +1366,7 @@ export class CvsService {
           'THÔNG BÁO TRÚNG TUYỂN',
           message,
         );
-        
+
         let body = "Chúc mừng bạn đã trúng tuyển vào ngành " + majorName + " của Trường Đại học Khoa học Tự nhiên. Mã hồ sơ của bạn là " + cv.cvId;
 
         // Gửi thông báo
@@ -1362,7 +1374,7 @@ export class CvsService {
           body,
           'THÔNG BÁO TRÚNG TUYỂN',
           'cv',
-          cv.cvId,
+          cv.cvId.toString(),
           cv.cvUserId
         )
       }
@@ -1375,7 +1387,7 @@ export class CvsService {
     }
   }
 
-  async getOneCV(cvId: number){
+  async getOneCV(cvId: number) {
     await this.findCV(cvId);
 
     const cv = await this.getCVInformation(cvId);

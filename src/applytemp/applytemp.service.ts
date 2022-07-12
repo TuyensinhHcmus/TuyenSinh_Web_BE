@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { admissionsgroup } from 'src/admissionGroup/admissionGroup.entity';
 import { benchmark } from 'src/benchmarks/benchmark.entity';
 import { major } from 'src/majors/major.entity';
+import { StatisticService } from 'src/statistic/statistic.service';
 import { typeProgram } from 'src/typePrograms/typeProgram.entity';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { applytemp } from './applytemp.entity';
@@ -16,6 +17,8 @@ export class ApplyTempService {
   constructor(
     @InjectRepository(applytemp)
     private readonly applyTempRepo: Repository<applytemp>,
+    private readonly statisticService: StatisticService,
+
   ) { }
 
   private async findApplyTemp(applyTempId: string): Promise<applytemp> {
@@ -107,6 +110,7 @@ export class ApplyTempService {
       applyTempPriorityArea: applyTempPriorityArea
     });
 
+    this.statisticService.addStatisticApplyTemp()
     const result = await this.applyTempRepo.save(newApplyTemp);
     return result;
   }
