@@ -32,6 +32,7 @@ import { ResultModule } from './result/result.module';
 import { ImageModule } from './imageData/image.module';
 import { ApplyTempModule } from './applytemp/applytemp.module';
 import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
+import { AdmissionsResultModule } from './admissionsResult/admissionsResult.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { AdmissionGroupModule } from './admissionGroup/admissionGroup.module';
     AdmissionNotificationsModule,
     ImageModule,
     ApplyTempModule,
+    AdmissionsResultModule
   ],
 
   controllers: [AppController],

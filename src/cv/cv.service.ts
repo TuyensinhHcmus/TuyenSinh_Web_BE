@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, LessThan, Repository } from 'typeorm';
-import moment from 'moment';
 import { AddCVDto } from './dto/add-cv.dto';
 
 import { cv } from './cv.entity';
@@ -836,6 +835,8 @@ export class CvsService {
 
       // Find cv by cvId
       let cv = await this.findCV(cvId);
+
+      console.log(cv);
 
       cv.cvMethodId = method ? method : cv.cvMethodId;
       cv.cvFile = fileUrl ? fileUrl : cv.cvFile;
