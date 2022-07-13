@@ -17,11 +17,16 @@ export class AdmissionsResultService {
     const { dataImport } = addAdmissionsResultDto;
 
     try {
+
+      const results = await this.admissionsResultRepo.find({});
+  
+      await this.admissionsResultRepo.remove(results);
+
       const data = this.admissionsResultRepo.create(dataImport);
       const result = await this.admissionsResultRepo.save(data);
       return result;
     } catch(err) {
-      throw new HttpException('Cat not import data', 400);
+      throw new HttpException('Can not import data', 400);
     }
   }
 
