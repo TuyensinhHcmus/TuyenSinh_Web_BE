@@ -52,7 +52,7 @@ export class AdmissionsResult {
     @Column(
         {
             type: 'varchar',
-            length: 12,
+            length: 50,
         }
     )
     adrsPhone: string
