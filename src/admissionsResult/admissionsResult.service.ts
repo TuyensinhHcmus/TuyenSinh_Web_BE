@@ -26,7 +26,7 @@ export class AdmissionsResultService {
       const result = await this.admissionsResultRepo.save(data);
       return result;
     } catch(err) {
-      throw new HttpException('Can not import data', 400);
+      throw new HttpException(`Can not import data: ${err}`, 400);
     }
   }
 
