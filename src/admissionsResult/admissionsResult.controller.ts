@@ -19,7 +19,8 @@ export class AdmissionsResultController {
   // [POST] /import-excel
   @Post('/import-excel')
   async importDataExcel(@Body() addAdmissionsResultDto: AddAdmissionsResultDto): Promise<any> {
-    return await this.admissionsResultService.importDataExcel(addAdmissionsResultDto);
+    await this.admissionsResultService.importDataExcel(addAdmissionsResultDto);
+    return [];
   }
 
   // [GET] /
